@@ -1,5 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Run `npx prisma migrate dev` to migrate your database
 
 generator client {
   provider = "prisma-client-js"
@@ -10,31 +11,93 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Sample schema to test connection
-// TODO: Delete this schema
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
-}
-
+// Models
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String
+  email           String   @unique
+  password        String
+  role            UserRole
+  createdCourses  Course[] @relation("CreatedCourses")
+  enrolledCourses Course[] @relation("EnrolledCourses")
+}
+
+model Course {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String
+  description String
+  teacher     User       @relation("CreatedCourses", fields: [teacherId], references: [id])
+  teacherId   String     @db.Uuid
+  students    User[]     @relation("EnrolledCourses")
+  chapters    Chapter[]
+  analytics   Analytics?
+}
+
+model Chapter {
+  id       String @id @default(uuid()) @db.Uuid
+  name     String
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String @db.Uuid
+  pages    Page[]
+}
+
+model Page {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id])
+  chapterId String   @db.Uuid
+  type      PageType
+
+  traditionalTextBasedLessonPage TraditionalTextBasedLessonPage?
+  codeSandboxPage                CodeSandboxPage?
+  stepByStepVisualizationPage    StepByStepVisualizationPage?
+  realTimeCodeFeedbackPage       RealTimeCodeFeedbackPage?
+}
+
+model TraditionalTextBasedLessonPage {
+  id   String @id @default(uuid()) @db.Uuid
+  page Page   @relation(fields: [id], references: [id])
+  // Additional fields specific to TraditionalTextBasedLessonPage
+}
+
+model CodeSandboxPage {
+  id   String @id @default(uuid()) @db.Uuid
+  page Page   @relation(fields: [id], references: [id])
+  // Additional fields specific to CodeSandboxPage
+}
+
+model StepByStepVisualizationPage {
+  id   String @id @default(uuid()) @db.Uuid
+  page Page   @relation(fields: [id], references: [id])
+  // Additional fields specific to StepByStepVisualizationPage
+}
+
+model RealTimeCodeFeedbackPage {
+  id   String @id @default(uuid()) @db.Uuid
+  page Page   @relation(fields: [id], references: [id])
+  // Additional fields specific to RealTimeCodeFeedbackPage
+}
+
+model Analytics {
+  id                                  String @id @default(uuid()) @db.Uuid
+  percentStudentsUsedCodeSandbox      Float
+  percentStudentsViewedStepByStep     Float
+  percentStudentsUsedRealTimeFeedback Float
+  codeFeedbackOverview                String
+  course                              Course @relation(fields: [courseId], references: [id])
+  courseId                            String @unique @db.Uuid
+}
+
+// Enums
+
+enum UserRole {
+  TEACHER
+  STUDENT
+}
+
+enum PageType {
+  TRADITIONAL_TEXT_BASED_LESSON
+  CODE_SANDBOX
+  STEP_BY_STEP_VISUALIZATION
+  REAL_TIME_CODE_FEEDBACK
 }
