@@ -39,7 +39,11 @@ The platform caters to two main user groups:
    npm install
    ```
 3. Set up the PostgreSQL database and ensure it is running.
-4. Configure the `.env` file with your database credentials.
+4. Configure the `.env` file with your database credentials and port number.
+   ```bash
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+   PORT=8000
+   ```
 5. Run Prisma migrations:
    ```bash
    npx prisma migrate dev
