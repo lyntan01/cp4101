@@ -1,0 +1,94 @@
+{
+  "version": "6.0",
+  "nxVersion": "17.2.8",
+  "deps": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.70",
+    "@types/react": "^18.2.47",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "axios": "^1.6.5",
+    "nx": "^17.2.8",
+    "postcss": "^8.4.33",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {},
+    "nonProjectFiles": [
+      {
+        "file": ".gitignore",
+        "hash": "5403484524555424706"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "1561638079466804622"
+      },
+      {
+        "file": "package.json",
+        "hash": "7279667632170810069"
+      },
+      {
+        "file": "postcss.config.js",
+        "hash": "1579725330904862112"
+      },
+      {
+        "file": "public/favicon.ico",
+        "hash": "2949791817221603359"
+      },
+      {
+        "file": "public/index.html",
+        "hash": "13308863839730475495"
+      },
+      {
+        "file": "public/logo192.png",
+        "hash": "7585273181698778288"
+      },
+      {
+        "file": "public/logo512.png",
+        "hash": "9339365414554387981"
+      },
+      {
+        "file": "public/manifest.json",
+        "hash": "1447645250373428393"
+      },
+      {
+        "file": "public/robots.txt",
+        "hash": "2790380794362165217"
+      },
+      {
+        "file": "src/app/App.tsx",
+        "hash": "7782199348483338087"
+      },
+      {
+        "file": "src/index.tsx",
+        "hash": "9152002595321561458"
+      },
+      {
+        "file": "src/react-app-env.d.ts",
+        "hash": "3195158367843515590"
+      },
+      {
+        "file": "src/styles.css",
+        "hash": "5008452904991171557"
+      },
+      {
+        "file": "tailwind.config.js",
+        "hash": "8272385067984649537"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "3664978063588679595"
+      }
+    ]
+  }
+}
