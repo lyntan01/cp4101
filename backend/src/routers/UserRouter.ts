@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { restrictBodyId } from "../middleware/validationMiddleware";
 import jwt from "jsonwebtoken";
 import { UserLoginData } from "../types/user";
-import { JWT_SECRET_KEY } from "../config/config.ts";
+import { JWT_SECRET_KEY } from "../config/config";
 
 const userRouter = Router();
 const userService = new UserService();

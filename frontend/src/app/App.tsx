@@ -1,30 +1,22 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
+import { AuthWrapper } from "../wrappers/AuthContext";
+import { ToastProvider } from "../wrappers/ToastProvider";
+import { ToastContainer } from "react-toastify";
+import { Route, Routes } from "react-router-dom";
+import { EnforceLoginStatePageWrapper } from "../wrappers/EnforceLoginStateWrapper";
+import SampleComponent from "../components/toDelete";
 
-function App() {
-  const [backendMessage, setBackendMessage] = useState("");
-
-  useEffect(() => {
-    axios
-      .get("/api/hello")
-      .then((response) => {
-        setBackendMessage(response.data.message);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
-  }, []);
-
+export default function App() {
   return (
-    <div className="text-center">
-      <header>
-        <div>
-          <p>Message from the backend: {backendMessage}</p>
-        </div>
-      </header>
+    <div className="h-full">
+      <AuthWrapper>
+        <ToastProvider>
+          <ToastContainer />
+          <SampleComponent />
+        </ToastProvider>
+      </AuthWrapper>
     </div>
   );
 }
-
-export default App;
