@@ -17,8 +17,8 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="text-center">
+      <header>
         <div>
           <p>Message from the backend: {backendMessage}</p>
         </div>
