@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import client from "./client";
-import { User, UserRole } from "../types/user";
+import { User, UserRoleEnum } from "../types/user";
 
 const URL = "/users";
 
@@ -8,7 +8,7 @@ interface RegisterUserData {
   name: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: UserRoleEnum;
 }
 
 interface LoginData {

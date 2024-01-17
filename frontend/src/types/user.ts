@@ -3,10 +3,10 @@ export type User = {
   name: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: UserRoleEnum;
 };
 
-export enum UserRole {
+export enum UserRoleEnum {
   TEACHER = "TEACHER",
   STUDENT = "STUDENT",
 }
