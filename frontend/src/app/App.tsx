@@ -7,6 +7,7 @@ import { AuthWrapper } from "../wrappers/AuthContext";
 import { EnforceLoginStatePageWrapper } from "../wrappers/EnforceLoginStateWrapper";
 import { ToastProvider } from "../wrappers/ToastProvider";
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
 
 export default function App() {
   return (
