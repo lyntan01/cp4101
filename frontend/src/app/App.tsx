@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { LOGIN, SIGN_UP } from "../libs/routes";
+import { COURSES, LOGIN, SETTINGS, SIGN_UP } from "../libs/routes";
 import Login from "../pages/entry/Login";
 import SignUp from "../pages/entry/SignUp";
 import { AuthWrapper } from "../wrappers/AuthContext";
@@ -8,6 +8,8 @@ import { EnforceLoginStatePageWrapper } from "../wrappers/EnforceLoginStateWrapp
 import { ToastProvider } from "../wrappers/ToastProvider";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
+import { SidebarLayout } from "../libs/layout/layout";
+import { NAV_SECTIONS } from "../libs/layout/navigationSections";
 
 export default function App() {
   return (
@@ -19,12 +21,14 @@ export default function App() {
             <Route
               element={
                 <EnforceLoginStatePageWrapper redirectTo={LOGIN}>
-                  {/* <SecondaryLayout navigationMenu={NAV_SECTIONS} /> */}
+                  <SidebarLayout navigationMenu={NAV_SECTIONS} />
                 </EnforceLoginStatePageWrapper>
               }
             >
               {/* Nest all routes that has a SecondaryLayout here */}
               <Route path="/" element={<h1>Welcome!</h1>} />
+              <Route path={COURSES} element={<h1>Courses</h1>} />
+              <Route path={SETTINGS} element={<h1>Settings</h1>} />
             </Route>
             <Route path={LOGIN} element={<Login />} />
             <Route path={SIGN_UP} element={<SignUp />} />
