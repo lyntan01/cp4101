@@ -4,7 +4,7 @@ import { PublicPageWrapper } from "../../wrappers/PublicPageWrapper";
 import { useToast } from "../../wrappers/ToastProvider";
 import { registerUser } from "../../api/user";
 import { LOGIN } from "../../libs/routes";
-import { UserRoleEnum } from "../../types/user";
+import { UserRoleEnum } from "../../types/models";
 import { CodeLearnerLogo } from "../../libs/logo";
 
 const SignUp: React.FC = () => {

@@ -7,7 +7,7 @@ import {
   useEffect,
 } from "react";
 
-import { User } from "../types/user";
+import { User } from "../types/models";
 import { loginUser, fetchUser as fetchUserApi, logoutUser } from "../api/user";
 
 interface AuthContextProps<User> {

@@ -11,6 +11,7 @@ export class CourseService {
   public async createCourse(
     courseData: Prisma.CourseCreateInput
   ): Promise<Course | null> {
+    // TODO: Check that teacherId is a teacher
     return this.courseDao.createCourse(courseData);
   }
 
@@ -26,6 +27,7 @@ export class CourseService {
 
     // Enroll each student in the course
     for (const studentId of studentIds) {
+      // TODO: Check that each studentId is a student
       await this.userDao.updateUser(studentId, {
         enrolledCourses: {
           connect: { id: courseId },

@@ -26,7 +26,7 @@ courseRouter.post("/", async (req: Request, res: Response) => {
  * POST /courses/enrollStudents
  * Creates a new course.
  */
-courseRouter.post("/", async (req: Request, res: Response) => {
+courseRouter.post("/enrollStudents", async (req: Request, res: Response) => {
   try {
     const { studentIds, courseId } = req.body;
 

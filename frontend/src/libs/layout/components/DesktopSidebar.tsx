@@ -3,7 +3,7 @@ import { Avatar } from "./Avatar";
 import { LogoutButton } from "./LogoutButton";
 import { useAuth } from "../../../wrappers/AuthContext";
 import { CodeLearnerLogo } from "../../logo";
-import { User } from "../../../types/user";
+import { User } from "../../../types/models";
 import { NavigationMenuItem } from "../../../types/layout";
 
 export type DesktopSidebarProps = {
