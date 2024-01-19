@@ -67,7 +67,7 @@ userRouter.post("/logout", (req, res) => {
  * Checks the token in the cookie and return the user information
  */
 userRouter.get("/check-auth", (req, res) => {
-  const token = req.cookies.jwtToken_Admin;
+  const token = req.cookies.jwtToken_login;
 
   if (token) {
     jwt.verify(token, JWT_SECRET_KEY, async (err, decoded) => {
