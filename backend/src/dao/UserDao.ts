@@ -23,6 +23,16 @@ export class UserDao {
     });
   }
 
+  public async getUserByEmail(email: string): Promise<User | null> {
+    return this.prismaClient.user.findUnique({
+      where: { email: email },
+      include: {
+        createdCourses: true,
+        enrolledCourses: true,
+      },
+    });
+  }
+
   public async updateUser(
     userId: string,
     userData: Prisma.UserUpdateInput

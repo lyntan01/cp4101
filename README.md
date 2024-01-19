@@ -43,6 +43,7 @@ The platform caters to two main user groups:
    ```bash
    DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
    PORT=8000
+   JWT_SECRET_KEY="your_secret_key_string"
    ```
 5. Run Prisma migrations:
    ```bash

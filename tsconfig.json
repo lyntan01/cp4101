@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "esModuleInterop": true,
+    "types": ["node"]
+  },
+  "exclude": ["node_modules"]
+}
