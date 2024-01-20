@@ -30,15 +30,15 @@ export const CourseCard = ({
       <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
         <div className="flex-1 truncate px-4 py-2 text-sm">
           <a
-            // href={course.href}
+            href={`courses/${course.id}`}
             className="font-medium text-gray-900 hover:text-gray-600"
           >
             {course.name}
           </a>
           <p className="text-gray-500">{course.description}</p>
           {/* <p className="text-gray-500">
-            {course.students?.length ?? 0} Members
-          </p> */}
+                    {course.students?.length ?? 0} Members
+                </p> */}
         </div>
         {role === UserRoleEnum.TEACHER && (
           <div className="flex-shrink-0 pr-2">

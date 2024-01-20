@@ -10,7 +10,8 @@ import "./App.css";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
 import { SidebarLayout } from "../libs/layout/layout";
 import { NAV_SECTIONS } from "../libs/layout/navigationSections";
-import CourseWrapper from "../pages/courses/CourseWrapper";
+import CourseWrapper from "../pages/course-management/CourseWrapper";
+import CourseDetails from "../pages/course-details/CourseDetails";
 
 export default function App() {
   return (
@@ -29,6 +30,10 @@ export default function App() {
               {/* Nest all routes that has a SecondaryLayout here */}
               <Route path="/" element={<h1>Welcome!</h1>} />
               <Route path={COURSES} element={<CourseWrapper />} />
+              <Route
+                path={`${COURSES}/:courseId`}
+                element={<CourseDetails />}
+              />
               <Route path={SETTINGS} element={<h1>Settings</h1>} />
             </Route>
             <Route path={LOGIN} element={<Login />} />
