@@ -16,7 +16,7 @@ export class CourseService {
   }
 
   public async enrollStudents(
-    studentIds: string[],
+    studentEmails: string[],
     courseId: string
   ): Promise<Course | null> {
     // Check if the course exists
@@ -26,9 +26,9 @@ export class CourseService {
     }
 
     // Enroll each student in the course
-    for (const studentId of studentIds) {
+    for (const email of studentEmails) {
       // TODO: Check that each studentId is a student
-      await this.userDao.updateUser(studentId, {
+      await this.userDao.updateUserByEmail(email, {
         enrolledCourses: {
           connect: { id: courseId },
         },

@@ -11,7 +11,7 @@ export interface CreateCourseData {
 }
 
 export interface EnrollStudentsData {
-  studentIds: string[];
+  studentEmails: string[];
   courseId: string;
 }
 

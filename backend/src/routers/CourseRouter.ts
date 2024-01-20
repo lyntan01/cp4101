@@ -28,18 +28,20 @@ courseRouter.post("/", async (req: Request, res: Response) => {
  */
 courseRouter.post("/enrollStudents", async (req: Request, res: Response) => {
   try {
-    const { studentIds, courseId }: { studentIds: string[]; courseId: string } =
-      req.body;
+    const {
+      studentEmails,
+      courseId,
+    }: { studentEmails: string[]; courseId: string } = req.body;
 
     // Validate input
-    if (!studentIds || !courseId) {
+    if (!studentEmails || !courseId) {
       return res.status(400).json({
-        error: "Missing studentIds or courseId",
+        error: "Missing studentEmails or courseId",
       });
     }
 
     const updatedCourse = await courseService.enrollStudents(
-      studentIds,
+      studentEmails,
       courseId
     );
     return res.status(201).json(updatedCourse);
