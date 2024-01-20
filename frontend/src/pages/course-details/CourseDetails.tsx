@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Course } from "../../types/models";
+import { Course, User, UserRoleEnum } from "../../types/models";
 import { Fragment, useEffect, useState } from "react";
 import { getCourseById } from "../../api/course";
 import { useToast } from "../../wrappers/ToastProvider";
@@ -15,6 +15,7 @@ import { CourseOverview } from "./CourseOverview";
 import { StudentsManagementPage } from "./StudentsManagementPage";
 import { ChaptersManagementPage } from "./ChaptersManagementPage";
 import { AnalyticsPage } from "./AnalyticsPage";
+import { useAuth } from "../../wrappers/AuthContext";
 
 const navigation = [
   { name: "Overview", icon: HomeIcon },
@@ -25,9 +26,13 @@ const navigation = [
 
 const CourseDetails: React.FC = () => {
   const { courseId } = useParams();
+  const { user } = useAuth<User>();
   const [course, setCourse] = useState<Course>();
 
   const { displayToast, ToastType } = useToast();
+
+  const roleBasedNavigation =
+    user?.role === UserRoleEnum.TEACHER ? navigation : navigation.slice(0, 3);
 
   const getCourse = async () => {
     try {
@@ -60,7 +65,7 @@ const CourseDetails: React.FC = () => {
           <Tab.List className="w-1/5 pr-6 pt-3 flex space-x-1 rounded-xl p-1">
             <nav className="flex flex-1 flex-col" aria-label="Sidebar">
               <ul className="-mx-2 space-y-1">
-                {navigation.map((item) => (
+                {roleBasedNavigation.map((item) => (
                   <Tab key={item.name} as={Fragment}>
                     {({ selected }) => {
                       return (
@@ -92,9 +97,15 @@ const CourseDetails: React.FC = () => {
           </Tab.List>
           <Tab.Panels className="w-4/5 pl-6">
             {course && <CourseOverview key={0} course={course} />}
-            {course && <StudentsManagementPage key={1} course={course} />}
+            {course && (
+              <StudentsManagementPage
+                key={1}
+                course={course}
+                role={user?.role ?? UserRoleEnum.STUDENT}
+              />
+            )}
             <ChaptersManagementPage key={2} />
-            <AnalyticsPage key={3} />
+            {user?.role === UserRoleEnum.TEACHER && <AnalyticsPage key={3} />}
           </Tab.Panels>
         </div>
       </Tab.Group>

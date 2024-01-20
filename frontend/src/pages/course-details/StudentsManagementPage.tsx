@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { classNames } from "../../utils/classNames";
-import { Course } from "../../types/models";
+import { Course, UserRoleEnum } from "../../types/models";
 import { useState } from "react";
 import { EnrollStudentModal } from "./components/EnrollStudentModal";
 import { enrollStudents, removeStudent } from "../../api/course";
@@ -9,11 +9,13 @@ import { useToast } from "../../wrappers/ToastProvider";
 interface StudentsManagementPageProps {
   key: number;
   course: Course;
+  role: UserRoleEnum;
 }
 
 export const StudentsManagementPage = ({
   key,
   course,
+  role,
 }: StudentsManagementPageProps) => {
   const [isEnrollStudentModalOpen, setIsEnrollStudentModalOpen] =
     useState(false);
@@ -77,15 +79,17 @@ export const StudentsManagementPage = ({
                 Students
               </h1>
             </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <button
-                type="button"
-                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={() => setIsEnrollStudentModalOpen(true)}
-              >
-                Add student
-              </button>
-            </div>
+            {role === UserRoleEnum.TEACHER && (
+              <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                <button
+                  type="button"
+                  className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => setIsEnrollStudentModalOpen(true)}
+                >
+                  Add student
+                </button>
+              </div>
+            )}
           </div>
           <div className="mt-8 flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -106,12 +110,14 @@ export const StudentsManagementPage = ({
                         >
                           Email
                         </th>
-                        <th
-                          scope="col"
-                          className="relative py-3.5 pl-3 pr-4 sm:pr-6"
-                        >
-                          <span className="sr-only"></span>
-                        </th>
+                        {role === UserRoleEnum.TEACHER && (
+                          <th
+                            scope="col"
+                            className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                          >
+                            <span className="sr-only"></span>
+                          </th>
+                        )}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
@@ -123,17 +129,19 @@ export const StudentsManagementPage = ({
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {student.email}
                           </td>
-                          <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                            <button
-                              type="button"
-                              className="text-indigo-600 hover:text-indigo-900"
-                              onClick={() => {
-                                unenrollStudent(student.id);
-                              }}
-                            >
-                              Unenroll
-                            </button>
-                          </td>
+                          {role === UserRoleEnum.TEACHER && (
+                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                              <button
+                                type="button"
+                                className="text-indigo-600 hover:text-indigo-900"
+                                onClick={() => {
+                                  unenrollStudent(student.id);
+                                }}
+                              >
+                                Unenroll
+                              </button>
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
