@@ -38,6 +38,27 @@ export class CourseService {
     return this.courseDao.getCourseById(courseId);
   }
 
+  public async removeStudent(
+    studentId: string,
+    courseId: string
+  ): Promise<Course | null> {
+    // Check if the course exists
+    const course = await this.courseDao.getCourseById(courseId);
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    // Disconnect student from the course
+    // TODO: Check that studentId is a student
+    await this.userDao.updateUser(studentId, {
+      enrolledCourses: {
+        disconnect: { id: courseId },
+      },
+    });
+
+    return this.courseDao.getCourseById(courseId);
+  }
+
   public async getAllCourses(): Promise<Course[]> {
     return this.courseDao.getAllCourses();
   }

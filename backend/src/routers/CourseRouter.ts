@@ -53,6 +53,34 @@ courseRouter.post("/enrollStudents", async (req: Request, res: Response) => {
 });
 
 /**
+ * POST /courses/removeStudent
+ * Remove a student from an existing course.
+ */
+courseRouter.post("/removeStudent", async (req: Request, res: Response) => {
+  try {
+    const { studentId, courseId }: { studentId: string; courseId: string } =
+      req.body;
+
+    // Validate input
+    if (!studentId || !courseId) {
+      return res.status(400).json({
+        error: "Missing studentId or courseId",
+      });
+    }
+
+    const updatedCourse = await courseService.removeStudent(
+      studentId,
+      courseId
+    );
+    return res.status(201).json(updatedCourse);
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+/**
  * GET /courses/
  * Retrieves a list of all courses.
  */

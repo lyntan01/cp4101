@@ -3,7 +3,7 @@ import { classNames } from "../../utils/classNames";
 import { Course } from "../../types/models";
 import { useState } from "react";
 import { EnrollStudentModal } from "./components/EnrollStudentModal";
-import { enrollStudents } from "../../api/course";
+import { enrollStudents, removeStudent } from "../../api/course";
 import { useToast } from "../../wrappers/ToastProvider";
 
 interface StudentsManagementPageProps {
@@ -38,6 +38,26 @@ export const StudentsManagementPage = ({
       console.log(error);
     } finally {
       setIsEnrollStudentModalOpen(false);
+    }
+  };
+
+  const unenrollStudent = async (studentId: string) => {
+    try {
+      await removeStudent({
+        studentId: studentId,
+        courseId: course.id,
+      });
+      displayToast("Student removed successfully.", ToastType.INFO);
+    } catch (error: any) {
+      if (error.response) {
+        displayToast(`${error.response.data.error}`, ToastType.ERROR);
+      } else {
+        displayToast(
+          "Student could not be removed: Unknown error.",
+          ToastType.ERROR
+        );
+      }
+      console.log(error);
     }
   };
 
@@ -96,7 +116,7 @@ export const StudentsManagementPage = ({
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
                       {course.students.map((student) => (
-                        <tr key={student.email}>
+                        <tr key={student.id}>
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             {student.name}
                           </td>
@@ -104,12 +124,15 @@ export const StudentsManagementPage = ({
                             {student.email}
                           </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                            <a
-                              href="#"
+                            <button
+                              type="button"
                               className="text-indigo-600 hover:text-indigo-900"
+                              onClick={() => {
+                                unenrollStudent(student.id);
+                              }}
                             >
                               Unenroll
-                            </a>
+                            </button>
                           </td>
                         </tr>
                       ))}

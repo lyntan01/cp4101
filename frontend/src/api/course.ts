@@ -15,6 +15,11 @@ export interface EnrollStudentsData {
   courseId: string;
 }
 
+export interface RemoveStudentData {
+  studentId: string;
+  courseId: string;
+}
+
 export async function createCourse(
   data: CreateCourseData
 ): Promise<AxiosResponse<Course>> {
@@ -40,6 +45,28 @@ export async function enrollStudents(
   try {
     const response: AxiosResponse<Course> = await client.post(
       `${URL}/enrollStudents`,
+      data
+    );
+    return response;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      throw error.response.data.error;
+    } else {
+      throw error;
+    }
+  }
+}
+
+export async function removeStudent(
+  data: RemoveStudentData
+): Promise<AxiosResponse<Course>> {
+  try {
+    const response: AxiosResponse<Course> = await client.post(
+      `${URL}/removeStudent`,
       data
     );
     return response;
