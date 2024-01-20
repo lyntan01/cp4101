@@ -16,7 +16,7 @@ export const SidebarLayout = ({
       <DesktopSideBar navigationMenu={navigationMenu} />
 
       <main className="py-10 lg:pl-72 h-full">
-        <div className="px-4 sm:px-6 lg:px-8 h-full">
+        <div className="px-10 sm:px-12 lg:px-14 h-full">
           <Outlet />
         </div>
       </main>

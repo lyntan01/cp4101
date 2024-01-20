@@ -4,6 +4,8 @@ export type User = {
   email: string;
   password: string;
   role: UserRoleEnum;
+  createdCourses: Course[];
+  enrolledCourses: Course[];
 };
 
 export enum UserRoleEnum {

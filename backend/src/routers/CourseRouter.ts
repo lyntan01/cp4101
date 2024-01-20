@@ -24,11 +24,12 @@ courseRouter.post("/", async (req: Request, res: Response) => {
 
 /**
  * POST /courses/enrollStudents
- * Creates a new course.
+ * Enrolls students in an existing course.
  */
 courseRouter.post("/enrollStudents", async (req: Request, res: Response) => {
   try {
-    const { studentIds, courseId } = req.body;
+    const { studentIds, courseId }: { studentIds: string[]; courseId: string } =
+      req.body;
 
     // Validate input
     if (!studentIds || !courseId) {
