@@ -7,4 +7,7 @@ export const SETTINGS = "/settings";
 
 // Course routes
 export const COURSES = "/courses";
-export const CHAPTERS = `${COURSES}/chapters`;
+
+// Page routes
+export const PAGES = "/pages";
+export const CREATE_PAGE = `${PAGES}/create`;

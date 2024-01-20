@@ -6,6 +6,13 @@ import {
   AccordionBody,
 } from "@material-tailwind/react";
 import { Icon } from "./AccordionIcon";
+import {
+  ChevronRightIcon,
+  DocumentTextIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
+import { AddNewPageListItem } from "./AddNewPageListItem";
+import { useNavigate } from "react-router-dom";
 
 interface ChapterAccordionProps {
   chapters: Chapter[];
@@ -19,6 +26,7 @@ export function ChapterAccordion({
   role,
 }: ChapterAccordionProps) {
   const [open, setOpen] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const handleOpen = (id: string) => {
     if (open.includes(id)) {
@@ -55,15 +63,50 @@ export function ChapterAccordion({
             >
               {chapter.name}
             </AccordionHeader>
-            <AccordionBody className="px-6">
+            <AccordionBody className="py-0">
               {chapter.pages.length === 0 ? (
                 role === UserRoleEnum.TEACHER ? (
-                  <p>+ Add page here...</p>
+                  <AddNewPageListItem chapterId={chapter.id} />
                 ) : (
-                  <p>No pages yet</p>
+                  <p className="mx-6 my-4 font-semibold text-center">
+                    No pages yet
+                  </p>
                 )
               ) : (
-                chapter.pages.map((page) => <div>PAGE TO DO</div>)
+                <ul className="divide-y divide-gray-200">
+                  {chapter.pages.map((page) => (
+                    <li
+                      key={page.id}
+                      className="relative flex justify-between gap-x-6 py-4 px-4 hover:bg-sky-50"
+                    >
+                      <div className="flex min-w-0 gap-x-4">
+                        <DocumentTextIcon
+                          className="h-5 w-5 flex-none text-gray-600 hover:text-gray-900"
+                          aria-hidden="true"
+                        />
+                        <div className="min-w-0 flex-auto">
+                          <button
+                            className="text-sm font-normal leading-6 text-gray-900 hover:underline"
+                            onClick={() => navigate(`/pages/${page.id}`)}
+                          >
+                            {page.title}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-x-4">
+                        {/* <ChevronRightIcon
+                          className="h-5 w-5 flex-none text-gray-400"
+                          aria-hidden="true"
+                        /> */}
+                      </div>
+                    </li>
+                  ))}
+                  {role === UserRoleEnum.TEACHER ? (
+                    <AddNewPageListItem chapterId={chapter.id} />
+                  ) : (
+                    <></>
+                  )}
+                </ul>
               )}
             </AccordionBody>
           </Accordion>

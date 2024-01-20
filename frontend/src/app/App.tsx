@@ -1,6 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { COURSES, LOGIN, SETTINGS, SIGN_UP } from "../libs/routes";
+import {
+  COURSES,
+  CREATE_PAGE,
+  LOGIN,
+  PAGES,
+  SETTINGS,
+  SIGN_UP,
+} from "../libs/routes";
 import Login from "../pages/entry/Login";
 import SignUp from "../pages/entry/SignUp";
 import { AuthWrapper } from "../wrappers/AuthContext";
@@ -34,6 +41,16 @@ export default function App() {
                 path={`${COURSES}/:courseId`}
                 element={<CourseDetails />}
               />
+
+              <Route
+                path={`${PAGES}/:pageId`}
+                element={<h1>Page details</h1>}
+              />
+              <Route
+                path={`${CREATE_PAGE}/:chapterId`}
+                element={<h1>Create new page in chapter</h1>}
+              />
+
               <Route path={SETTINGS} element={<h1>Settings</h1>} />
             </Route>
             <Route path={LOGIN} element={<Login />} />
