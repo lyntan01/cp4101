@@ -83,6 +83,25 @@ courseRouter.get("/:courseId", async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /courses/teacher/{teacher}
+ * Retrieves all created course by a teacher ID.
+ */
+courseRouter.get("/teacher/:teacherId", async (req: Request, res: Response) => {
+  try {
+    const { teacherId } = req.params;
+    const courses = await courseService.getCreatedCoursesByTeacherId(teacherId);
+
+    if (!courses) {
+      return res.status(404).json({ error: "Courses not found" });
+    }
+
+    return res.status(200).json(courses);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * PUT /courses/{courseId}
  * Updates a course's information by its unique ID.
  */

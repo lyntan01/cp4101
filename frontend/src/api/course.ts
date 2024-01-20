@@ -56,6 +56,12 @@ export async function enrollStudents(
   }
 }
 
+export async function getCreatedCoursesByTeacherId(
+  teacherId: string
+): Promise<AxiosResponse<Course[]>> {
+  return client.get(`${URL}/teacher/${teacherId}`);
+}
+
 export async function deleteCourse(id: string): Promise<AxiosResponse<any>> {
   return client.delete(`${URL}/${id}`);
 }

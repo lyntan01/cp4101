@@ -46,6 +46,12 @@ export class CourseService {
     return this.courseDao.getCourseById(courseId);
   }
 
+  public async getCreatedCoursesByTeacherId(
+    teacherId: string
+  ): Promise<Course[]> {
+    return this.courseDao.getCreatedCoursesByTeacherId(teacherId);
+  }
+
   public async updateCourse(
     courseId: string,
     courseData: Prisma.CourseUpdateInput

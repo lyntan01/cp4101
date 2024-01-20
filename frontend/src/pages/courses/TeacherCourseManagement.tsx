@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { User } from "../../types/models";
+import { Course, User } from "../../types/models";
 import { useAuth } from "../../wrappers/AuthContext";
 import { CourseCard } from "./components/CourseCard";
 import { useToast } from "../../wrappers/ToastProvider";
@@ -7,19 +7,32 @@ import {
   CreateCourseData,
   createCourse as createCourseApi,
   deleteCourse as deleteCourseApi,
+  getCreatedCoursesByTeacherId,
 } from "../../api/course";
 import { CreateCourseModal } from "./components/CreateCourseModal";
 import { DeleteCourseModal } from "./components/DeleteCourseModal";
 
 const TeacherCourseManagement: React.FC = () => {
   const { user } = useAuth<User>();
-  const createdCourses = user!.createdCourses;
+  const [createdCourses, setCreatedCourses] = useState<Course[]>(
+    user!.createdCourses
+  );
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteCourseId, setDeleteCourseId] = useState("");
 
   const { displayToast, ToastType } = useToast();
+
+  const refreshCourseList = async () => {
+    try {
+      const courses = await getCreatedCoursesByTeacherId(user!.id);
+      setCreatedCourses(courses.data);
+    } catch (error) {
+      displayToast("Courses could not be fetched", ToastType.ERROR);
+      console.error("Error fetching courses:", error);
+    }
+  };
 
   const createCourse = async (createCourseData: CreateCourseData) => {
     try {
@@ -62,6 +75,10 @@ const TeacherCourseManagement: React.FC = () => {
       setIsDeleteModalOpen(false);
     }
   };
+
+  useEffect(() => {
+    refreshCourseList();
+  }, [isCreateModalOpen, isDeleteModalOpen]);
 
   return (
     <div>

@@ -27,6 +27,20 @@ export class CourseDao {
     });
   }
 
+  public async getCreatedCoursesByTeacherId(
+    teacherId: string
+  ): Promise<Course[]> {
+    return this.prismaClient.course.findMany({
+      where: { teacherId: teacherId },
+      include: {
+        teacher: true,
+        students: true,
+        chapters: true,
+        analytics: true,
+      },
+    });
+  }
+
   public async updateCourse(
     courseId: string,
     courseData: Prisma.CourseUpdateInput
