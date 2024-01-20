@@ -4,13 +4,13 @@ import { Course } from "../types/models";
 
 const URL = "/courses";
 
-interface CreateCourseData {
+export interface CreateCourseData {
   name: string;
   description: string;
   teacherId: string;
 }
 
-interface EnrollStudentsData {
+export interface EnrollStudentsData {
   studentIds: string[];
   courseId: string;
 }
