@@ -1,0 +1,52 @@
+import {
+  TraditionalTextBasedLessonPage,
+  Prisma,
+  PrismaClient,
+} from "@prisma/client";
+
+export class TraditionalTextBasedLessonPageDao {
+  constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
+
+  public async createTraditionalTextBasedLessonPage(
+    pageData: Prisma.TraditionalTextBasedLessonPageUncheckedCreateInput
+  ): Promise<TraditionalTextBasedLessonPage> {
+    return this.prismaClient.traditionalTextBasedLessonPage.create({
+      data: pageData,
+    });
+  }
+
+  public async getAllTraditionalTextBasedLessonPages(): Promise<
+    TraditionalTextBasedLessonPage[]
+  > {
+    return this.prismaClient.traditionalTextBasedLessonPage.findMany();
+  }
+
+  public async getTraditionalTextBasedLessonPageById(
+    pageId: string
+  ): Promise<TraditionalTextBasedLessonPage | null> {
+    return this.prismaClient.traditionalTextBasedLessonPage.findUnique({
+      where: { id: pageId },
+      include: {
+        page: true,
+      },
+    });
+  }
+
+  public async updateTraditionalTextBasedLessonPage(
+    pageId: string,
+    pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput
+  ): Promise<TraditionalTextBasedLessonPage | null> {
+    return this.prismaClient.traditionalTextBasedLessonPage.update({
+      where: { id: pageId },
+      data: pageData,
+    });
+  }
+
+  public async deleteTraditionalTextBasedLessonPage(
+    pageId: string
+  ): Promise<TraditionalTextBasedLessonPage | null> {
+    return this.prismaClient.traditionalTextBasedLessonPage.delete({
+      where: { id: pageId },
+    });
+  }
+}

@@ -3,7 +3,9 @@ import { Page, Prisma, PrismaClient } from "@prisma/client";
 export class PageDao {
   constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
 
-  public async createPage(pageData: Prisma.PageCreateInput): Promise<Page> {
+  public async createPage(
+    pageData: Prisma.PageUncheckedCreateInput
+  ): Promise<Page> {
     return this.prismaClient.page.create({
       data: pageData,
     });
@@ -11,6 +13,12 @@ export class PageDao {
 
   public async getAllPages(): Promise<Page[]> {
     return this.prismaClient.page.findMany();
+  }
+
+  public getAllPagesByChapterId(chapterId: string): Promise<Page[]> {
+    return this.prismaClient.page.findMany({
+      where: { chapterId: chapterId },
+    });
   }
 
   public async getPageById(pageId: string): Promise<Page | null> {

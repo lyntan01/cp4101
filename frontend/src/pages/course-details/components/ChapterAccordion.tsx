@@ -57,7 +57,11 @@ export function ChapterAccordion({
             </AccordionHeader>
             <AccordionBody className="px-6">
               {chapter.pages.length === 0 ? (
-                <p>No pages yet</p>
+                role === UserRoleEnum.TEACHER ? (
+                  <p>+ Add page here...</p>
+                ) : (
+                  <p>No pages yet</p>
+                )
               ) : (
                 chapter.pages.map((page) => <div>PAGE TO DO</div>)
               )}

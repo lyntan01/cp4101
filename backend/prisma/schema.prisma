@@ -42,6 +42,7 @@ model Chapter {
   pages    Page[]
 }
 
+// Abstract class
 model Page {
   id        String   @id @default(uuid()) @db.Uuid
   title     String
@@ -56,26 +57,32 @@ model Page {
 }
 
 model TraditionalTextBasedLessonPage {
-  id   String @id @default(uuid()) @db.Uuid
-  page Page   @relation(fields: [id], references: [id])
+  id     String @id @default(uuid()) @db.Uuid
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique @db.Uuid
+
   // Additional fields specific to TraditionalTextBasedLessonPage
+  content String
 }
 
 model CodeSandboxPage {
-  id   String @id @default(uuid()) @db.Uuid
-  page Page   @relation(fields: [id], references: [id])
+  id     String @id @default(uuid()) @db.Uuid
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique @db.Uuid
   // Additional fields specific to CodeSandboxPage
 }
 
 model StepByStepVisualizationPage {
-  id   String @id @default(uuid()) @db.Uuid
-  page Page   @relation(fields: [id], references: [id])
+  id     String @id @default(uuid()) @db.Uuid
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique @db.Uuid
   // Additional fields specific to StepByStepVisualizationPage
 }
 
 model RealTimeCodeFeedbackPage {
-  id   String @id @default(uuid()) @db.Uuid
-  page Page   @relation(fields: [id], references: [id])
+  id     String @id @default(uuid()) @db.Uuid
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique @db.Uuid
   // Additional fields specific to RealTimeCodeFeedbackPage
 }
 
