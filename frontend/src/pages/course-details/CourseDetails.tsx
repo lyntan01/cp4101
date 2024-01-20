@@ -104,7 +104,13 @@ const CourseDetails: React.FC = () => {
                 role={user?.role ?? UserRoleEnum.STUDENT}
               />
             )}
-            <ChaptersManagementPage key={2} />
+            {course && (
+              <ChaptersManagementPage
+                key={2}
+                course={course}
+                role={user?.role ?? UserRoleEnum.STUDENT}
+              />
+            )}
             {user?.role === UserRoleEnum.TEACHER && <AnalyticsPage key={3} />}
           </Tab.Panels>
         </div>

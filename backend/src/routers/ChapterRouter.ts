@@ -55,6 +55,20 @@ chapterRouter.get("/:chapterId", async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /chapters/course/{courseId}
+ * Retrieves a list of all chapters by course ID.
+ */
+chapterRouter.get("/course/:courseId", async (req: Request, res: Response) => {
+  try {
+    const { courseId } = req.params;
+    const chapters = await chapterService.getChaptersByCourseId(courseId);
+    return res.status(200).json(chapters);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * PUT /chapters/{chapterId}
  * Updates a chapter's information by its unique ID.
  */

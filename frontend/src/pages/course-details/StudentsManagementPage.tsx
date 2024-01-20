@@ -72,10 +72,10 @@ export const StudentsManagementPage = ({
           "ring-white/60 ring-offset-2 ring-offset-blue-400"
         )}
       >
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div>
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
-              <h1 className="text-base font-semibold leading-6 text-gray-900">
+              <h1 className="text-xl font-semibold leading-6 text-gray-900">
                 Students
               </h1>
             </div>
@@ -121,29 +121,40 @@ export const StudentsManagementPage = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {course.students.map((student) => (
-                        <tr key={student.id}>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {student.name}
+                      {course.students.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={2}
+                            className="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-6 text-center"
+                          >
+                            No students enrolled in this course yet.
                           </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {student.email}
-                          </td>
-                          {role === UserRoleEnum.TEACHER && (
-                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                              <button
-                                type="button"
-                                className="text-indigo-600 hover:text-indigo-900"
-                                onClick={() => {
-                                  unenrollStudent(student.id);
-                                }}
-                              >
-                                Unenroll
-                              </button>
-                            </td>
-                          )}
                         </tr>
-                      ))}
+                      ) : (
+                        course.students.map((student) => (
+                          <tr key={student.id}>
+                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              {student.name}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {student.email}
+                            </td>
+                            {role === UserRoleEnum.TEACHER && (
+                              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                <button
+                                  type="button"
+                                  className="text-indigo-600 hover:text-indigo-900"
+                                  onClick={() => {
+                                    unenrollStudent(student.id);
+                                  }}
+                                >
+                                  Unenroll
+                                </button>
+                              </td>
+                            )}
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

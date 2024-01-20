@@ -16,7 +16,7 @@ export const CourseOverview = ({ key, course }: CourseOverviewProps) => {
       )}
     >
       <div className="px-4 sm:px-0">
-        <h3 className="text-base font-semibold leading-7 text-gray-900">
+        <h3 className="text-xl font-semibold leading-7 text-gray-900">
           About the course
         </h3>
       </div>

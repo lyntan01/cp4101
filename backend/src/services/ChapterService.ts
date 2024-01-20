@@ -18,6 +18,10 @@ export class ChapterService {
     return this.chapterDao.getChapterById(chapterId);
   }
 
+  public async getChaptersByCourseId(courseId: string): Promise<Chapter[]> {
+    return this.chapterDao.getChaptersByCourseId(courseId);
+  }
+
   public async updateChapter(
     chapterId: string,
     chapterData: Prisma.ChapterUpdateInput

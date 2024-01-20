@@ -4,7 +4,7 @@ import { Chapter } from "../types/models";
 
 const URL = "/chapters";
 
-interface CreateChapterData {
+export interface CreateChapterData {
   name: string;
   courseId: string;
 }
@@ -40,4 +40,10 @@ export async function getChapterById(
   id: string
 ): Promise<AxiosResponse<Chapter>> {
   return client.get(`${URL}/${id}`);
+}
+
+export async function getAllChaptersByCourseId(
+  courseId: string
+): Promise<AxiosResponse<Chapter[]>> {
+  return client.get(`${URL}/course/${courseId}`);
 }

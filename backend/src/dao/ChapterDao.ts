@@ -25,6 +25,15 @@ export class ChapterDao {
     });
   }
 
+  public async getChaptersByCourseId(courseId: string): Promise<Chapter[]> {
+    return this.prismaClient.chapter.findMany({
+      where: { courseId },
+      include: {
+        pages: true,
+      },
+    });
+  }
+
   public async updateChapter(
     chapterId: string,
     chapterData: Prisma.ChapterUpdateInput
