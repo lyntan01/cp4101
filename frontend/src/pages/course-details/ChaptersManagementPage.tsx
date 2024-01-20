@@ -2,6 +2,7 @@ import { Tab } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import {
   createChapter as createChapterApi,
+  deleteChapter as deleteChapterApi,
   getAllChaptersByCourseId,
 } from "../../api/chapter";
 import { Chapter, Course, UserRoleEnum } from "../../types/models";
@@ -64,9 +65,26 @@ export const ChaptersManagementPage = ({
     }
   };
 
+  const deleteChapter = async (chapterId: string) => {
+    try {
+      await deleteChapterApi(chapterId);
+      displayToast("Chapter deleted successfully.", ToastType.INFO);
+    } catch (error: any) {
+      if (error.response) {
+        displayToast(`${error.response.data.error}`, ToastType.ERROR);
+      } else {
+        displayToast(
+          "Chapter could not be deleted: Unknown error.",
+          ToastType.ERROR
+        );
+      }
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchChapters();
-  }, [isCreateModalOpen]);
+  }, [isCreateModalOpen, deleteChapter]);
 
   return (
     <>
@@ -97,7 +115,11 @@ export const ChaptersManagementPage = ({
             )}
           </div>
         </div>
-        <ChapterAccordion chapters={chapters} />
+        <ChapterAccordion
+          chapters={chapters}
+          deleteChapter={deleteChapter}
+          role={role}
+        />
       </Tab.Panel>
       {isCreateModalOpen && (
         <CreateChapterModal

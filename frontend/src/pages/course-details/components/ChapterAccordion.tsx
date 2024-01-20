@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Chapter } from "../../../types/models";
+import { Chapter, UserRoleEnum } from "../../../types/models";
 import {
   Accordion,
   AccordionHeader,
@@ -9,9 +9,15 @@ import { Icon } from "./AccordionIcon";
 
 interface ChapterAccordionProps {
   chapters: Chapter[];
+  deleteChapter: (chapterId: string) => void;
+  role: UserRoleEnum;
 }
 
-export function ChapterAccordion({ chapters }: ChapterAccordionProps) {
+export function ChapterAccordion({
+  chapters,
+  deleteChapter,
+  role,
+}: ChapterAccordionProps) {
   const [open, setOpen] = useState<string[]>([]);
 
   const handleOpen = (id: string) => {
@@ -31,7 +37,14 @@ export function ChapterAccordion({ chapters }: ChapterAccordionProps) {
           <Accordion
             key={chapter.id}
             open={open.includes(chapter.id)}
-            icon={<Icon id={chapter.id} open={open} />}
+            icon={
+              <Icon
+                id={chapter.id}
+                open={open}
+                deleteChapter={deleteChapter}
+                role={role}
+              />
+            }
             placeholder=""
             className="mb-8 rounded-lg border border-blue-gray-100"
           >
