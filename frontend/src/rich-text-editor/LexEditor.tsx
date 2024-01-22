@@ -31,14 +31,12 @@ export type LexEditorProps = {
   editorStateStr?: string;
   onChange: (val: string) => void;
   hasError?: boolean;
-  onBlur: () => void;
 };
 
 export const LexEditor = ({
   editorStateStr,
   onChange,
   hasError,
-  onBlur,
 }: LexEditorProps): JSX.Element => {
   // States
   const [isFocused, setIsFocused] = React.useState(false);
@@ -92,8 +90,8 @@ export const LexEditor = ({
                     hasError
                       ? "border-red-500"
                       : isFocused
-                      ? "border-black"
-                      : "border-[#eee]"
+                        ? "border-black"
+                        : "border-[#eee]"
                   } flex-grow-0`}
                 >
                   {(isContentLoaded && <Editor />) || <Spinner />}

@@ -150,9 +150,9 @@ export default function Editor(): JSX.Element {
         <KeywordsPlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
-        <CommentPlugin
+        {/* <CommentPlugin
           providerFactory={isCollab ? createWebsocketProvider : undefined}
-        />
+        /> */}
         {isRichText ? (
           <>
             {isCollab ? (
@@ -241,7 +241,7 @@ export default function Editor(): JSX.Element {
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         <ActionsPlugin isRichText={isRichText} />
       </div>
-      {showTreeView && <TreeViewPlugin />}
+      {/* {showTreeView && <TreeViewPlugin />} */}
     </>
   );
 }

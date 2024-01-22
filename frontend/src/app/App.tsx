@@ -19,7 +19,8 @@ import { SidebarLayout } from "../libs/layout/layout";
 import { NAV_SECTIONS } from "../libs/layout/navigationSections";
 import CourseWrapper from "../pages/course-management/CourseWrapper";
 import CourseDetails from "../pages/course-details/CourseDetails";
-import TraditionalTextPage from "../pages/lesson-pages/TraditionalTextPage";
+import ViewTraditionalTextPage from "../pages/lesson-pages/ViewTraditionalTextPage";
+import CreateTraditionalTextPage from "../pages/lesson-pages/CreateTraditionalTextPage";
 
 export default function App() {
   return (
@@ -45,11 +46,11 @@ export default function App() {
 
               <Route
                 path={`${PAGES}/:pageId`}
-                element={<TraditionalTextPage />}
+                element={<ViewTraditionalTextPage />}
               />
               <Route
                 path={`${CREATE_PAGE}/:chapterId`}
-                element={<h1>Create new page in chapter</h1>}
+                element={<CreateTraditionalTextPage />}
               />
 
               <Route path={SETTINGS} element={<h1>Settings</h1>} />

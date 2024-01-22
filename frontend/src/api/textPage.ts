@@ -4,7 +4,7 @@ import { Page, TraditionalTextBasedLessonPage } from "../types/models";
 
 const URL = "/text-pages";
 
-interface CreateTextPageData {
+export interface CreateTextPageData {
   title: string;
   content: string;
   chapterId: string;

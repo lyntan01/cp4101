@@ -1,12 +1,11 @@
-import { useParams } from "react-router-dom";
-import { LexEditor, LexOutput } from "../../rich-text-editor";
-import { getPageById } from "../../api/page";
 import { useEffect, useState } from "react";
-import { Page, TraditionalTextBasedLessonPage } from "../../types/models";
-import { useToast } from "../../wrappers/ToastProvider";
+import { useParams } from "react-router-dom";
 import { getTextPageByPageId } from "../../api/textPage";
+import { LexOutput } from "../../rich-text-editor";
+import { TraditionalTextBasedLessonPage } from "../../types/models";
+import { useToast } from "../../wrappers/ToastProvider";
 
-const TraditionalTextPage: React.FC = () => {
+const ViewTraditionalTextPage: React.FC = () => {
   const { pageId } = useParams();
   const [traditionalTextPage, setTraditionalTextPage] =
     useState<TraditionalTextBasedLessonPage>();
@@ -32,11 +31,7 @@ const TraditionalTextPage: React.FC = () => {
     getTraditionalTextPage();
   }, []);
 
-  if (
-    // page &&
-    traditionalTextPage &&
-    traditionalTextPage.page.chapter
-  ) {
+  if (traditionalTextPage && traditionalTextPage.page.chapter) {
     const pageIndex = traditionalTextPage.page.chapter.pages.findIndex(
       (p) => p.id === pageId
     );
@@ -61,4 +56,4 @@ const TraditionalTextPage: React.FC = () => {
   return <></>;
 };
 
-export default TraditionalTextPage;
+export default ViewTraditionalTextPage;
