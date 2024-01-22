@@ -29,6 +29,7 @@ export const LexOutput = ({
       onChange(editorStateStr);
     }
   }, []);
+
   const initialConfig: InitialConfigType = {
     namespace: "Output",
     editable: false,
@@ -37,13 +38,15 @@ export const LexOutput = ({
       throw error;
     },
   };
+
   const [isContentLoaded, setIsContentLoaded] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+
   return (
     <EditorEventContextProvider
       value={{ isContentLoaded, setIsContentLoaded, isFocused, setIsFocused }}
     >
-      <LexicalComposer initialConfig={initialConfig}>
+      <LexicalComposer key={editorStateStr} initialConfig={initialConfig}>
         {editorStateStr && (
           <RenderInitialContentPlugin
             shorten={shorten}

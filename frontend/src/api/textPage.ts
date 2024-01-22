@@ -10,12 +10,20 @@ export interface CreateTextPageData {
   chapterId: string;
 }
 
+export interface CreateTextPageResponse {
+  id: string;
+  content: string;
+  pageId: string;
+}
+
 export async function createTextPage(
   data: CreateTextPageData
-): Promise<AxiosResponse<TraditionalTextBasedLessonPage>> {
+): Promise<AxiosResponse<CreateTextPageResponse>> {
   try {
-    const response: AxiosResponse<TraditionalTextBasedLessonPage> =
-      await client.post(`${URL}/`, data);
+    const response: AxiosResponse<CreateTextPageResponse> = await client.post(
+      `${URL}/`,
+      data
+    );
     return response;
   } catch (error) {
     if (

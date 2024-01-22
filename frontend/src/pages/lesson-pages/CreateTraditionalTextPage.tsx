@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getChapterById } from "../../api/chapter";
 import { CreateTextPageData, createTextPage } from "../../api/textPage";
 import { LexEditor } from "../../rich-text-editor";
@@ -11,12 +11,13 @@ const CreateTraditionalTextPage: React.FC = () => {
   const [chapter, setChapter] = useState<Chapter>();
   const [traditionalTextPageData, setTraditionalTextPageData] =
     useState<CreateTextPageData>({
-      title: "",
+      title: "Sample Title 2",
       content: "",
       chapterId: chapterId ?? "",
     });
 
   const { displayToast, ToastType } = useToast();
+  const navigate = useNavigate();
 
   const fetchChapter = async () => {
     try {
@@ -37,8 +38,9 @@ const CreateTraditionalTextPage: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      await createTextPage(traditionalTextPageData);
+      const newPageResponse = await createTextPage(traditionalTextPageData);
       displayToast("Text lesson page created successfully.", ToastType.INFO);
+      navigate(`/pages/${newPageResponse.data.pageId}`);
     } catch (error: any) {
       if (error.response) {
         displayToast(`${error.response.data.error}`, ToastType.ERROR);
