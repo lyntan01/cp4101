@@ -7,6 +7,7 @@ import {
   PAGES,
   SETTINGS,
   SIGN_UP,
+  EDIT_PAGE,
 } from "../libs/routes";
 import Login from "../pages/entry/Login";
 import SignUp from "../pages/entry/SignUp";
@@ -21,6 +22,7 @@ import CourseWrapper from "../pages/course-management/CourseWrapper";
 import CourseDetails from "../pages/course-details/CourseDetails";
 import ViewTraditionalTextPage from "../pages/lesson-pages/ViewTraditionalTextPage";
 import CreateTraditionalTextPage from "../pages/lesson-pages/CreateTraditionalTextPage";
+import EditTraditionalTextPage from "../pages/lesson-pages/EditTraditionalTextPage";
 
 export default function App() {
   return (
@@ -51,6 +53,10 @@ export default function App() {
               <Route
                 path={`${CREATE_PAGE}/:chapterId`}
                 element={<CreateTraditionalTextPage />}
+              />
+              <Route
+                path={`${EDIT_PAGE}/:pageId`}
+                element={<EditTraditionalTextPage />}
               />
 
               <Route path={SETTINGS} element={<h1>Settings</h1>} />

@@ -5,7 +5,10 @@ import {
   Prisma,
   PageType,
 } from "@prisma/client";
-import { CreateTraditionalTextBasedLessonPageData } from "../types/page";
+import {
+  CreateTraditionalTextBasedLessonPageData,
+  UpdateTraditionalTextBasedLessonPageData,
+} from "../types/page";
 
 export class TraditionalTextBasedLessonPageService {
   constructor(
@@ -56,13 +59,19 @@ export class TraditionalTextBasedLessonPageService {
     );
   }
 
-  public async updateTraditionalTextBasedLessonPage(
-    pageId: string,
-    pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput
-  ): Promise<TraditionalTextBasedLessonPage | null> {
+  public async updateTraditionalTextBasedLessonPage({
+    pageId,
+    title,
+    content,
+  }: UpdateTraditionalTextBasedLessonPageData): Promise<TraditionalTextBasedLessonPage | null> {
+    // Update the Page instance
+    await this.pageDao.updatePageByTraditionalTextBasedLessonPageId(pageId, {
+      title: title,
+    });
+
     return this.traditionalTextBasedLessonPageDao.updateTraditionalTextBasedLessonPage(
       pageId,
-      pageData
+      { content: content }
     );
   }
 

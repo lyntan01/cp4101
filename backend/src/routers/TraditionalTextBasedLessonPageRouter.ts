@@ -2,7 +2,10 @@ import { Request, Response, Router } from "express";
 import { TraditionalTextBasedLessonPageService } from "../services/TraditionalTextBasedLessonPageService";
 import { Prisma } from "@prisma/client";
 import { restrictBodyId } from "../middleware/validationMiddleware";
-import { CreateTraditionalTextBasedLessonPageData } from "../types/page";
+import {
+  CreateTraditionalTextBasedLessonPageData,
+  UpdateTraditionalTextBasedLessonPageData,
+} from "../types/page";
 
 const traditionalTextBasedLessonPageRouter = Router();
 const traditionalTextBasedLessonPageService =
@@ -107,12 +110,11 @@ traditionalTextBasedLessonPageRouter.put(
   async (req: Request, res: Response) => {
     try {
       const { pageId } = req.params;
-      const pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput =
-        req.body;
+      const pageData: UpdateTraditionalTextBasedLessonPageData = req.body;
+      pageData.pageId = pageId;
 
       const updatedPage =
         await traditionalTextBasedLessonPageService.updateTraditionalTextBasedLessonPage(
-          pageId,
           pageData
         );
 

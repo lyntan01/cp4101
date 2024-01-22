@@ -72,6 +72,7 @@ export const ChaptersManagementPage = ({
   };
 
   const deleteChapter = async (chapterId: string) => {
+    // TODO: Add a delete modal instead of deleting directly
     try {
       await deleteChapterApi(chapterId);
       displayToast("Chapter deleted successfully.", ToastType.INFO);
@@ -89,6 +90,7 @@ export const ChaptersManagementPage = ({
   };
 
   const deletePage = async (pageId: string) => {
+    // TODO: Add a delete modal instead of deleting directly
     try {
       await deletePageApi(pageId);
       displayToast("Page deleted successfully.", ToastType.INFO);

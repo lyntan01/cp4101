@@ -60,11 +60,11 @@ export class TraditionalTextBasedLessonPageDao {
   }
 
   public async updateTraditionalTextBasedLessonPage(
-    pageId: string,
+    traditionalTextBasedLessonPageId: string,
     pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput
   ): Promise<TraditionalTextBasedLessonPage | null> {
     return this.prismaClient.traditionalTextBasedLessonPage.update({
-      where: { id: pageId },
+      where: { id: traditionalTextBasedLessonPageId },
       data: pageData,
     });
   }

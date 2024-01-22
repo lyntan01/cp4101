@@ -10,20 +10,44 @@ export interface CreateTextPageData {
   chapterId: string;
 }
 
-export interface CreateTextPageResponse {
+export interface CreateOrUpdateTextPageResponse {
   id: string;
   content: string;
   pageId: string;
 }
 
+export interface UpdateTextPageData {
+  textPageId: string;
+  title: string;
+  content: string;
+}
+
 export async function createTextPage(
   data: CreateTextPageData
-): Promise<AxiosResponse<CreateTextPageResponse>> {
+): Promise<AxiosResponse<CreateOrUpdateTextPageResponse>> {
   try {
-    const response: AxiosResponse<CreateTextPageResponse> = await client.post(
-      `${URL}/`,
-      data
-    );
+    const response: AxiosResponse<CreateOrUpdateTextPageResponse> =
+      await client.post(`${URL}/`, data);
+    return response;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      throw error.response.data.error;
+    } else {
+      throw error;
+    }
+  }
+}
+
+export async function updateTextPage(
+  data: UpdateTextPageData
+): Promise<AxiosResponse<CreateOrUpdateTextPageResponse>> {
+  try {
+    const response: AxiosResponse<CreateOrUpdateTextPageResponse> =
+      await client.put(`${URL}/${data.textPageId}`, data);
     return response;
   } catch (error) {
     if (

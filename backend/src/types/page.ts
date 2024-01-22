@@ -3,3 +3,9 @@ export interface CreateTraditionalTextBasedLessonPageData {
   chapterId: string;
   content: string;
 }
+
+export interface UpdateTraditionalTextBasedLessonPageData {
+  pageId: string;
+  title: string;
+  content: string;
+}

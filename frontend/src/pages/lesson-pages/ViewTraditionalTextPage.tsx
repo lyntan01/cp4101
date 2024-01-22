@@ -78,32 +78,34 @@ const ViewTraditionalTextPage: React.FC = () => {
               editorStateStr={traditionalTextPage.content}
             />
           </div>
-          <div className="bg-gray-100 px-4 py-4 sm:px-6">
-            <div className="flex justify-between items-center">
-              {pageIndex === 0 ? (
-                <div></div>
-              ) : (
-                <GenericButton
-                  text="Previous"
-                  type="button"
-                  icon={<ArrowLeftIcon className="h-4 w-4" />}
-                  onClick={navToPreviousPage}
-                  className={"text-zinc-500 bg-white border border-gray-200"}
-                />
-              )}
-              {pageIndex === numPagesInChapter - 1 ? (
-                <div></div>
-              ) : (
-                <GenericButtonIconOnRight
-                  text="Next"
-                  type="button"
-                  icon={<ArrowRightIcon className="h-4 w-4" />}
-                  onClick={navToNextPage}
-                  className={"text-zinc-500 bg-white border border-gray-200"}
-                />
-              )}
+          {numPagesInChapter > 1 && (
+            <div className="bg-gray-100 px-4 py-4 sm:px-6">
+              <div className="flex justify-between items-center">
+                {pageIndex === 0 ? (
+                  <div></div>
+                ) : (
+                  <GenericButton
+                    text="Previous"
+                    type="button"
+                    icon={<ArrowLeftIcon className="h-4 w-4" />}
+                    onClick={navToPreviousPage}
+                    className={"text-zinc-500 bg-white border border-gray-200"}
+                  />
+                )}
+                {pageIndex === numPagesInChapter - 1 ? (
+                  <div></div>
+                ) : (
+                  <GenericButtonIconOnRight
+                    text="Next"
+                    type="button"
+                    icon={<ArrowRightIcon className="h-4 w-4" />}
+                    onClick={navToNextPage}
+                    className={"text-zinc-500 bg-white border border-gray-200"}
+                  />
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );

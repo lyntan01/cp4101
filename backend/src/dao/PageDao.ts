@@ -25,6 +25,7 @@ export class PageDao {
     return this.prismaClient.page.findUnique({
       where: { id: pageId },
       include: {
+        chapter: true,
         traditionalTextBasedLessonPage: true,
         codeSandboxPage: true,
         stepByStepVisualizationPage: true,
@@ -39,6 +40,28 @@ export class PageDao {
   ): Promise<Page | null> {
     return this.prismaClient.page.update({
       where: { id: pageId },
+      data: pageData,
+    });
+  }
+
+  public async updatePageByTraditionalTextBasedLessonPageId(
+    pageId: string,
+    pageData: Prisma.PageUpdateInput
+  ): Promise<Page | null> {
+    // First, find the Page associated with the TraditionalTextBasedLessonPage
+    const traditionalTextPage =
+      await this.prismaClient.traditionalTextBasedLessonPage.findUnique({
+        where: { id: pageId },
+        include: { page: true },
+      });
+
+    if (!traditionalTextPage) {
+      return null;
+    }
+
+    // Then, update the Page using the ID
+    return this.prismaClient.page.update({
+      where: { id: traditionalTextPage.pageId },
       data: pageData,
     });
   }

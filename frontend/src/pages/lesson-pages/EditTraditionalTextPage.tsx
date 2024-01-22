@@ -1,35 +1,42 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getChapterById } from "../../api/chapter";
-import { CreateTextPageData, createTextPage } from "../../api/textPage";
-import { LexEditor } from "../../rich-text-editor";
-import { Chapter } from "../../types/models";
-import { useToast } from "../../wrappers/ToastProvider";
+import {
+  UpdateTextPageData,
+  getTextPageByPageId,
+  updateTextPage,
+} from "../../api/textPage";
 import { GenericButton } from "../../components/buttons";
+import { LexEditor } from "../../rich-text-editor";
+import { useToast } from "../../wrappers/ToastProvider";
 
-const CreateTraditionalTextPage: React.FC = () => {
-  const { chapterId } = useParams();
-  const [chapter, setChapter] = useState<Chapter>();
-  const [traditionalTextPageData, setTraditionalTextPageData] =
-    useState<CreateTextPageData>({
+const EditTraditionalTextPage: React.FC = () => {
+  const { pageId } = useParams();
+  const [updateTextPageData, setUpdateTextPageData] =
+    useState<UpdateTextPageData>({
+      textPageId: "",
       title: "",
       content: "",
-      chapterId: chapterId ?? "",
     });
 
   const { displayToast, ToastType } = useToast();
   const navigate = useNavigate();
 
-  const fetchChapter = async () => {
+  const fetchPage = async () => {
     try {
-      const response = await getChapterById(chapterId ?? "");
-      setChapter(response.data);
+      const response = await getTextPageByPageId(pageId ?? "");
+      const textPage = response.data;
+      console.log("textPage", textPage); //TODO: to delete
+      setUpdateTextPageData({
+        textPageId: textPage.id,
+        title: textPage.page.title,
+        content: textPage.content,
+      });
     } catch (error: any) {
       if (error.response) {
         displayToast(`${error.response.data.error}`, ToastType.ERROR);
       } else {
         displayToast(
-          "Chapter could not be fetched: Unknown error.",
+          "Page could not be fetched: Unknown error.",
           ToastType.ERROR
         );
       }
@@ -39,19 +46,22 @@ const CreateTraditionalTextPage: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      if (traditionalTextPageData.title.trim().length === 0) {
+      if (updateTextPageData.title.trim().length === 0) {
         displayToast("Page title cannot be empty!", ToastType.ERROR);
         return;
       }
-      const newPageResponse = await createTextPage(traditionalTextPageData);
-      displayToast("Text lesson page created successfully.", ToastType.INFO);
-      navigate(`/pages/${newPageResponse.data.pageId}`);
+      console.log("updateTextPageData", updateTextPageData); //TODO: to delete
+
+      const updatedPageResponse = await updateTextPage(updateTextPageData);
+      displayToast("Text lesson page updated successfully.", ToastType.INFO);
+      console.log(updatedPageResponse); //TODO: to delete
+      navigate(`/pages/${updatedPageResponse.data.pageId}`);
     } catch (error: any) {
       if (error.response) {
         displayToast(`${error.response.data.error}`, ToastType.ERROR);
       } else {
         displayToast(
-          "Text lesson page could not be created: Unknown error.",
+          "Text lesson page could not be updated: Unknown error.",
           ToastType.ERROR
         );
       }
@@ -60,17 +70,14 @@ const CreateTraditionalTextPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchChapter();
+    fetchPage();
   }, []);
 
   return (
     <div className="pb-12">
       <h2 className="text-2xl font-bold tracking-wide text-gray-800">
-        Create new text lesson page
+        Edit page
       </h2>
-      <p className="mt-1 text-sm leading-6 font-light tracking-wide text-gray-600">
-        in {chapter?.name}
-      </p>
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="sm:col-span-4">
           <label
@@ -84,10 +91,10 @@ const CreateTraditionalTextPage: React.FC = () => {
               id="title"
               name="title"
               type="text"
-              value={traditionalTextPageData.title}
+              value={updateTextPageData.title}
               onChange={(e) =>
-                setTraditionalTextPageData({
-                  ...traditionalTextPageData,
+                setUpdateTextPageData({
+                  ...updateTextPageData,
                   title: e.target.value,
                 })
               }
@@ -104,22 +111,24 @@ const CreateTraditionalTextPage: React.FC = () => {
             Content
           </label>
           <div className="mt-2">
-            <LexEditor
-              onChange={(value) =>
-                setTraditionalTextPageData({
-                  ...traditionalTextPageData,
-                  content: value,
-                })
-              }
-              editorStateStr={traditionalTextPageData.content}
-            />
+            {updateTextPageData.content !== "" && (
+              <LexEditor
+                onChange={(value) =>
+                  setUpdateTextPageData({
+                    ...updateTextPageData,
+                    content: value,
+                  })
+                }
+                editorStateStr={updateTextPageData.content}
+              />
+            )}
           </div>
         </div>
       </div>
       <div className="px-4 py-8 rounded space-y-4 flex flex-col">
         <GenericButton
           type="submit"
-          text="Create Page"
+          text="Edit Page"
           onClick={handleSubmit}
           className="self-center bg-sky-600 hover:bg-sky-700"
         />
@@ -128,4 +137,4 @@ const CreateTraditionalTextPage: React.FC = () => {
   );
 };
 
-export default CreateTraditionalTextPage;
+export default EditTraditionalTextPage;

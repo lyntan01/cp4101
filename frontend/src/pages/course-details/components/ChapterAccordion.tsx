@@ -9,6 +9,7 @@ import { Icon } from "./AccordionIcon";
 import {
   ChevronRightIcon,
   DocumentTextIcon,
+  PencilSquareIcon,
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -96,14 +97,18 @@ export function ChapterAccordion({
                           </button>
                         </div>
                       </div>
-                      <div className="flex shrink-0 items-center gap-x-4">
-                        {/* <ChevronRightIcon
-                          className="h-5 w-5 flex-none text-gray-400"
-                          aria-hidden="true"
-                        /> */}
+                      <div className="flex shrink-0 items-center gap-x-2">
+                        {role === UserRoleEnum.TEACHER && (
+                          <PencilSquareIcon
+                            className="h-5 w-5 flex-none text-gray-400"
+                            onClick={() => {
+                              navigate(`/pages/edit/${page.id}`);
+                            }}
+                          />
+                        )}
                         {role === UserRoleEnum.TEACHER && (
                           <TrashIcon
-                            className="h-5 w-5 flex-none text-red-400 ml-2"
+                            className="h-5 w-5 flex-none text-red-400"
                             onClick={() => {
                               deletePage(page.id);
                             }}
