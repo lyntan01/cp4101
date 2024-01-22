@@ -11,4 +11,8 @@ export class PageService {
   public async getPageById(pageId: string): Promise<Page | null> {
     return this.pageDao.getPageById(pageId);
   }
+
+  public async deletePage(pageId: string): Promise<Page | null> {
+    return this.pageDao.deletePage(pageId);
+  }
 }

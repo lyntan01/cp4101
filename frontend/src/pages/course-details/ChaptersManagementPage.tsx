@@ -5,7 +5,13 @@ import {
   deleteChapter as deleteChapterApi,
   getAllChaptersByCourseId,
 } from "../../api/chapter";
-import { Chapter, Course, UserRoleEnum } from "../../types/models";
+import { deletePage as deletePageApi } from "../../api/page";
+import {
+  Chapter,
+  Course,
+  PageTypeEnum,
+  UserRoleEnum,
+} from "../../types/models";
 import { classNames } from "../../utils/classNames";
 import { useToast } from "../../wrappers/ToastProvider";
 import { ChapterAccordion } from "./components/ChapterAccordion";
@@ -82,9 +88,26 @@ export const ChaptersManagementPage = ({
     }
   };
 
+  const deletePage = async (pageId: string) => {
+    try {
+      await deletePageApi(pageId);
+      displayToast("Page deleted successfully.", ToastType.INFO);
+    } catch (error: any) {
+      if (error.response) {
+        displayToast(`${error.response.data.error}`, ToastType.ERROR);
+      } else {
+        displayToast(
+          "Page could not be deleted: Unknown error.",
+          ToastType.ERROR
+        );
+      }
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchChapters();
-  }, [isCreateModalOpen, deleteChapter]);
+  }, [isCreateModalOpen, deleteChapter, deletePage]);
 
   return (
     <>
@@ -117,8 +140,9 @@ export const ChaptersManagementPage = ({
         </div>
         <ChapterAccordion
           chapters={chapters}
-          deleteChapter={deleteChapter}
           role={role}
+          deleteChapter={deleteChapter}
+          deletePage={deletePage}
         />
       </Tab.Panel>
       {isCreateModalOpen && (

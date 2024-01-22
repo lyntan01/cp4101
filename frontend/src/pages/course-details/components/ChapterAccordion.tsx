@@ -10,20 +10,23 @@ import {
   ChevronRightIcon,
   DocumentTextIcon,
   PlusCircleIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { AddNewPageListItem } from "./AddNewPageListItem";
 import { useNavigate } from "react-router-dom";
 
 interface ChapterAccordionProps {
   chapters: Chapter[];
-  deleteChapter: (chapterId: string) => void;
   role: UserRoleEnum;
+  deleteChapter: (chapterId: string) => void;
+  deletePage: (pageId: string) => void;
 }
 
 export function ChapterAccordion({
   chapters,
-  deleteChapter,
   role,
+  deleteChapter,
+  deletePage,
 }: ChapterAccordionProps) {
   const [open, setOpen] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -98,6 +101,14 @@ export function ChapterAccordion({
                           className="h-5 w-5 flex-none text-gray-400"
                           aria-hidden="true"
                         /> */}
+                        {role === UserRoleEnum.TEACHER && (
+                          <TrashIcon
+                            className="h-5 w-5 flex-none text-red-400 ml-2"
+                            onClick={() => {
+                              deletePage(page.id);
+                            }}
+                          />
+                        )}
                       </div>
                     </li>
                   ))}

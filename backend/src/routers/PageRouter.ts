@@ -37,4 +37,25 @@ pageRouter.get("/:pageId", async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * DELETE /pages/{pageId}
+ * Deletes a page by its unique ID.
+ */
+pageRouter.delete("/:pageId", async (req: Request, res: Response) => {
+  try {
+    const { pageId } = req.params;
+
+    const deletedPage = await pageService.deletePage(pageId);
+
+    if (!deletedPage) {
+      return res.status(404).json({ error: "Page not found" });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 export default pageRouter;

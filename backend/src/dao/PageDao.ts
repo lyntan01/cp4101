@@ -44,8 +44,33 @@ export class PageDao {
   }
 
   public async deletePage(pageId: string): Promise<Page | null> {
-    return this.prismaClient.page.delete({
-      where: { id: pageId },
+    const response = await this.prismaClient.$transaction(async (prisma) => {
+      // Delete TraditionalTextBasedLessonPage if it exists
+      await prisma.traditionalTextBasedLessonPage.deleteMany({
+        where: { pageId },
+      });
+
+      // Delete CodeSandboxPage if it exists
+      await prisma.codeSandboxPage.deleteMany({
+        where: { pageId },
+      });
+
+      // Delete StepByStepVisualizationPage if it exists
+      await prisma.stepByStepVisualizationPage.deleteMany({
+        where: { pageId },
+      });
+
+      // Delete RealTimeCodeFeedbackPage if it exists
+      await prisma.realTimeCodeFeedbackPage.deleteMany({
+        where: { pageId },
+      });
+
+      // Finally, delete the Page
+      return prisma.page.delete({
+        where: { id: pageId },
+      });
     });
+
+    return response;
   }
 }
