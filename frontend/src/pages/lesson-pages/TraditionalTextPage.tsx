@@ -46,6 +46,8 @@ const TraditionalTextPage: React.FC = () => {
       </div>
     );
   }
+
+  return <></>;
 };
 
 export default TraditionalTextPage;

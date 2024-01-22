@@ -11,6 +11,7 @@ import { CharacterLimitPlugin } from "@lexical/react/LexicalCharacterLimitPlugin
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
+import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
@@ -23,10 +24,11 @@ import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import useLexicalEditable from "@lexical/react/useLexicalEditable";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { CAN_USE_DOM } from "./utils/canUseDOM";
 
+import { createWebsocketProvider } from "./collaboration";
 import { useSettings } from "./context/SettingsContext";
 import { useSharedHistoryContext } from "./context/SharedHistoryContext";
-import TableCellNodes from "./nodes/TableCellNodes";
 import ActionsPlugin from "./plugins/ActionsPlugin";
 import AutocompletePlugin from "./plugins/AutocompletePlugin";
 import AutoEmbedPlugin from "./plugins/AutoEmbedPlugin";
@@ -34,6 +36,7 @@ import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import CodeActionMenuPlugin from "./plugins/CodeActionMenuPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import CollapsiblePlugin from "./plugins/CollapsiblePlugin";
+import CommentPlugin from "./plugins/CommentPlugin";
 import ComponentPickerPlugin from "./plugins/ComponentPickerPlugin";
 import ContextMenuPlugin from "./plugins/ContextMenuPlugin";
 import DragDropPaste from "./plugins/DragDropPastePlugin";
@@ -61,19 +64,16 @@ import TabFocusPlugin from "./plugins/TabFocusPlugin";
 import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 import TableCellResizer from "./plugins/TableCellResizer";
 import TableOfContentsPlugin from "./plugins/TableOfContentsPlugin";
-import { TablePlugin as NewTablePlugin } from "./plugins/TablePlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import TreeViewPlugin from "./plugins/TreeViewPlugin";
 import TwitterPlugin from "./plugins/TwitterPlugin";
 import YouTubePlugin from "./plugins/YouTubePlugin";
-import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
-import { CAN_USE_DOM } from "./utils/canUseDOM";
 
-// const skipCollaborationInit =
-//   // @ts-ignore
-//   window.parent != null && window.parent.frames.right === window;
+const skipCollaborationInit =
+  // @ts-expect-error
+  window.parent != null && window.parent.frames.right === window;
 
 export default function Editor(): JSX.Element {
   const { historyState } = useSharedHistoryContext();
@@ -96,8 +96,8 @@ export default function Editor(): JSX.Element {
   const text = isCollab
     ? "Enter some collaborative rich text..."
     : isRichText
-    ? "Enter some rich text..."
-    : "Enter some plain text...";
+      ? "Enter some rich text..."
+      : "Enter some plain text...";
   const placeholder = <Placeholder>{text}</Placeholder>;
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
@@ -109,15 +109,6 @@ export default function Editor(): JSX.Element {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
-  };
-
-  const cellEditorConfig = {
-    namespace: "Playground",
-    nodes: [...TableCellNodes],
-    onError: (error: Error) => {
-      throw error;
-    },
-    theme: PlaygroundEditorTheme,
   };
 
   useEffect(() => {
@@ -159,12 +150,12 @@ export default function Editor(): JSX.Element {
         <KeywordsPlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
-        {/* <CommentPlugin
+        <CommentPlugin
           providerFactory={isCollab ? createWebsocketProvider : undefined}
-        /> */}
+        />
         {isRichText ? (
           <>
-            {/* {isCollab ? (
+            {isCollab ? (
               <CollaborationPlugin
                 id="main"
                 providerFactory={createWebsocketProvider}
@@ -172,8 +163,7 @@ export default function Editor(): JSX.Element {
               />
             ) : (
               <HistoryPlugin externalHistoryState={historyState} />
-            )} */}
-            <HistoryPlugin externalHistoryState={historyState} />
+            )}
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
@@ -195,22 +185,6 @@ export default function Editor(): JSX.Element {
               hasCellBackgroundColor={tableCellBackgroundColor}
             />
             <TableCellResizer />
-            <NewTablePlugin cellEditorConfig={cellEditorConfig}>
-              <AutoFocusPlugin />
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable className="TableNode__contentEditable" />
-                }
-                placeholder={null}
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-              <MentionsPlugin />
-              <HistoryPlugin />
-              <ImagesPlugin captionsEnabled={false} />
-              <LinkPlugin />
-              <LexicalClickableLinkPlugin />
-              <FloatingTextFormatToolbarPlugin />
-            </NewTablePlugin>
             <ImagesPlugin />
             <InlineImagePlugin />
             <LinkPlugin />
@@ -265,9 +239,9 @@ export default function Editor(): JSX.Element {
         {isAutocomplete && <AutocompletePlugin />}
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
-        {/* <ActionsPlugin isRichText={isRichText} /> */}
+        <ActionsPlugin isRichText={isRichText} />
       </div>
-      {/* {showTreeView && <TreeViewPlugin />} */}
+      {showTreeView && <TreeViewPlugin />}
     </>
   );
 }

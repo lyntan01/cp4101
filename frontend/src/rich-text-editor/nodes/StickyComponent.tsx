@@ -20,6 +20,7 @@ import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { $getNodeByKey } from "lexical";
 import * as React from "react";
 import { useEffect, useRef } from "react";
+import useLayoutEffect from "../utils/useLayoutEffect";
 
 import { createWebsocketProvider } from "../collaboration";
 import { useSharedHistoryContext } from "../context/SharedHistoryContext";
@@ -27,7 +28,6 @@ import StickyEditorTheme from "../themes/StickyEditorTheme";
 import ContentEditable from "../ui/ContentEditable";
 import Placeholder from "../ui/Placeholder";
 import { $isStickyNode } from "./StickyNode";
-import useLayoutEffectImpl from "../utils/useLayoutEffect";
 
 type Positioning = {
   isDragging: boolean;
@@ -86,7 +86,7 @@ export default function StickyComponent({
     }
   }, [x, y]);
 
-  useLayoutEffectImpl(() => {
+  useLayoutEffect(() => {
     const position = positioningRef.current;
     const resizeObserver = new ResizeObserver((entries) => {
       for (let i = 0; i < entries.length; i++) {

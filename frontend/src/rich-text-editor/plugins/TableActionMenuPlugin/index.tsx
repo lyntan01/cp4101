@@ -23,15 +23,16 @@ import {
   $getTableRowIndexFromTableCellNode,
   $insertTableColumn__EXPERIMENTAL,
   $insertTableRow__EXPERIMENTAL,
+  $isGridSelection,
   $isTableCellNode,
   $isTableRowNode,
   $unmergeCell,
   getTableSelectionFromTableElement,
+  GridSelection,
   HTMLTableElementWithWithTableSelectionState,
   TableCellHeaderStates,
   TableCellNode,
-  $isGridSelection,
-  GridSelection,
+  TableRowNode,
 } from "@lexical/table";
 import {
   $createParagraphNode,
@@ -427,7 +428,14 @@ function TableActionMenu({
       const tableColumnIndex =
         $getTableColumnIndexFromTableCellNode(tableCellNode);
 
-      const tableRows = tableNode.getChildren();
+      const tableRows = tableNode.getChildren<TableRowNode>();
+      const maxRowsLength = Math.max(
+        ...tableRows.map((row) => row.getChildren().length)
+      );
+
+      if (tableColumnIndex >= maxRowsLength || tableColumnIndex < 0) {
+        throw new Error("Expected table cell to be inside of table row.");
+      }
 
       for (let r = 0; r < tableRows.length; r++) {
         const tableRow = tableRows[r];
@@ -437,9 +445,9 @@ function TableActionMenu({
         }
 
         const tableCells = tableRow.getChildren();
-
-        if (tableColumnIndex >= tableCells.length || tableColumnIndex < 0) {
-          throw new Error("Expected table cell to be inside of table row.");
+        if (tableColumnIndex >= tableCells.length) {
+          // if cell is outside of bounds for the current row (for example various merge cell cases) we shouldn't highlight it
+          continue;
         }
 
         const tableCell = tableCells[tableColumnIndex];
@@ -465,6 +473,17 @@ function TableActionMenu({
           if ($isTableCellNode(cell)) {
             cell.setBackgroundColor(value);
           }
+
+          if ($isGridSelection(selection)) {
+            const nodes = selection.getNodes();
+
+            for (let i = 0; i < nodes.length; i++) {
+              const node = nodes[i];
+              if ($isTableCellNode(node)) {
+                node.setBackgroundColor(value);
+              }
+            }
+          }
         }
       });
     },
@@ -476,6 +495,7 @@ function TableActionMenu({
     if (canMergeCells) {
       mergeCellButton = (
         <button
+          type="button"
           className="item"
           onClick={() => mergeTableCellsAtSelection()}
           data-test-id="table-merge-cells"
@@ -486,6 +506,7 @@ function TableActionMenu({
     } else if (canUnmergeCell) {
       mergeCellButton = (
         <button
+          type="button"
           className="item"
           onClick={() => unmergeTableCellsAtSelection()}
           data-test-id="table-unmerge-cells"
@@ -507,6 +528,7 @@ function TableActionMenu({
     >
       {mergeCellButton}
       <button
+        type="button"
         className="item"
         onClick={() =>
           showColorPickerModal("Cell background color", () => (
@@ -522,6 +544,7 @@ function TableActionMenu({
       </button>
       <hr />
       <button
+        type="button"
         className="item"
         onClick={() => insertTableRowAtSelection(false)}
         data-test-id="table-insert-row-above"
@@ -533,6 +556,7 @@ function TableActionMenu({
         </span>
       </button>
       <button
+        type="button"
         className="item"
         onClick={() => insertTableRowAtSelection(true)}
         data-test-id="table-insert-row-below"
@@ -545,6 +569,7 @@ function TableActionMenu({
       </button>
       <hr />
       <button
+        type="button"
         className="item"
         onClick={() => insertTableColumnAtSelection(false)}
         data-test-id="table-insert-column-before"
@@ -558,6 +583,7 @@ function TableActionMenu({
         </span>
       </button>
       <button
+        type="button"
         className="item"
         onClick={() => insertTableColumnAtSelection(true)}
         data-test-id="table-insert-column-after"
@@ -572,6 +598,7 @@ function TableActionMenu({
       </button>
       <hr />
       <button
+        type="button"
         className="item"
         onClick={() => deleteTableColumnAtSelection()}
         data-test-id="table-delete-columns"
@@ -579,6 +606,7 @@ function TableActionMenu({
         <span className="text">Delete column</span>
       </button>
       <button
+        type="button"
         className="item"
         onClick={() => deleteTableRowAtSelection()}
         data-test-id="table-delete-rows"
@@ -586,6 +614,7 @@ function TableActionMenu({
         <span className="text">Delete row</span>
       </button>
       <button
+        type="button"
         className="item"
         onClick={() => deleteTableAtSelection()}
         data-test-id="table-delete"
@@ -593,7 +622,11 @@ function TableActionMenu({
         <span className="text">Delete table</span>
       </button>
       <hr />
-      <button className="item" onClick={() => toggleTableRowIsHeader()}>
+      <button
+        type="button"
+        className="item"
+        onClick={() => toggleTableRowIsHeader()}
+      >
         <span className="text">
           {(tableCellNode.__headerState & TableCellHeaderStates.ROW) ===
           TableCellHeaderStates.ROW
@@ -602,7 +635,12 @@ function TableActionMenu({
           row header
         </span>
       </button>
-      <button className="item" onClick={() => toggleTableColumnIsHeader()}>
+      <button
+        type="button"
+        className="item"
+        onClick={() => toggleTableColumnIsHeader()}
+        data-test-id="table-column-header"
+      >
         <span className="text">
           {(tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
           TableCellHeaderStates.COLUMN
@@ -725,6 +763,7 @@ function TableCellActionMenuContainer({
       {tableCellNode != null && (
         <>
           <button
+            type="button"
             className="table-cell-action-button chevron-down"
             onClick={(e) => {
               e.stopPropagation();
