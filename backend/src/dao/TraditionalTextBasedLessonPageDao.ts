@@ -27,7 +27,15 @@ export class TraditionalTextBasedLessonPageDao {
     return this.prismaClient.traditionalTextBasedLessonPage.findUnique({
       where: { id: pageId },
       include: {
-        page: true,
+        page: {
+          include: {
+            chapter: {
+              include: {
+                pages: true,
+              },
+            },
+          },
+        },
       },
     });
   }

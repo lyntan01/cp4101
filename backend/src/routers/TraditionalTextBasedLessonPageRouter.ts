@@ -5,7 +5,7 @@ import { restrictBodyId } from "../middleware/validationMiddleware";
 import { CreateTraditionalTextBasedLessonPageData } from "../types/page";
 
 const traditionalTextBasedLessonPageRouter = Router();
-const traditionalTextBasedLessonpageService =
+const traditionalTextBasedLessonPageService =
   new TraditionalTextBasedLessonPageService();
 
 /**
@@ -18,7 +18,7 @@ traditionalTextBasedLessonPageRouter.post(
     try {
       const pageData: CreateTraditionalTextBasedLessonPageData = req.body;
       const newPage =
-        await traditionalTextBasedLessonpageService.createTraditionalTextBasedLessonPage(
+        await traditionalTextBasedLessonPageService.createTraditionalTextBasedLessonPage(
           pageData
         );
       return res.status(201).json(newPage);
@@ -39,7 +39,7 @@ traditionalTextBasedLessonPageRouter.get(
   async (req: Request, res: Response) => {
     try {
       const pages =
-        await traditionalTextBasedLessonpageService.getAllTraditionalTextBasedLessonPages();
+        await traditionalTextBasedLessonPageService.getAllTraditionalTextBasedLessonPages();
       return res.status(200).json(pages);
     } catch (error) {
       return res.status(500).json({ error: error.message });
@@ -57,7 +57,7 @@ traditionalTextBasedLessonPageRouter.get(
     try {
       const { pageId } = req.params;
       const page =
-        await traditionalTextBasedLessonpageService.getTraditionalTextBasedLessonPageById(
+        await traditionalTextBasedLessonPageService.getTraditionalTextBasedLessonPageById(
           pageId
         );
 
@@ -82,10 +82,11 @@ traditionalTextBasedLessonPageRouter.put(
   async (req: Request, res: Response) => {
     try {
       const { pageId } = req.params;
-      const pageData: Prisma.PageUpdateInput = req.body;
+      const pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput =
+        req.body;
 
       const updatedPage =
-        await traditionalTextBasedLessonpageService.updateTraditionalTextBasedLessonPage(
+        await traditionalTextBasedLessonPageService.updateTraditionalTextBasedLessonPage(
           pageId,
           pageData
         );
@@ -112,7 +113,7 @@ traditionalTextBasedLessonPageRouter.delete(
       const { pageId } = req.params;
 
       const deletedPage =
-        await traditionalTextBasedLessonpageService.deleteTraditionalTextBasedLessonPage(
+        await traditionalTextBasedLessonPageService.deleteTraditionalTextBasedLessonPage(
           pageId
         );
 

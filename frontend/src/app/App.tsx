@@ -19,6 +19,7 @@ import { SidebarLayout } from "../libs/layout/layout";
 import { NAV_SECTIONS } from "../libs/layout/navigationSections";
 import CourseWrapper from "../pages/course-management/CourseWrapper";
 import CourseDetails from "../pages/course-details/CourseDetails";
+import TraditionalTextPage from "../pages/lesson-pages/TraditionalTextPage";
 
 export default function App() {
   return (
@@ -44,7 +45,7 @@ export default function App() {
 
               <Route
                 path={`${PAGES}/:pageId`}
-                element={<h1>Page details</h1>}
+                element={<TraditionalTextPage />}
               />
               <Route
                 path={`${CREATE_PAGE}/:chapterId`}

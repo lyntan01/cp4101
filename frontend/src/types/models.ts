@@ -51,7 +51,7 @@ export enum PageTypeEnum {
 export type TraditionalTextBasedLessonPage = {
   id: string;
   page: Page;
-  // additional fields for TraditionalTextBasedLessonPage
+  content: string;
 };
 
 export type CodeSandboxPage = {
