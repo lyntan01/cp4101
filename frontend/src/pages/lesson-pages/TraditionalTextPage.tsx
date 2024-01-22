@@ -1,23 +1,27 @@
 import { useParams } from "react-router-dom";
-import { LexOutput } from "../../rich-text-editor";
+import { LexEditor, LexOutput } from "../../rich-text-editor";
 import { getPageById } from "../../api/page";
 import { useEffect, useState } from "react";
-import { Page } from "../../types/models";
+import { Page, TraditionalTextBasedLessonPage } from "../../types/models";
 import { useToast } from "../../wrappers/ToastProvider";
+import { getTextPageByPageId } from "../../api/textPage";
 
 const TraditionalTextPage: React.FC = () => {
   const { pageId } = useParams();
-  const [page, setPage] = useState<Page>();
+  const [traditionalTextPage, setTraditionalTextPage] =
+    useState<TraditionalTextBasedLessonPage>();
 
   const { displayToast, ToastType } = useToast();
 
-  const getPage = async () => {
+  const getTraditionalTextPage = async () => {
     try {
-      const response = await getPageById(pageId ?? "");
-      setPage(response.data);
+      const traditionalTextPageResponse = await getTextPageByPageId(
+        pageId ?? ""
+      );
+      setTraditionalTextPage(traditionalTextPageResponse.data);
     } catch (error) {
       displayToast(
-        "Course could not be retrieved from the server.",
+        "Text Page could not be retrieved from the server.",
         ToastType.ERROR
       );
       console.log(error);
@@ -25,24 +29,31 @@ const TraditionalTextPage: React.FC = () => {
   };
 
   useEffect(() => {
-    getPage();
+    getTraditionalTextPage();
   }, []);
 
-  if (page && page.traditionalTextBasedLessonPage) {
+  if (
+    // page &&
+    traditionalTextPage &&
+    traditionalTextPage.page.chapter
+  ) {
+    const pageIndex = traditionalTextPage.page.chapter.pages.findIndex(
+      (p) => p.id === pageId
+    );
+
     return (
       <div>
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold tracking-wide text-gray-800">
-            {page.title}
+            {traditionalTextPage.page.title}
           </span>
           <span className="font-light tracking-wide text-gray-600">
-            Page {page.chapter?.pages.indexOf(page)} of{" "}
-            {page.chapter?.pages.length}
+            {`Page 
+            ${pageIndex + 1} 
+            of ${traditionalTextPage.page.chapter.pages.length}`}
           </span>
         </div>
-        <LexOutput
-          editorStateStr={page.traditionalTextBasedLessonPage.content}
-        />
+        <LexOutput editorStateStr={traditionalTextPage.content} />
       </div>
     );
   }

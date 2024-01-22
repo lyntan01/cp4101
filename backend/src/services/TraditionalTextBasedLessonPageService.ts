@@ -48,6 +48,14 @@ export class TraditionalTextBasedLessonPageService {
     );
   }
 
+  public async getTraditionalTextBasedLessonPageByPageId(
+    pageId: string
+  ): Promise<TraditionalTextBasedLessonPage | null> {
+    return this.traditionalTextBasedLessonPageDao.getTraditionalTextBasedLessonPageByPageId(
+      pageId
+    );
+  }
+
   public async updateTraditionalTextBasedLessonPage(
     pageId: string,
     pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput

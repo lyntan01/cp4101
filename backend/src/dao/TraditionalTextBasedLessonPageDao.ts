@@ -40,6 +40,25 @@ export class TraditionalTextBasedLessonPageDao {
     });
   }
 
+  public async getTraditionalTextBasedLessonPageByPageId(
+    pageId: string
+  ): Promise<TraditionalTextBasedLessonPage | null> {
+    return this.prismaClient.traditionalTextBasedLessonPage.findUnique({
+      where: { pageId: pageId },
+      include: {
+        page: {
+          include: {
+            chapter: {
+              include: {
+                pages: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   public async updateTraditionalTextBasedLessonPage(
     pageId: string,
     pageData: Prisma.TraditionalTextBasedLessonPageUpdateInput

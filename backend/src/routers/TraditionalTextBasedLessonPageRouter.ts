@@ -73,6 +73,31 @@ traditionalTextBasedLessonPageRouter.get(
 );
 
 /**
+ * GET /text-pages/page/{pageId}
+ * Retrieves a traditional text-based lesson page by the ID of the parent Page class.
+ */
+traditionalTextBasedLessonPageRouter.get(
+  "/page/:pageId",
+  async (req: Request, res: Response) => {
+    try {
+      const { pageId } = req.params;
+      const page =
+        await traditionalTextBasedLessonPageService.getTraditionalTextBasedLessonPageByPageId(
+          pageId
+        );
+
+      if (!page) {
+        return res.status(404).json({ error: "Page not found" });
+      }
+
+      return res.status(200).json(page);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+/**
  * PUT /text-pages/{pageId}
  * Updates a traditional text-based lesson page's information by its unique ID.
  */
