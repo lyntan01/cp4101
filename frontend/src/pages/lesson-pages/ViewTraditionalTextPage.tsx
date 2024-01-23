@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getTextPageByPageId } from "../../api/textPage";
-import { LexOutput } from "../../rich-text-editor";
+import { LexEditor, LexOutput } from "../../rich-text-editor";
 import { TraditionalTextBasedLessonPage } from "../../types/models";
 import { useToast } from "../../wrappers/ToastProvider";
 import {
@@ -9,7 +9,11 @@ import {
   GenericButton,
   GenericButtonIconOnRight,
 } from "../../components/buttons";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 
 const ViewTraditionalTextPage: React.FC = () => {
   const { pageId } = useParams();
@@ -46,19 +50,30 @@ const ViewTraditionalTextPage: React.FC = () => {
 
     const navToPreviousPage = () => {
       const prevPageId =
-        traditionalTextPage?.page.chapter.pages[pageIndex - 1].id;
+        traditionalTextPage.page.chapter.pages[pageIndex - 1].id;
       navigate(`/pages/${prevPageId}`);
     };
 
     const navToNextPage = () => {
       const nextPageId =
-        traditionalTextPage?.page.chapter.pages[pageIndex + 1].id;
+        traditionalTextPage.page.chapter.pages[pageIndex + 1].id;
       navigate(`/pages/${nextPageId}`);
+    };
+
+    const navToChaptersPage = () => {
+      console.log(traditionalTextPage);
+      navigate(`/courses/${traditionalTextPage.page.chapter.courseId}/2`);
     };
 
     return (
       <div className="pb-10">
-        <BackButton className="bg-white text-zinc-500 shadow-none -mt-4 mb-2" />
+        <GenericButton
+          text="Back to chapters page"
+          type="button"
+          icon={<ArrowUturnLeftIcon className="h-4 w-4" />}
+          onClick={navToChaptersPage}
+          className="bg-white text-zinc-500 shadow-white -mt-4 mb-2 border-0"
+        />
         <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-lg border border-gray-200">
           <div className="bg-sky-50 px-4 py-5 sm:px-6">
             <div className="flex justify-between items-center">

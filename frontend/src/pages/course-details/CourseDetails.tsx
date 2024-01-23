@@ -25,7 +25,7 @@ const navigation = [
 ];
 
 const CourseDetails: React.FC = () => {
-  const { courseId } = useParams();
+  const { courseId, tabIndex } = useParams();
   const { user } = useAuth<User>();
   const [course, setCourse] = useState<Course>();
 
@@ -60,7 +60,7 @@ const CourseDetails: React.FC = () => {
       </div>
 
       {/* TABS */}
-      <Tab.Group vertical defaultIndex={0}>
+      <Tab.Group vertical defaultIndex={Number(tabIndex) ?? 0}>
         <div className="flex mt-8">
           <Tab.List className="w-1/5 pr-6 pt-3 flex space-x-1 rounded-xl p-1">
             <nav className="flex flex-1 flex-col" aria-label="Sidebar">

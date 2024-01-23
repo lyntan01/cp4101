@@ -27,6 +27,7 @@ export type Chapter = {
   id: string;
   name: string;
   course: Course;
+  courseId?: string;
   pages: Page[];
 };
 

@@ -45,6 +45,10 @@ export default function App() {
                 path={`${COURSES}/:courseId`}
                 element={<CourseDetails />}
               />
+              <Route
+                path={`${COURSES}/:courseId/:tabIndex`}
+                element={<CourseDetails />}
+              />
 
               <Route
                 path={`${PAGES}/:pageId`}

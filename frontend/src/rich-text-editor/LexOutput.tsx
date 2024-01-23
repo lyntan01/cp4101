@@ -12,6 +12,14 @@ import { EditorEventContextProvider } from "./context/EventContext";
 import PlaygroundNodes from "./nodes/PlaygroundNodes";
 import { LayoutPlugin } from "./plugins/LayoutPlugin/LayoutPlugin";
 import { RenderInitialContentPlugin } from "./plugins/RenderInitialContentPlugin";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
+import MentionsPlugin from "./plugins/MentionsPlugin";
+import EmojisPlugin from "./plugins/EmojisPlugin";
+import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
+import KeywordsPlugin from "./plugins/KeywordsPlugin";
 
 export type LexOutputProps = {
   editorStateStr: string;
@@ -37,6 +45,7 @@ export const LexOutput = ({
     onError: (error: Error) => {
       throw error;
     },
+    theme: PlaygroundEditorTheme,
   };
 
   const [isContentLoaded, setIsContentLoaded] = useState<boolean>(false);
@@ -54,6 +63,13 @@ export const LexOutput = ({
           />
         )}
         <EquationsPlugin />
+        <CheckListPlugin />
+        <CodeHighlightPlugin />
+        <ListPlugin />
+        <MentionsPlugin />
+        <EmojisPlugin />
+        <HashtagPlugin />
+        <KeywordsPlugin />
         {(isContentLoaded && (
           <RichTextPlugin
             contentEditable={<ContentEditable />}

@@ -21,7 +21,7 @@ export const DesktopSideBar = ({ navigationMenu }: DesktopSidebarProps) => {
           <CodeLearnerLogo className="h-32" />
         </div>
         <nav className="flex flex-1 flex-col">
-          <ul className="flex flex-1 flex-col gap-y-7 justify-between content-between">
+          <ul className="flex flex-1 flex-col gap-y-7 justify-between content-between list-none">
             {navigationMenu.map((section) => (
               <li key={section.name}>
                 <SideBarSection section={section} key={section.name} />
