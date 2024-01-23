@@ -15,7 +15,7 @@ export const SideBarSection = ({ section }: SideBarSection) => {
           {section.name}
         </div>
       )}
-      <ul className="-mx-2 space-y-1">
+      <ul className="-mx-2 space-y-1 list-none">
         {section.children?.map((item) => (
           <li key={item.name}>
             {(item.children && (

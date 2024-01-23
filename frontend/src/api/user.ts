@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import client from "./client";
-import { User, UserRoleEnum } from "../types/user";
+import { User, UserRoleEnum } from "../types/models";
 
 const URL = "/users";
 
@@ -71,9 +71,13 @@ export async function fetchUser(): Promise<AxiosResponse<User>> {
 }
 
 export async function deleteUser(id: string): Promise<AxiosResponse<any>> {
-  return client.delete(`${URL}/delete/${id}`);
+  return client.delete(`${URL}/${id}`);
 }
 
 export async function getAllUsers(): Promise<AxiosResponse<User[]>> {
-  return client.get(`${URL}/getAllUsers`);
+  return client.get(`${URL}/`);
+}
+
+export async function getUserById(id: string): Promise<AxiosResponse<User>> {
+  return client.get(`${URL}/${id}`);
 }

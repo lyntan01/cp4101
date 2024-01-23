@@ -3,7 +3,8 @@ import { User, Prisma } from "@prisma/client";
 import { UserLoginData } from "../types/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET_KEY } from "../config/config.ts";
+import { JWT_SECRET_KEY } from "../config/config";
+
 export class UserService {
   constructor(private userDao: UserDao = new UserDao()) {}
 

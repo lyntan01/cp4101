@@ -1,9 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import * as path from "path";
 import cookieParser from "cookie-parser";
 import userRouter from "./routers/UserRouter";
+import courseRouter from "./routers/CourseRouter";
+import chapterRouter from "./routers/ChapterRouter";
+import pageRouter from "./routers/PageRouter";
+import traditionalTextBasedLessonPageRouter from "./routers/TraditionalTextBasedLessonPageRouter";
 
 dotenv.config();
 
@@ -48,6 +51,10 @@ app.get("/api", (req, res) => {
 
 // Routes
 app.use("/api/users", userRouter);
+app.use("/api/courses", courseRouter);
+app.use("/api/chapters", chapterRouter);
+app.use("/api/pages", pageRouter);
+app.use("/api/text-pages", traditionalTextBasedLessonPageRouter);
 
 // Start the server
 const server = app.listen(port, () => {

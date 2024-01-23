@@ -43,6 +43,16 @@ export class UserDao {
     });
   }
 
+  public async updateUserByEmail(
+    userEmail: string,
+    userData: Prisma.UserUpdateInput
+  ): Promise<User | null> {
+    return this.prismaClient.user.update({
+      where: { email: userEmail },
+      data: userData,
+    });
+  }
+
   public async deleteUser(userId: string): Promise<User | null> {
     return this.prismaClient.user.delete({
       where: { id: userId },
