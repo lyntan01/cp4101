@@ -1,4 +1,4 @@
-import { Disclosure, type DisclosureButtonProps } from "@headlessui/react";
+import { Disclosure, DisclosureButtonProps } from "@headlessui/react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 import { DisclosureLeafItem } from "./DisclosureLeafItem";

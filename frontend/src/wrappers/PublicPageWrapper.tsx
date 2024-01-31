@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { FullscreenSpinner } from "./FullscreenSpinner";

@@ -46,7 +46,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.2",
     "tailwindcss": "^3.4.1",
-    "typescript": "^4.9.5",
+    "typescript": "^3.9.10",
     "web-vitals": "^2.1.4",
     "y-websocket": "^1.5.3"
   },
@@ -78,7 +78,6 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@nx/express": "^17.2.8",
-    "@nx/jest": "^17.2.8",
     "@nx/js": "^17.2.8",
     "@nx/node": "^17.2.8",
     "@nx/react": "^17.2.8",
