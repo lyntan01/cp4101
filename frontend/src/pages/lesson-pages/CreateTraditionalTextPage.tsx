@@ -61,7 +61,7 @@ const CreateTraditionalTextPage: React.FC = () => {
 
   useEffect(() => {
     fetchChapter();
-  }, []);
+  });
 
   return (
     <div className="pb-12">

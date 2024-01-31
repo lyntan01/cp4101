@@ -1,5 +1,4 @@
 import { PropsWithChildren } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { FullscreenSpinner } from "./FullscreenSpinner";
 import { Redirect } from "./Redirect";
@@ -31,7 +30,6 @@ export const PublicPageWrapper = ({
   children,
   redirectsTo,
 }: PropsWithChildren<PublicPageWrapperProps>): JSX.Element => {
-  const navigate = useNavigate();
   const { isLoading, user } = useAuth();
 
   if (isLoading) {

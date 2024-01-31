@@ -71,7 +71,7 @@ const EditTraditionalTextPage: React.FC = () => {
 
   useEffect(() => {
     fetchPage();
-  }, []);
+  });
 
   return (
     <div className="pb-12">

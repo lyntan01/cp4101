@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FullscreenSpinner } from './FullscreenSpinner';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FullscreenSpinner } from "./FullscreenSpinner";
 
 export type RedirectProps = {
   /**
@@ -13,6 +13,6 @@ export const Redirect = ({ redirectTo }: RedirectProps) => {
   const navigate = useNavigate();
   useEffect(() => {
     navigate(redirectTo, { replace: true });
-  }, []);
+  });
   return <FullscreenSpinner />;
 };

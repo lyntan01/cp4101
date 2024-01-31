@@ -67,7 +67,7 @@ export function AuthWrapper({ children }: AuthWrapperProps): JSX.Element {
     };
 
     fetchUser();
-  }, [fetchUserApi]);
+  }, []);
 
   return (
     <AuthContext.Provider

@@ -1,7 +1,11 @@
 import { Tab } from "@headlessui/react";
 import { classNames } from "../../utils/classNames";
 
-export const AnalyticsPage = ({ key }: { key: number }) => {
+interface AnalyticsPageProps {
+  key: number;
+}
+
+export const AnalyticsPage = ({ key }: AnalyticsPageProps) => {
   return (
     <Tab.Panel
       key={key}

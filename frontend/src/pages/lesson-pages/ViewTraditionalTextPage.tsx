@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getTextPageByPageId } from "../../api/textPage";
-import { LexEditor, LexOutput } from "../../rich-text-editor";
+import { LexOutput } from "../../rich-text-editor";
 import { TraditionalTextBasedLessonPage } from "../../types/models";
 import { useToast } from "../../wrappers/ToastProvider";
 import {
-  BackButton,
   GenericButton,
   GenericButtonIconOnRight,
 } from "../../components/buttons";
