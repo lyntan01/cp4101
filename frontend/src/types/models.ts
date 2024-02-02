@@ -26,6 +26,7 @@ export type Course = {
 export type Chapter = {
   id: string;
   name: string;
+  learningOutcomes: string[];
   course: Course;
   courseId?: string;
   pages: Page[];
@@ -56,13 +57,16 @@ export type TraditionalTextBasedLessonPage = {
 export type ExercisePage = {
   id: string;
   page: Page;
-  // additional fields for ExercisePage
+  instructions: string;
+  sandboxId: string;
+  correctAnswer: string;
 };
 
 export type ExplorationPage = {
   id: string;
   page: Page;
-  // additional fields for ExplorationPage
+  instructions: string;
+  sandboxId: string;
 };
 
 export type Analytics = {
