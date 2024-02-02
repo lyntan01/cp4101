@@ -26,6 +26,7 @@ export type Course = {
 export type Chapter = {
   id: string;
   name: string;
+  learningOutcomes: string[];
   course: Course;
   courseId?: string;
   pages: Page[];
@@ -37,16 +38,14 @@ export type Page = {
   chapter: Chapter;
   type: PageTypeEnum;
   traditionalTextBasedLessonPage?: TraditionalTextBasedLessonPage;
-  codeSandboxPage?: CodeSandboxPage;
-  stepByStepVisualizationPage?: StepByStepVisualizationPage;
-  realTimeCodeFeedbackPage?: RealTimeCodeFeedbackPage;
+  exercisePage?: ExercisePage;
+  explorationPage?: ExplorationPage;
 };
 
 export enum PageTypeEnum {
   TRADITIONAL_TEXT_BASED_LESSON = "TRADITIONAL_TEXT_BASED_LESSON",
-  CODE_SANDBOX = "CODE_SANDBOX",
-  STEP_BY_STEP_VISUALIZATION = "STEP_BY_STEP_VISUALIZATION",
-  REAL_TIME_CODE_FEEDBACK = "REAL_TIME_CODE_FEEDBACK",
+  EXERCISE = "EXERCISE",
+  EXPLORATION = "EXPLORATION",
 }
 
 export type TraditionalTextBasedLessonPage = {
@@ -55,29 +54,24 @@ export type TraditionalTextBasedLessonPage = {
   content: string;
 };
 
-export type CodeSandboxPage = {
+export type ExercisePage = {
   id: string;
   page: Page;
-  // additional fields for CodeSandboxPage
+  instructions: string;
+  sandboxId: string;
+  correctAnswer: string;
 };
 
-export type StepByStepVisualizationPage = {
+export type ExplorationPage = {
   id: string;
   page: Page;
-  // additional fields for StepByStepVisualizationPage
-};
-
-export type RealTimeCodeFeedbackPage = {
-  id: string;
-  page: Page;
-  // additional fields for RealTimeCodeFeedbackPage
+  instructions: string;
+  sandboxId: string;
 };
 
 export type Analytics = {
   id: string;
   percentStudentsUsedCodeSandbox: number;
-  percentStudentsViewedStepByStep: number;
-  percentStudentsUsedRealTimeFeedback: number;
   codeFeedbackOverview: string;
   course: Course;
 };

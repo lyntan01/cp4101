@@ -20,9 +20,9 @@ import { SidebarLayout } from "../libs/layout/layout";
 import { NAV_SECTIONS } from "../libs/layout/navigationSections";
 import CourseWrapper from "../pages/course-management/CourseWrapper";
 import CourseDetails from "../pages/course-details/CourseDetails";
-import ViewTraditionalTextPage from "../pages/lesson-pages/ViewTraditionalTextPage";
 import CreateTraditionalTextPage from "../pages/lesson-pages/CreateTraditionalTextPage";
 import EditTraditionalTextPage from "../pages/lesson-pages/EditTraditionalTextPage";
+import ViewPageWrapper from "../pages/lesson-pages/ViewPageWrapper";
 
 export default function App() {
   return (
@@ -50,10 +50,7 @@ export default function App() {
                 element={<CourseDetails />}
               />
 
-              <Route
-                path={`${PAGES}/:pageId`}
-                element={<ViewTraditionalTextPage />}
-              />
+              <Route path={`${PAGES}/:pageId`} element={<ViewPageWrapper />} />
               <Route
                 path={`${CREATE_PAGE}/:chapterId`}
                 element={<CreateTraditionalTextPage />}

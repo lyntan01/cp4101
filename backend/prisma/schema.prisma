@@ -35,11 +35,12 @@ model Course {
 }
 
 model Chapter {
-  id       String @id @default(uuid()) @db.Uuid
-  name     String
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String @db.Uuid
-  pages    Page[]
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  learningOutcomes String[]
+  course           Course   @relation(fields: [courseId], references: [id])
+  courseId         String   @db.Uuid
+  pages            Page[]
 }
 
 // Abstract class
@@ -51,10 +52,11 @@ model Page {
   type      PageType
 
   traditionalTextBasedLessonPage TraditionalTextBasedLessonPage?
-  codeSandboxPage                CodeSandboxPage?
-  stepByStepVisualizationPage    StepByStepVisualizationPage?
-  realTimeCodeFeedbackPage       RealTimeCodeFeedbackPage?
+  exercisePage                   ExercisePage?
+  explorationPage                ExplorationPage?
 }
+
+// Child classes of Page
 
 model TraditionalTextBasedLessonPage {
   id     String @id @default(uuid()) @db.Uuid
@@ -65,35 +67,33 @@ model TraditionalTextBasedLessonPage {
   content String
 }
 
-model CodeSandboxPage {
+model ExercisePage {
   id     String @id @default(uuid()) @db.Uuid
   page   Page   @relation(fields: [pageId], references: [id])
   pageId String @unique @db.Uuid
-  // Additional fields specific to CodeSandboxPage
+
+  // Additional fields specific to ExercisePage - exercise instructions, code sandbox info, correct answer
+  instructions  String
+  sandboxId     String
+  correctAnswer String
 }
 
-model StepByStepVisualizationPage {
+model ExplorationPage {
   id     String @id @default(uuid()) @db.Uuid
   page   Page   @relation(fields: [pageId], references: [id])
   pageId String @unique @db.Uuid
-  // Additional fields specific to StepByStepVisualizationPage
-}
 
-model RealTimeCodeFeedbackPage {
-  id     String @id @default(uuid()) @db.Uuid
-  page   Page   @relation(fields: [pageId], references: [id])
-  pageId String @unique @db.Uuid
-  // Additional fields specific to RealTimeCodeFeedbackPage
+  // Additional fields specific to ExplorationPage - exploration instructions, code sandbox info, feedback?
+  instructions String
+  sandboxId    String
 }
 
 model Analytics {
-  id                                  String @id @default(uuid()) @db.Uuid
-  percentStudentsUsedCodeSandbox      Float
-  percentStudentsViewedStepByStep     Float
-  percentStudentsUsedRealTimeFeedback Float
-  codeFeedbackOverview                String
-  course                              Course @relation(fields: [courseId], references: [id])
-  courseId                            String @unique @db.Uuid
+  id                             String @id @default(uuid()) @db.Uuid
+  percentStudentsUsedCodeSandbox Float
+  codeFeedbackOverview           String
+  course                         Course @relation(fields: [courseId], references: [id])
+  courseId                       String @unique @db.Uuid
 }
 
 // Enums
@@ -105,7 +105,6 @@ enum UserRole {
 
 enum PageType {
   TRADITIONAL_TEXT_BASED_LESSON
-  CODE_SANDBOX
-  STEP_BY_STEP_VISUALIZATION
-  REAL_TIME_CODE_FEEDBACK
+  EXERCISE
+  EXPLORATION
 }

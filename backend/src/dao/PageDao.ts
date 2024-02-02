@@ -25,11 +25,14 @@ export class PageDao {
     return this.prismaClient.page.findUnique({
       where: { id: pageId },
       include: {
-        chapter: true,
+        chapter: {
+          include: {
+            pages: true,
+          },
+        },
         traditionalTextBasedLessonPage: true,
-        codeSandboxPage: true,
-        stepByStepVisualizationPage: true,
-        realTimeCodeFeedbackPage: true,
+        exercisePage: true,
+        explorationPage: true,
       },
     });
   }
@@ -73,18 +76,13 @@ export class PageDao {
         where: { pageId },
       });
 
-      // Delete CodeSandboxPage if it exists
-      await prisma.codeSandboxPage.deleteMany({
+      // Delete ExercisePage if it exists
+      await prisma.exercisePage.deleteMany({
         where: { pageId },
       });
 
-      // Delete StepByStepVisualizationPage if it exists
-      await prisma.stepByStepVisualizationPage.deleteMany({
-        where: { pageId },
-      });
-
-      // Delete RealTimeCodeFeedbackPage if it exists
-      await prisma.realTimeCodeFeedbackPage.deleteMany({
+      // Delete ExplorationPage if it exists
+      await prisma.explorationPage.deleteMany({
         where: { pageId },
       });
 
