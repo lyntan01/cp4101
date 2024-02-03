@@ -1,21 +1,18 @@
 import { Tab } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import {
+  generateChapters as generateChaptersApi,
   createChapter as createChapterApi,
   deleteChapter as deleteChapterApi,
   getAllChaptersByCourseId,
 } from "../../api/chapter";
 import { deletePage as deletePageApi } from "../../api/page";
-import {
-  Chapter,
-  Course,
-  PageTypeEnum,
-  UserRoleEnum,
-} from "../../types/models";
+import { Chapter, Course, UserRoleEnum } from "../../types/models";
 import { classNames } from "../../utils/classNames";
 import { useToast } from "../../wrappers/ToastProvider";
 import { ChapterAccordion } from "./components/ChapterAccordion";
 import { CreateChapterModal } from "./components/CreateChapterModal";
+import { GenerateChaptersModal } from "./components/GenerateChaptersModal";
 
 interface ChaptersManagementPageProps {
   key: number;
@@ -28,6 +25,8 @@ export const ChaptersManagementPage = ({
   course,
   role,
 }: ChaptersManagementPageProps) => {
+  const [isGenerateChaptersModalOpen, setIsGenerateChaptersModalOpen] =
+    useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const { displayToast, ToastType } = useToast();
@@ -46,6 +45,34 @@ export const ChaptersManagementPage = ({
         );
       }
       console.log(error);
+    }
+  };
+
+  const generateChapters = async (
+    numChapters: number,
+    courseLearningOutcomes: string
+  ) => {
+    try {
+      const response = await generateChaptersApi({
+        courseId: course.id,
+        courseName: course.name,
+        courseLearningOutcomes: courseLearningOutcomes,
+        numChapters: numChapters,
+      });
+      console.log(response.data); // TO DELETE
+      displayToast("Chapters generated successfully.", ToastType.INFO);
+    } catch (error: any) {
+      if (error.response) {
+        displayToast(`${error.response.data.error}`, ToastType.ERROR);
+      } else {
+        displayToast(
+          "Chapters could not be generated: Unknown error.",
+          ToastType.ERROR
+        );
+      }
+      console.log(error);
+    } finally {
+      setIsGenerateChaptersModalOpen(false);
     }
   };
 
@@ -109,7 +136,12 @@ export const ChaptersManagementPage = ({
 
   useEffect(() => {
     fetchChapters();
-  }, [isCreateModalOpen, deleteChapter, deletePage]);
+  }, [
+    isCreateModalOpen,
+    isGenerateChaptersModalOpen,
+    deleteChapter,
+    deletePage,
+  ]);
 
   return (
     <>
@@ -128,10 +160,20 @@ export const ChaptersManagementPage = ({
               </h1>
             </div>
             {role === UserRoleEnum.TEACHER && (
-              <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+              <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex space-x-2">
+                {chapters.length === 0 && (
+                  <button
+                    type="button"
+                    disabled={chapters.length > 0}
+                    className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={() => setIsGenerateChaptersModalOpen(true)}
+                  >
+                    Generate Chapters
+                  </button>
+                )}
                 <button
                   type="button"
-                  className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="block rounded-md bg-gray-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                   onClick={() => setIsCreateModalOpen(true)}
                 >
                   Add chapter
@@ -147,6 +189,13 @@ export const ChaptersManagementPage = ({
           deletePage={deletePage}
         />
       </Tab.Panel>
+      {isGenerateChaptersModalOpen && (
+        <GenerateChaptersModal
+          setIsModalOpen={setIsGenerateChaptersModalOpen}
+          generateChapters={generateChapters}
+          courseName={course.name}
+        />
+      )}
       {isCreateModalOpen && (
         <CreateChapterModal
           setIsModalOpen={setIsCreateModalOpen}
