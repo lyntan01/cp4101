@@ -1,11 +1,13 @@
-import { ChapterDao } from "../dao/ChapterDao";
 import { Chapter, Prisma } from "@prisma/client";
 import OpenAI from "openai";
+import { ChapterService } from "./ChapterService";
+import { TraditionalTextBasedLessonPageService } from "./TraditionalTextBasedLessonPageService";
 
 export class OpenAiService {
   constructor(
     private openai: OpenAI = new OpenAI(),
-    private chapterDao: ChapterDao = new ChapterDao()
+    private chapterService: ChapterService = new ChapterService(),
+    private traditionalTextBasedLessonPageService: TraditionalTextBasedLessonPageService = new TraditionalTextBasedLessonPageService()
   ) {}
 
   public async generateChapters({
@@ -56,7 +58,22 @@ export class OpenAiService {
           connect: { id: courseId },
         },
       };
-      const createdChapter = await this.chapterDao.createChapter(chapterData);
+      const createdChapter = await this.chapterService.createChapter(
+        chapterData
+      );
+
+      // Create learning outcome page
+      const createdPage =
+        await this.traditionalTextBasedLessonPageService.createTraditionalTextBasedLessonPage(
+          {
+            title: "Learning Outcomes",
+            chapterId: createdChapter.id,
+            content: generateLearningOutcomesLexicalJSON(
+              chapter.learningOutcomes
+            ),
+          }
+        );
+
       createdChapters.push(createdChapter);
     }
 
@@ -64,7 +81,71 @@ export class OpenAiService {
   }
 }
 
-// const courseName = "React Basics";
-// const courseLearningOutcomes =
-//   "Students should be able to understand the basic concepts of React, and create their own React app by the end of the course.";
-// const numChapters = 3;
+function generateLearningOutcomesLexicalJSON(
+  learningOutcomes: string[]
+): string {
+  const outcomeItems = learningOutcomes.map((outcome, index) => ({
+    children: [
+      {
+        children: [
+          {
+            detail: 0,
+            format: 0,
+            mode: "normal",
+            style: "",
+            text: outcome,
+            type: "text",
+            version: 1,
+          },
+        ],
+        direction: "ltr",
+        format: "",
+        indent: 0,
+        type: "listitem",
+        version: 1,
+        value: index + 1,
+      },
+    ],
+    direction: "ltr",
+    format: "",
+    indent: 0,
+    type: "list",
+    version: 1,
+    listType: "bullet",
+    start: 1,
+    tag: "ul",
+  }));
+
+  const jsonOutput = {
+    root: {
+      children: [
+        {
+          children: [
+            {
+              detail: 0,
+              format: 0,
+              mode: "normal",
+              style: "",
+              text: "In this chapter, you will learn how to:",
+              type: "text",
+              version: 1,
+            },
+          ],
+          direction: "ltr",
+          format: "",
+          indent: 0,
+          type: "paragraph",
+          version: 1,
+        },
+        ...outcomeItems,
+      ],
+      direction: "ltr",
+      format: "",
+      indent: 0,
+      type: "root",
+      version: 1,
+    },
+  };
+
+  return JSON.stringify(jsonOutput, null, 2);
+}
