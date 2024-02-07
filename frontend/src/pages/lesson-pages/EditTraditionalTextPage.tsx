@@ -50,11 +50,9 @@ const EditTraditionalTextPage: React.FC = () => {
         displayToast("Page title cannot be empty!", ToastType.ERROR);
         return;
       }
-      console.log("updateTextPageData", updateTextPageData); //TODO: to delete
 
       const updatedPageResponse = await updateTextPage(updateTextPageData);
       displayToast("Text lesson page updated successfully.", ToastType.INFO);
-      console.log(updatedPageResponse); //TODO: to delete
       navigate(`/pages/${updatedPageResponse.data.pageId}`);
     } catch (error: any) {
       if (error.response) {
@@ -71,7 +69,7 @@ const EditTraditionalTextPage: React.FC = () => {
 
   useEffect(() => {
     fetchPage();
-  });
+  }, []);
 
   return (
     <div className="pb-12">
