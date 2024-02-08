@@ -128,6 +128,11 @@ function getCodeLanguageOptions(): [string, string][] {
     options.push([lang, friendlyName]);
   }
 
+  console.log(
+    "CODE_LANGUAGE_FRIENDLY_NAME_MAP",
+    CODE_LANGUAGE_FRIENDLY_NAME_MAP
+  );
+  console.log("options", options);
   return options;
 }
 

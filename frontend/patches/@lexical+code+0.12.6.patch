@@ -1,0 +1,90 @@
+diff --git a/node_modules/@lexical/code/CodeHighlightNode.d.ts b/node_modules/@lexical/code/CodeHighlightNode.d.ts
+index 950acff..6918999 100644
+--- a/node_modules/@lexical/code/CodeHighlightNode.d.ts
++++ b/node_modules/@lexical/code/CodeHighlightNode.d.ts
+@@ -20,6 +20,7 @@ import 'prismjs/components/prism-swift';
+ import 'prismjs/components/prism-typescript';
+ import 'prismjs/components/prism-java';
+ import 'prismjs/components/prism-cpp';
++import 'prismjs/components/prism-bash';
+ import { ElementNode, TextNode } from 'lexical';
+ export declare const DEFAULT_CODE_LANGUAGE = "javascript";
+ type SerializedCodeHighlightNode = Spread<{
+diff --git a/node_modules/@lexical/code/CodeHighlighter.d.ts b/node_modules/@lexical/code/CodeHighlighter.d.ts
+index 0729937..77370e5 100644
+--- a/node_modules/@lexical/code/CodeHighlighter.d.ts
++++ b/node_modules/@lexical/code/CodeHighlighter.d.ts
+@@ -20,6 +20,7 @@ import 'prismjs/components/prism-swift';
+ import 'prismjs/components/prism-typescript';
+ import 'prismjs/components/prism-java';
+ import 'prismjs/components/prism-cpp';
++import 'prismjs/components/prism-bash';
+ import { TabNode } from 'lexical';
+ import { CodeHighlightNode } from './CodeHighlightNode';
+ type TokenContent = string | Token | (string | Token)[];
+diff --git a/node_modules/@lexical/code/CodeNode.d.ts b/node_modules/@lexical/code/CodeNode.d.ts
+index 9174588..f66adef 100644
+--- a/node_modules/@lexical/code/CodeNode.d.ts
++++ b/node_modules/@lexical/code/CodeNode.d.ts
+@@ -21,6 +21,7 @@ import 'prismjs/components/prism-swift';
+ import 'prismjs/components/prism-typescript';
+ import 'prismjs/components/prism-java';
+ import 'prismjs/components/prism-cpp';
++import 'prismjs/components/prism-bash';
+ import { ElementNode } from 'lexical';
+ export type SerializedCodeNode = Spread<{
+     language: string | null | undefined;
+diff --git a/node_modules/@lexical/code/LexicalCode.dev.js b/node_modules/@lexical/code/LexicalCode.dev.js
+index 422c7d1..74cdb00 100644
+--- a/node_modules/@lexical/code/LexicalCode.dev.js
++++ b/node_modules/@lexical/code/LexicalCode.dev.js
+@@ -21,6 +21,7 @@ require('prismjs/components/prism-swift');
+ require('prismjs/components/prism-typescript');
+ require('prismjs/components/prism-java');
+ require('prismjs/components/prism-cpp');
++require('prismjs/components/prism-bash');
+ var utils = require('@lexical/utils');
+ var lexical = require('lexical');
+ 
+@@ -366,7 +367,8 @@ const CODE_LANGUAGE_FRIENDLY_NAME_MAP = {
+   sql: 'SQL',
+   swift: 'Swift',
+   typescript: 'TypeScript',
+-  xml: 'XML'
++  xml: 'XML',
++  bash: 'Bash',
+ };
+ const CODE_LANGUAGE_MAP = {
+   cpp: 'cpp',
+@@ -376,7 +378,8 @@ const CODE_LANGUAGE_MAP = {
+   plaintext: 'plain',
+   python: 'py',
+   text: 'plain',
+-  ts: 'typescript'
++  ts: 'typescript',
++  bash: 'bash',
+ };
+ function normalizeCodeLang(lang) {
+   return CODE_LANGUAGE_MAP[lang] || lang;
+diff --git a/node_modules/@lexical/code/LexicalCode.prod.js b/node_modules/@lexical/code/LexicalCode.prod.js
+index 1163d69..e150b34 100644
+--- a/node_modules/@lexical/code/LexicalCode.prod.js
++++ b/node_modules/@lexical/code/LexicalCode.prod.js
+@@ -5,7 +5,7 @@
+  * LICENSE file in the root directory of this source tree.
+  */
+ 'use strict';var d=require("prismjs");require("prismjs/components/prism-clike");require("prismjs/components/prism-javascript");require("prismjs/components/prism-markup");require("prismjs/components/prism-markdown");require("prismjs/components/prism-c");require("prismjs/components/prism-css");require("prismjs/components/prism-objectivec");require("prismjs/components/prism-sql");require("prismjs/components/prism-python");require("prismjs/components/prism-rust");require("prismjs/components/prism-swift");
+-require("prismjs/components/prism-typescript");require("prismjs/components/prism-java");require("prismjs/components/prism-cpp");var m=require("@lexical/utils"),q=require("lexical");let v=a=>null!=a&&d.languages.hasOwnProperty(a)?a:void 0;function x(a,b){for(let c of a.childNodes){if(m.isHTMLElement(c)&&c.tagName===b)return!0;x(c,b)}return!1}
++require("prismjs/components/prism-typescript");require("prismjs/components/prism-java");require("prismjs/components/prism-cpp");require("prismjs/components/prism-bash");var m=require("@lexical/utils"),q=require("lexical");let v=a=>null!=a&&d.languages.hasOwnProperty(a)?a:void 0;function x(a,b){for(let c of a.childNodes){if(m.isHTMLElement(c)&&c.tagName===b)return!0;x(c,b)}return!1}
+ class y extends q.ElementNode{static getType(){return"code"}static clone(a){return new y(a.__language,a.__key)}constructor(a,b){super(b);this.__language=v(a)}createDOM(a){let b=document.createElement("code");m.addClassNamesToElement(b,a.theme.code);b.setAttribute("spellcheck","false");(a=this.getLanguage())&&b.setAttribute("data-highlight-language",a);return b}updateDOM(a,b){let c=this.__language;a=a.__language;c?c!==a&&b.setAttribute("data-highlight-language",c):a&&b.removeAttribute("data-highlight-language");
+ return!1}exportDOM(){let a=document.createElement("pre");a.setAttribute("spellcheck","false");let b=this.getLanguage();b&&a.setAttribute("data-highlight-language",b);return{element:a}}static importDOM(){return{code:a=>null!=a.textContent&&(/\r?\n/.test(a.textContent)||x(a,"BR"))?{conversion:z,priority:1}:null,div:()=>({conversion:aa,priority:1}),pre:()=>({conversion:z,priority:0}),table:a=>A(a)?{conversion:ba,priority:3}:null,td:a=>{let b=a.closest("table");return a.classList.contains("js-file-line")?
+ {conversion:ca,priority:3}:b&&A(b)?{conversion:B,priority:3}:null},tr:a=>(a=a.closest("table"))&&A(a)?{conversion:B,priority:3}:null}}static importJSON(a){let b=C(a.language);b.setFormat(a.format);b.setIndent(a.indent);b.setDirection(a.direction);return b}exportJSON(){return{...super.exportJSON(),language:this.getLanguage(),type:"code",version:1}}insertNewAfter(a,b=!0){var c=this.getChildren(),e=c.length;if(2<=e&&"\n"===c[e-1].getTextContent()&&"\n"===c[e-2].getTextContent()&&a.isCollapsed()&&a.anchor.key===
+@@ -13,7 +13,7 @@ this.__key&&a.anchor.offset===e)return c[e-1].remove(),c[e-2].remove(),a=q.$crea
+ 1;h=e.getIndexWithinParent()+h;k=b.getParentOrThrow();l=[q.$createLineBreakNode(),...c];k.splice(h,0,l);(c=c[c.length-1])?c.select():0===f.offset?e.selectPrevious():e.getNextSibling().selectNext(0,0)}G(b)&&({offset:a}=a.anchor,b.splice(a,0,[q.$createLineBreakNode()]),b.select(a+1,a+1));return null}canIndent(){return!1}collapseAtStart(){let a=q.$createParagraphNode();this.getChildren().forEach(b=>a.append(b));this.replace(a);return!0}setLanguage(a){this.getWritable().__language=v(a)}getLanguage(){return this.getLatest().__language}}
+ function C(a){return q.$applyNodeReplacement(new y(a))}function G(a){return a instanceof y}function z(a){let b;m.isHTMLElement(a)&&(b=a.getAttribute("data-highlight-language"));return{node:C(b)}}function aa(a){let b=null!==a.style.fontFamily.match("monospace");return b||da(a)?{after:c=>{let e=a.parentNode;null!=e&&a!==e.lastChild&&c.push(q.$createLineBreakNode());return c},node:b?C():null}:{node:null}}function ba(){return{node:C()}}function B(){return{node:null}}
+ function ca(a){return{after:b=>{a.parentNode&&a.parentNode.nextSibling&&b.push(q.$createLineBreakNode());return b},node:null}}function da(a){for(a=a.parentElement;null!==a;){if(null!==a.style.fontFamily.match("monospace"))return!0;a=a.parentElement}return!1}function A(a){return a.classList.contains("js-file-line-container")}
+-let H={c:"C",clike:"C-like",cpp:"C++",css:"CSS",html:"HTML",java:"Java",js:"JavaScript",markdown:"Markdown",objc:"Objective-C",plain:"Plain Text",py:"Python",rust:"Rust",sql:"SQL",swift:"Swift",typescript:"TypeScript",xml:"XML"},I={cpp:"cpp",java:"java",javascript:"js",md:"markdown",plaintext:"plain",python:"py",text:"plain",ts:"typescript"};function K(a){return I[a]||a}
++let H={c:"C",clike:"C-like",cpp:"C++",css:"CSS",html:"HTML",java:"Java",js:"JavaScript",markdown:"Markdown",objc:"Objective-C",plain:"Plain Text",py:"Python",rust:"Rust",sql:"SQL",swift:"Swift",typescript:"TypeScript",xml:"XML",bash:"Bash"},I={cpp:"cpp",java:"java",javascript:"js",md:"markdown",plaintext:"plain",python:"py",text:"plain",ts:"typescript",bash:"bash"};function K(a){return I[a]||a}
+ class L extends q.TextNode{constructor(a,b,c){super(a,c);this.__highlightType=b}static getType(){return"code-highlight"}static clone(a){return new L(a.__text,a.__highlightType||void 0,a.__key)}getHighlightType(){return this.getLatest().__highlightType}createDOM(a){let b=super.createDOM(a);a=M(a.theme,this.__highlightType);m.addClassNamesToElement(b,a);return b}updateDOM(a,b,c){let e=super.updateDOM(a,b,c);a=M(c.theme,a.__highlightType);c=M(c.theme,this.__highlightType);a!==c&&(a&&m.removeClassNamesFromElement(b,
+ a),c&&m.addClassNamesToElement(b,c));return e}static importJSON(a){let b=F(a.text,a.highlightType);b.setFormat(a.format);b.setDetail(a.detail);b.setMode(a.mode);b.setStyle(a.style);return b}exportJSON(){return{...super.exportJSON(),highlightType:this.getHighlightType(),type:"code-highlight",version:1}}setFormat(){return this}isParentRequired(){return!0}createParentElementNode(){return C()}}function M(a,b){return b&&a&&a.codeHighlight&&a.codeHighlight[b]}
+ function F(a,b){return q.$applyNodeReplacement(new L(a,b))}function E(a){return a instanceof L}function D(a){let b=a;for(;E(a)||q.$isTabNode(a);)b=a,a=a.getPreviousSibling();return b}function N(a){let b=a;for(;E(a)||q.$isTabNode(a);)b=a,a=a.getNextSibling();return b}let O={defaultLanguage:"javascript",tokenize(a,b){return d.tokenize(a,d.languages[b||""]||d.languages[this.defaultLanguage])}};
