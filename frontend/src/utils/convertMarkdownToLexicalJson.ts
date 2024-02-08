@@ -93,9 +93,23 @@ function transformLexicalEditorState(editorStateJson: string): string {
 
 // TO DELETE FROM HERE ON
 export async function testConvertMarkdownToLexicalJson() {
-  const lexicalJson = await convertMarkdownToLexicalJson(lessonPageMarkdown);
+  const lexicalJson = await convertMarkdownToLexicalJson(markdownBashString);
   return transformLexicalEditorState(lexicalJson);
 }
+
+const markdownBashString: string = `
+# Markdown with Bash Code Block
+
+Here's an example of a Bash code block:
+
+\`\`\`bash
+#!/bin/bash
+
+echo "Hello, world!"
+\`\`\`
+
+This Bash script simply prints "Hello, world!" to the console.
+`;
 
 const lessonPageMarkdown: string = `
 # Lesson: Introduction to Flutter

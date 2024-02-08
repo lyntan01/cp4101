@@ -100,7 +100,8 @@ export class OpenAiService {
         {
           role: "system",
           content: `You are a helpful assistant designed to output JSON.
-        Provide your answer in JSON structure like this {"title": "<Title of lesson page>", "content": "<Typescript string containing content of lesson page in Markdown>"} `,
+        Provide your answer in JSON structure like this {"title": "Lesson: <Title of lesson page>", "content": "<Typescript string containing content of lesson page in Markdown>"}
+        Example title of lesson page: "Lesson: Introduction to Flutter"`,
         },
         {
           role: "user",
