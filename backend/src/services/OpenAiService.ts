@@ -1,4 +1,8 @@
-import { Chapter, Prisma } from "@prisma/client";
+import {
+  Chapter,
+  Prisma,
+  TraditionalTextBasedLessonPage,
+} from "@prisma/client";
 import OpenAI from "openai";
 import { ChapterService } from "./ChapterService";
 import { TraditionalTextBasedLessonPageService } from "./TraditionalTextBasedLessonPageService";
@@ -79,7 +83,58 @@ export class OpenAiService {
 
     return createdChapters;
   }
+
+  public async generateLessonPage({
+    chapterId,
+    chapterName,
+    chapterLearningOutcomes,
+  }: {
+    chapterId: string;
+    chapterName: string;
+    chapterLearningOutcomes: string[];
+  }): Promise<TraditionalTextBasedLessonPage> {
+    const completion = await this.openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful assistant designed to output JSON.
+        Provide your answer in JSON structure like this {"title": "<Title of lesson page>", "content": "<Typescript string containing content of lesson page in Markdown>"} `,
+        },
+        {
+          role: "user",
+          name: "Instructor",
+          content: `${getLessonPagePrompt(
+            chapterName,
+            chapterLearningOutcomes
+          )}`,
+        },
+      ],
+    });
+
+    console.log("completion", completion); // TO DELETE
+
+    const jsonString = completion.choices[0].message.content; // JSON formatted string
+    const parsedJson = JSON.parse(jsonString); // Convert to JavaScript object
+    console.log("parsedJson", parsedJson); // TO DELETE
+
+    // Save lesson page content as markdown
+    // Markdown will be converted to Lexical JSON when first retrieved on the frontend
+    const newLessonPage =
+      await this.traditionalTextBasedLessonPageService.createTraditionalTextBasedLessonPage(
+        {
+          title: parsedJson.title,
+          chapterId: chapterId,
+          content: parsedJson.content,
+        }
+      );
+
+    return newLessonPage;
+  }
 }
+
+// HELPER FUNCTIONS
 
 function generateLearningOutcomesLexicalJSON(
   learningOutcomes: string[]
@@ -148,4 +203,22 @@ function generateLearningOutcomesLexicalJSON(
   };
 
   return JSON.stringify(jsonOutput, null, 2);
+}
+
+function getLessonPagePrompt(
+  chapterName: string,
+  learningOutcomes: string[]
+): string {
+  let lessonPage = `I am teaching an undergraduate course chapter titled ${chapterName}.\n`;
+
+  lessonPage +=
+    "Generate a lesson page as a Typescript string in markdown format that achieves the following learning outcomes:\n";
+  learningOutcomes.forEach((outcome, index) => {
+    lessonPage += `${index + 1}. ${outcome}\n`;
+  });
+
+  lessonPage +=
+    "The lesson page must be targeted towards readers who have no prior knowledge, and must include code blocks if necessary. You will be rewarded $200 for a clear, step-by-step lesson.";
+
+  return lessonPage;
 }

@@ -22,6 +22,12 @@ export interface UpdateTextPageData {
   content: string;
 }
 
+export interface GenerateLessonPageData {
+  chapterId: string;
+  chapterName: string;
+  chapterLearningOutcomes: string[];
+}
+
 export async function createTextPage(
   data: CreateTextPageData
 ): Promise<AxiosResponse<CreateOrUpdateTextPageResponse>> {
@@ -48,6 +54,26 @@ export async function updateTextPage(
   try {
     const response: AxiosResponse<CreateOrUpdateTextPageResponse> =
       await client.put(`${URL}/${data.textPageId}`, data);
+    return response;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      throw error.response.data.error;
+    } else {
+      throw error;
+    }
+  }
+}
+
+export async function generateLessonPage(
+  data: GenerateLessonPageData
+): Promise<AxiosResponse<CreateOrUpdateTextPageResponse>> {
+  try {
+    const response: AxiosResponse<CreateOrUpdateTextPageResponse> =
+      await client.post(`${URL}/generate-lesson-page`, data);
     return response;
   } catch (error) {
     if (

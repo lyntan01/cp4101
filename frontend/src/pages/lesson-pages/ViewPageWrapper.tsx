@@ -13,7 +13,10 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { getPageById } from "../../api/page";
+import { updateTextPage } from "../../api/textPage";
 import TraditionalTextPageContent from "./TraditionalTextPageContent";
+import { isJsonFormat, isMarkdownFormat } from "../../utils/checkFormat";
+import { convertMarkdownToLexicalJson } from "../../utils/convertMarkdownToLexicalJson";
 
 const ViewPageWrapper: React.FC = () => {
   const { pageId } = useParams();
@@ -24,8 +27,28 @@ const ViewPageWrapper: React.FC = () => {
 
   const getPage = async () => {
     try {
-      const response = await getPageById(pageId ?? "");
-      console.log(response.data);
+      let response = await getPageById(pageId ?? "");
+
+      // Check if the page content is in Markdown, and convert to Lexical JSON if true
+      const page = response.data;
+      if (
+        page.type === PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON &&
+        !isJsonFormat(page.traditionalTextBasedLessonPage!.content) &&
+        isMarkdownFormat(page.traditionalTextBasedLessonPage!.content)
+      ) {
+        const lexicalJsonContent = await convertMarkdownToLexicalJson(
+          page.traditionalTextBasedLessonPage!.content
+        );
+        const updateTextPageResponse = await updateTextPage({
+          textPageId: page.traditionalTextBasedLessonPage!.id,
+          title: page.title,
+          content: lexicalJsonContent,
+        });
+
+        // Retrieve the page again, text page content should be in Lexical JSON format
+        response = await getPageById(pageId ?? "");
+      }
+
       setPage(response.data);
     } catch (error) {
       displayToast(

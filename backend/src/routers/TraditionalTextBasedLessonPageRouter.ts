@@ -6,10 +6,12 @@ import {
   CreateTraditionalTextBasedLessonPageData,
   UpdateTraditionalTextBasedLessonPageData,
 } from "../types/page";
+import { OpenAiService } from "../services/OpenAiService";
 
 const traditionalTextBasedLessonPageRouter = Router();
 const traditionalTextBasedLessonPageService =
   new TraditionalTextBasedLessonPageService();
+const openAiService = new OpenAiService();
 
 /**
  * POST /text-pages/
@@ -25,6 +27,29 @@ traditionalTextBasedLessonPageRouter.post(
           pageData
         );
       return res.status(201).json(newPage);
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+/**
+ * POST /text-pages/generate-lesson-page
+ * Creates a new lesson page from chapter name and chapter learning outcomes.
+ */
+traditionalTextBasedLessonPageRouter.post(
+  "/generate-lesson-page",
+  async (req: Request, res: Response) => {
+    try {
+      const chapterData: {
+        chapterId: string;
+        chapterName: string;
+        chapterLearningOutcomes: string[];
+      } = req.body;
+      const newLessonPage = await openAiService.generateLessonPage(chapterData);
+      return res.status(201).json(newLessonPage);
     } catch (error) {
       return res.status(500).json({
         error: error.message,

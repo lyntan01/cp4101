@@ -60,8 +60,14 @@ function transformLexicalEditorState(editorStateJson: string): string {
         // Convert paragraph with "---" to horizontal rule
         transformedNodes.push({ type: "horizontalrule", version: 1 });
       } else if (node.type.startsWith("heading")) {
-        // Add an empty paragraph (line) before headings
-        transformedNodes.push({ children: [], type: "paragraph", version: 1 });
+        // Add an empty paragraph (line) before headings, if it's not the first node
+        if (index !== 0) {
+          transformedNodes.push({
+            children: [],
+            type: "paragraph",
+            version: 1,
+          });
+        }
         transformedNodes.push(node);
         // Add an empty paragraph (line) after headings
         transformedNodes.push({ children: [], type: "paragraph", version: 1 });
