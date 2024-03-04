@@ -17,6 +17,7 @@ import { updateTextPage } from "../../api/textPage";
 import TraditionalTextPageContent from "./TraditionalTextPageContent";
 import { isJsonFormat, isMarkdownFormat } from "../../utils/checkFormat";
 import { convertMarkdownToLexicalJson } from "../../utils/convertMarkdownToLexicalJson";
+import ExercisePageContent from "./ExercisePageContent";
 
 const ViewPageWrapper: React.FC = () => {
   const { pageId } = useParams();
@@ -129,7 +130,7 @@ const ViewPageWrapper: React.FC = () => {
                 }
               />
             ) : page.type === PageTypeEnum.EXERCISE ? (
-              <></>
+              <ExercisePageContent exercisePage={page.exercisePage!} />
             ) : page.type === PageTypeEnum.EXPLORATION ? (
               <></>
             ) : (
