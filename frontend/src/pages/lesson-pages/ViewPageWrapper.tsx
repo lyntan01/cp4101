@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { LexOutput } from "../../rich-text-editor";
 import { Page, PageTypeEnum } from "../../types/models";
 import { useToast } from "../../wrappers/ToastProvider";
 import {
@@ -11,9 +10,13 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ArrowUturnLeftIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { getPageById } from "../../api/page";
+import { updateTextPage } from "../../api/textPage";
 import TraditionalTextPageContent from "./TraditionalTextPageContent";
+import { isJsonFormat, isMarkdownFormat } from "../../utils/checkFormat";
+import { convertMarkdownToLexicalJson } from "../../utils/convertMarkdownToLexicalJson";
 
 const ViewPageWrapper: React.FC = () => {
   const { pageId } = useParams();
@@ -24,8 +27,28 @@ const ViewPageWrapper: React.FC = () => {
 
   const getPage = async () => {
     try {
-      const response = await getPageById(pageId ?? "");
-      console.log(response.data);
+      let response = await getPageById(pageId ?? "");
+
+      // Check if the page content is in Markdown, and convert to Lexical JSON if true
+      const page = response.data;
+      if (
+        page.type === PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON &&
+        !isJsonFormat(page.traditionalTextBasedLessonPage!.content) &&
+        isMarkdownFormat(page.traditionalTextBasedLessonPage!.content)
+      ) {
+        const lexicalJsonContent = await convertMarkdownToLexicalJson(
+          page.traditionalTextBasedLessonPage!.content
+        );
+        const updateTextPageResponse = await updateTextPage({
+          textPageId: page.traditionalTextBasedLessonPage!.id,
+          title: page.title,
+          content: lexicalJsonContent,
+        });
+
+        // Retrieve the page again, text page content should be in Lexical JSON format
+        response = await getPageById(pageId ?? "");
+      }
+
       setPage(response.data);
     } catch (error) {
       displayToast(
@@ -59,15 +82,29 @@ const ViewPageWrapper: React.FC = () => {
       navigate(`/courses/${page.chapter.courseId}/2`);
     };
 
+    const navToEditPage = () => {
+      navigate(`/pages/edit/${page.id}`);
+    };
+
     return (
       <div className="pb-10">
-        <GenericButton
-          text="Back to chapters page"
-          type="button"
-          icon={<ArrowUturnLeftIcon className="h-4 w-4" />}
-          onClick={navToChaptersPage}
-          className="bg-white text-zinc-500 shadow-white -mt-4 mb-2 border-0"
-        />
+        <div className="flex justify-between mb-4">
+          <GenericButton
+            text="Back to chapters page"
+            type="button"
+            icon={<ArrowUturnLeftIcon className="h-4 w-4" />}
+            onClick={navToChaptersPage}
+            className="bg-white text-zinc-500 shadow-white -mt-4 border-0"
+          />
+          <GenericButton
+            text="Edit Page"
+            type="button"
+            icon={<PencilSquareIcon className="h-4 w-4" />}
+            onClick={navToEditPage}
+            className="-mt-4 border-0"
+          />
+        </div>
+
         <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-lg border border-gray-200">
           {/* HEADER */}
           <div className="bg-sky-50 px-4 py-5 sm:px-6">

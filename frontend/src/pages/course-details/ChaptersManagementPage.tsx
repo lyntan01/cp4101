@@ -3,19 +3,17 @@ import { useEffect, useState } from "react";
 import {
   createChapter as createChapterApi,
   deleteChapter as deleteChapterApi,
+  generateChapters as generateChaptersApi,
   getAllChaptersByCourseId,
 } from "../../api/chapter";
 import { deletePage as deletePageApi } from "../../api/page";
-import {
-  Chapter,
-  Course,
-  PageTypeEnum,
-  UserRoleEnum,
-} from "../../types/models";
+import { generateLessonPage as generateLessonPageApi } from "../../api/textPage";
+import { Chapter, Course, UserRoleEnum } from "../../types/models";
 import { classNames } from "../../utils/classNames";
 import { useToast } from "../../wrappers/ToastProvider";
 import { ChapterAccordion } from "./components/ChapterAccordion";
 import { CreateChapterModal } from "./components/CreateChapterModal";
+import { GenerateChaptersModal } from "./components/GenerateChaptersModal";
 
 interface ChaptersManagementPageProps {
   key: number;
@@ -28,6 +26,8 @@ export const ChaptersManagementPage = ({
   course,
   role,
 }: ChaptersManagementPageProps) => {
+  const [isGenerateChaptersModalOpen, setIsGenerateChaptersModalOpen] =
+    useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const { displayToast, ToastType } = useToast();
@@ -46,6 +46,83 @@ export const ChaptersManagementPage = ({
         );
       }
       console.log(error);
+    }
+  };
+
+  const generateChapters = async (
+    numChapters: number,
+    courseLearningOutcomes: string
+  ) => {
+    try {
+      const response = await generateChaptersApi({
+        courseId: course.id,
+        courseName: course.name,
+        courseLearningOutcomes: courseLearningOutcomes,
+        numChapters: numChapters,
+      });
+      console.log(response.data); // TO DELETE
+      displayToast("Chapters generated successfully.", ToastType.INFO);
+    } catch (error: any) {
+      if (error.response) {
+        displayToast(`${error.response.data.error}`, ToastType.ERROR);
+      } else {
+        displayToast(
+          "Chapters could not be generated: Unknown error.",
+          ToastType.ERROR
+        );
+      }
+      console.log(error);
+    } finally {
+      setIsGenerateChaptersModalOpen(false);
+    }
+  };
+
+  const generateLessonPages = async () => {
+    try {
+      // Map each chapter to a promise created by calling generateLessonPageApi
+      const promises = chapters.map((chapter) =>
+        generateLessonPageApi({
+          chapterId: chapter.id,
+          chapterName: chapter.name,
+          chapterLearningOutcomes: chapter.learningOutcomes,
+        })
+          .then((response) => ({
+            status: "fulfilled",
+            value: response.data,
+          }))
+          .catch((error) => ({
+            status: "rejected",
+            reason: error,
+          }))
+      );
+
+      // Wait for all promises to settle, regardless of fulfillment or rejection
+      const results = await Promise.allSettled(promises);
+
+      // Handle results
+      results.forEach((result, index) => {
+        if (result.status === "fulfilled") {
+          console.log(result.value); // TO DELETE
+        } else if (result.status === "rejected") {
+          const error = result.reason;
+          if (error.response) {
+            displayToast(`${error.response.data.error}`, ToastType.ERROR);
+          } else {
+            displayToast(
+              `Lesson page for chapter ${chapters[index].name} could not be generated: Unknown error.`,
+              ToastType.ERROR
+            );
+          }
+        }
+      });
+
+      displayToast("Lesson pages generated successfully.", ToastType.INFO);
+    } catch (error) {
+      console.log(error);
+      displayToast(
+        "An unexpected error occurred during lesson pages generation.",
+        ToastType.ERROR
+      );
     }
   };
 
@@ -109,7 +186,13 @@ export const ChaptersManagementPage = ({
 
   useEffect(() => {
     fetchChapters();
-  }, [isCreateModalOpen, deleteChapter, deletePage]);
+  }, [
+    isCreateModalOpen,
+    isGenerateChaptersModalOpen,
+    deleteChapter,
+    deletePage,
+    generateLessonPages,
+  ]);
 
   return (
     <>
@@ -128,10 +211,29 @@ export const ChaptersManagementPage = ({
               </h1>
             </div>
             {role === UserRoleEnum.TEACHER && (
-              <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+              <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex space-x-2">
+                {chapters.length === 0 ? (
+                  <button
+                    type="button"
+                    disabled={chapters.length > 0}
+                    className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={() => setIsGenerateChaptersModalOpen(true)}
+                  >
+                    Generate Chapters
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={chapters.length === 0}
+                    className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={() => generateLessonPages()}
+                  >
+                    Generate Lesson Pages for All Chapters
+                  </button>
+                )}
                 <button
                   type="button"
-                  className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="block rounded-md bg-gray-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                   onClick={() => setIsCreateModalOpen(true)}
                 >
                   Add chapter
@@ -147,6 +249,13 @@ export const ChaptersManagementPage = ({
           deletePage={deletePage}
         />
       </Tab.Panel>
+      {isGenerateChaptersModalOpen && (
+        <GenerateChaptersModal
+          setIsModalOpen={setIsGenerateChaptersModalOpen}
+          generateChapters={generateChapters}
+          courseName={course.name}
+        />
+      )}
       {isCreateModalOpen && (
         <CreateChapterModal
           setIsModalOpen={setIsCreateModalOpen}

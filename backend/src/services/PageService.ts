@@ -1,5 +1,5 @@
 import { PageDao } from "../dao/PageDao";
-import { Page, Prisma } from "@prisma/client";
+import { Page } from "@prisma/client";
 
 export class PageService {
   constructor(private pageDao: PageDao = new PageDao()) {}

@@ -10,6 +10,7 @@
     "@lexical/code": "^0.12.6",
     "@lexical/file": "^0.12.6",
     "@lexical/hashtag": "^0.12.6",
+    "@lexical/headless": "^0.12.6",
     "@lexical/link": "^0.12.6",
     "@lexical/list": "^0.12.6",
     "@lexical/mark": "^0.12.6",
@@ -39,6 +40,7 @@
     "lexical": "^0.12.6",
     "lodash-es": "^4.17.21",
     "nx": "^17.2.8",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
     "react": "^18.2.0",
@@ -55,7 +57,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "patch-package"
   },
   "eslintConfig": {
     "extends": [

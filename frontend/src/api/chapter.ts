@@ -4,9 +4,37 @@ import { Chapter } from "../types/models";
 
 const URL = "/chapters";
 
+export interface GenerateChaptersData {
+  courseId: string;
+  courseName: string;
+  courseLearningOutcomes: string;
+  numChapters: number;
+}
 export interface CreateChapterData {
   name: string;
   courseId: string;
+}
+
+export async function generateChapters(
+  data: GenerateChaptersData
+): Promise<AxiosResponse<Chapter[]>> {
+  try {
+    const response: AxiosResponse<Chapter[]> = await client.post(
+      `${URL}/generate`,
+      data
+    );
+    return response;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      throw error.response.data.error;
+    } else {
+      throw error;
+    }
+  }
 }
 
 export async function createChapter(

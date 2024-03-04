@@ -2,9 +2,11 @@ import { Request, Response, Router } from "express";
 import { ChapterService } from "../services/ChapterService";
 import { Prisma } from "@prisma/client";
 import { restrictBodyId } from "../middleware/validationMiddleware";
+import { OpenAiService } from "../services/OpenAiService";
 
 const chapterRouter = Router();
 const chapterService = new ChapterService();
+const openAiService = new OpenAiService();
 
 /**
  * POST /chapters/
@@ -15,6 +17,27 @@ chapterRouter.post("/", async (req: Request, res: Response) => {
     const chapterData: Prisma.ChapterCreateInput = req.body;
     const newChapter = await chapterService.createChapter(chapterData);
     return res.status(201).json(newChapter);
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * POST /chapters/generate
+ * Creates a new chapter.
+ */
+chapterRouter.post("/generate", async (req: Request, res: Response) => {
+  try {
+    const chaptersData: {
+      courseId: string;
+      courseName: string;
+      courseLearningOutcomes: string;
+      numChapters: number;
+    } = req.body;
+    const newChapters = await openAiService.generateChapters(chaptersData);
+    return res.status(201).json(newChapters);
   } catch (error) {
     return res.status(500).json({
       error: error.message,
