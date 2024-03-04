@@ -44,7 +44,7 @@ export class ChapterDao {
     });
   }
 
-  public async deleteChapter(chapterId: string): Promise<Chapter | null> {
+  public async deleteChapter(chapterId: string): Promise<Chapter | null> {    
     return this.prismaClient.chapter.delete({
       where: { id: chapterId },
     });
