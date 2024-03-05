@@ -20,9 +20,9 @@ import { SidebarLayout } from "../libs/layout/layout";
 import { NAV_SECTIONS } from "../libs/layout/navigationSections";
 import CourseWrapper from "../pages/course-management/CourseWrapper";
 import CourseDetails from "../pages/course-details/CourseDetails";
-import CreateTraditionalTextPage from "../pages/lesson-pages/CreateTraditionalTextPage";
-import EditTraditionalTextPage from "../pages/lesson-pages/EditTraditionalTextPage";
-import ViewPageWrapper from "../pages/lesson-pages/ViewPageWrapper";
+import CreateTraditionalTextPage from "../pages/view-pages/CreateTraditionalTextPage";
+import EditTraditionalTextPage from "../pages/view-pages/EditTraditionalTextPage";
+import ViewPageWrapper from "../pages/view-pages/ViewPageWrapper";
 
 export default function App() {
   return (

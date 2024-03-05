@@ -7,12 +7,16 @@ import {
 import OpenAI from "openai";
 import { ChapterService } from "./ChapterService";
 import { TraditionalTextBasedLessonPageService } from "./TraditionalTextBasedLessonPageService";
+import { ExercisePageService } from "./ExercisePageService";
+import { CodeSandboxService } from "./CodeSandboxService";
 
 export class OpenAiService {
   constructor(
     private openai: OpenAI = new OpenAI(),
     private chapterService: ChapterService = new ChapterService(),
-    private traditionalTextBasedLessonPageService: TraditionalTextBasedLessonPageService = new TraditionalTextBasedLessonPageService()
+    private traditionalTextBasedLessonPageService: TraditionalTextBasedLessonPageService = new TraditionalTextBasedLessonPageService(),
+    private exercisePageService: ExercisePageService = new ExercisePageService(),
+    private codeSandboxService: CodeSandboxService = new CodeSandboxService()
   ) { }
 
   public async generateChapters({
@@ -144,7 +148,7 @@ export class OpenAiService {
     chapterId: string;
     chapterName: string;
     chapterLearningOutcomes: string[];
-  }): Promise<void> {
+  }): Promise<ExercisePage> {
     const completion = await this.openai.chat.completions.create({
       model: "gpt-3.5-turbo-0125",
       response_format: { type: "json_object" },
@@ -173,7 +177,8 @@ export class OpenAiService {
           Part 3: the correct answer for the exercise.
 
           The instructions MUST be a Typescript string in markdown format. The instructions MUST NOT tell the user what they should do, as this will be revealing the correct answer.
-          The exercise MUST be code in files. There can be separate files.
+          The exercise MUST be code in files. There can be separate files. The exercise MUST contain ALL the code necessary to deploy the full app.
+          The exercise MUST contain the package.json file with all necessary dependencies listed.
           The correct answer MUST be a string containing the correct answer.
           `,
         },
@@ -254,32 +259,27 @@ export class OpenAiService {
       ],
     });
 
-    // console.log("completion", completion); // TO DELETE
-
     const jsonString = completion.choices[0].message.content; // JSON formatted string
     const parsedJson = JSON.parse(jsonString); // Convert to JavaScript object
     console.log("parsedJson", parsedJson); // TO DELETE
 
-    const filesContent = {};
+    // Use CodeSandboxService to create the sandbox
+    const sandboxId = await this.codeSandboxService.createSandbox(parsedJson.exercise.files);
 
-    for (const fileName in parsedJson.exercise.files) {
-      filesContent[fileName] = JSON.parse(parsedJson.exercise.files[fileName]);
-    }
-
-    console.log("filesContent", filesContent);
-
-    // Save lesson page content as markdown
+    // Save exercise page instructions as markdown
     // Markdown will be converted to Lexical JSON when first retrieved on the frontend
-    // const newLessonPage =
-    //   await this.traditionalTextBasedLessonPageService.createTraditionalTextBasedLessonPage(
-    //     {
-    //       title: parsedJson.title,
-    //       chapterId: chapterId,
-    //       content: parsedJson.content,
-    //     }
-    //   );
+    const newExercisePage =
+      await this.exercisePageService.createExercisePage(
+        {
+          title: parsedJson.title,
+          chapterId: chapterId,
+          instructions: parsedJson.instructions,
+          sandboxId: sandboxId,
+          correctAnswer: parsedJson.correctAnswer,
+        }
+      );
 
-    // return newLessonPage;
+    return newExercisePage;
   }
 }
 
@@ -395,9 +395,11 @@ function getExercisePagePrompt(
 
     The instructions MUST be a Typescript string in markdown format. The instructions MUST NOT tell the user what they should do, as this will be revealing the correct answer.
     The exercise MUST be code in files. There can be separate files.
+    The exercise MUST contain ALL the code necessary to deploy the full app. For instance, for a React app, the exercise MUST contain a index.html file, a index.js file, and a App.js file containing the App component.
+    The exercise MUST contain the package.json file with all necessary dependencies listed.
     The correct answer MUST be a string containing the correct answer.
     
-    You will be rewarded $200 for a clear exercise in the required format.`;
+    You will be rewarded $200 for a clear, full, deployable exercise in the required format.`;
 
   return prompt;
 }

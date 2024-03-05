@@ -238,8 +238,8 @@ export const ChaptersManagementPage = ({
   const isLessonPagesGenerated = (): boolean => {
     return chapters.every(
       chapter =>
-        chapter.pages.length > 0 &&
-        chapter.pages[chapter.pages.length - 1].type ===
+        chapter.pages.length > 1 &&
+        chapter.pages[1].type ===
           PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON
     )
   }

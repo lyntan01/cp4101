@@ -1,6 +1,6 @@
 import { LexOutput } from "../../rich-text-editor";
 import { ExercisePage } from "../../types/models";
-import CodeSandboxButton from "./CreateCodeSandbox";
+import CodeSandbox from "./CodeSandbox";
 
 interface ExercisePageContentProps {
   exercisePage: ExercisePage;
@@ -15,7 +15,7 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
         key={exercisePage.id}
         editorStateStr={exercisePage.instructions}
       />
-      <CodeSandboxButton />
+      <CodeSandbox sandboxId={exercisePage.sandboxId} />
     </div>
   );
 };
