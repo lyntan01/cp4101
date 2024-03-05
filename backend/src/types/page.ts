@@ -9,3 +9,20 @@ export interface UpdateTraditionalTextBasedLessonPageData {
   title: string;
   content: string;
 }
+
+export interface CreateExercisePageData {
+  title: string;
+  chapterId: string;
+  instructions: string;
+  sandboxId: string;
+  correctAnswer: string;
+}
+
+export interface UpdateExercisePageData {
+  pageId: string;
+  title: string;
+  instructions: string;
+  sandboxId: string;
+  correctAnswer: string;
+}
+

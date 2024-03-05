@@ -13,7 +13,7 @@ export class OpenAiService {
     private openai: OpenAI = new OpenAI(),
     private chapterService: ChapterService = new ChapterService(),
     private traditionalTextBasedLessonPageService: TraditionalTextBasedLessonPageService = new TraditionalTextBasedLessonPageService()
-  ) {}
+  ) { }
 
   public async generateChapters({
     courseId,
@@ -254,11 +254,19 @@ export class OpenAiService {
       ],
     });
 
-    console.log("completion", completion); // TO DELETE
+    // console.log("completion", completion); // TO DELETE
 
     const jsonString = completion.choices[0].message.content; // JSON formatted string
     const parsedJson = JSON.parse(jsonString); // Convert to JavaScript object
     console.log("parsedJson", parsedJson); // TO DELETE
+
+    const filesContent = {};
+
+    for (const fileName in parsedJson.exercise.files) {
+      filesContent[fileName] = JSON.parse(parsedJson.exercise.files[fileName]);
+    }
+
+    console.log("filesContent", filesContent);
 
     // Save lesson page content as markdown
     // Markdown will be converted to Lexical JSON when first retrieved on the frontend
