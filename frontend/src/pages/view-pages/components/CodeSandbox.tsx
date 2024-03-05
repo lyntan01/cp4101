@@ -8,7 +8,7 @@ const CodeSandbox: React.FC<CodeSandboxProps> = ({
   sandboxId,
 }: CodeSandboxProps) => {
   return (
-    <div className="mt-10">
+    <div className="my-10">
       {sandboxId.length > 0 ? (
         <iframe
           src={`https://codesandbox.io/embed/${sandboxId}?view=Editor+%2B+Preview`}

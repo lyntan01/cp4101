@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Page, PageTypeEnum } from "../../types/models";
+import { Page, PageTypeEnum, User, UserRoleEnum } from "../../types/models";
 import { useToast } from "../../wrappers/ToastProvider";
 import {
   GenericButton,
@@ -19,10 +19,13 @@ import TraditionalTextPageContent from "./TraditionalTextPageContent";
 import { isJsonFormat, isMarkdownFormat } from "../../utils/checkFormat";
 import { convertMarkdownToLexicalJson } from "../../utils/convertMarkdownToLexicalJson";
 import ExercisePageContent from "./ExercisePageContent";
+import { useAuth } from "../../wrappers/AuthContext";
 
 const ViewPageWrapper: React.FC = () => {
   const { pageId } = useParams();
   const [page, setPage] = useState<Page>();
+
+  const { user } = useAuth<User>();
 
   const { displayToast, ToastType } = useToast();
   const navigate = useNavigate();
@@ -157,7 +160,10 @@ const ViewPageWrapper: React.FC = () => {
                 }
               />
             ) : page.type === PageTypeEnum.EXERCISE ? (
-              <ExercisePageContent exercisePage={page.exercisePage!} />
+                <ExercisePageContent
+                  exercisePage={page.exercisePage!}
+                  role={user?.role ?? UserRoleEnum.STUDENT}
+                />
             ) : page.type === PageTypeEnum.EXPLORATION ? (
               <></>
             ) : (
