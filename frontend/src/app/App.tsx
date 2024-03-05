@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import {
   COURSES,
-  CREATE_PAGE,
+  CREATE_TEXT_PAGE,
   LOGIN,
   PAGES,
   SETTINGS,
@@ -52,7 +52,7 @@ export default function App() {
 
               <Route path={`${PAGES}/:pageId`} element={<ViewPageWrapper />} />
               <Route
-                path={`${CREATE_PAGE}/:chapterId`}
+                path={`${CREATE_TEXT_PAGE}/:chapterId`}
                 element={<CreateTraditionalTextPage />}
               />
               <Route
