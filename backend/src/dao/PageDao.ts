@@ -69,6 +69,28 @@ export class PageDao {
     });
   }
 
+  public async updatePageByExercisePageId(
+    pageId: string,
+    pageData: Prisma.PageUpdateInput
+  ): Promise<Page | null> {
+    // First, find the Page associated with the ExercisePage
+    const exercisePage =
+      await this.prismaClient.exercisePage.findUnique({
+        where: { id: pageId },
+        include: { page: true },
+      });
+
+    if (!exercisePage) {
+      return null;
+    }
+
+    // Then, update the Page using the ID
+    return this.prismaClient.page.update({
+      where: { id: exercisePage.pageId },
+      data: pageData,
+    });
+  }
+
   public async deletePage(pageId: string): Promise<Page | null> {
     const response = await this.prismaClient.$transaction(async (prisma) => {
       // Delete TraditionalTextBasedLessonPage if it exists

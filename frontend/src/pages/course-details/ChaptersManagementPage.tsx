@@ -8,7 +8,8 @@ import {
 } from "../../api/chapter";
 import { deletePage as deletePageApi } from "../../api/page";
 import { generateLessonPage as generateLessonPageApi } from "../../api/textPage";
-import { Chapter, Course, UserRoleEnum } from "../../types/models";
+import { generateExercisePage as generateExercisePageApi } from "../../api/exercisePage";
+import { Chapter, Course, PageTypeEnum, UserRoleEnum } from "../../types/models";
 import { classNames } from "../../utils/classNames";
 import { useToast } from "../../wrappers/ToastProvider";
 import { ChapterAccordion } from "./components/ChapterAccordion";
@@ -126,6 +127,55 @@ export const ChaptersManagementPage = ({
     }
   };
 
+  const generateExercisePages = async () => {
+    try {
+      // Map each chapter to a promise created by calling generateExercisePageApi
+      const promises = chapters.map((chapter) =>
+        generateExercisePageApi({
+          chapterId: chapter.id,
+          chapterName: chapter.name,
+          chapterLearningOutcomes: chapter.learningOutcomes,
+        })
+          .then((response) => ({
+            status: "fulfilled",
+            value: response.data,
+          }))
+          .catch((error) => ({
+            status: "rejected",
+            reason: error,
+          }))
+      );
+
+      // Wait for all promises to settle, regardless of fulfillment or rejection
+      const results = await Promise.allSettled(promises);
+
+      // Handle results
+      results.forEach((result, index) => {
+        if (result.status === "fulfilled") {
+          console.log(result.value); // TO DELETE
+        } else if (result.status === "rejected") {
+          const error = result.reason;
+          if (error.response) {
+            displayToast(`${error.response.data.error}`, ToastType.ERROR);
+          } else {
+            displayToast(
+              `Exercise page for chapter ${chapters[index].name} could not be generated: Unknown error.`,
+              ToastType.ERROR
+            );
+          }
+        }
+      });
+
+      displayToast("Exercise pages generated successfully.", ToastType.INFO);
+    } catch (error) {
+      console.log(error);
+      displayToast(
+        "An unexpected error occurred during exercise pages generation.",
+        ToastType.ERROR
+      );
+    }
+  };
+
   const createChapter = async (chapterName: string) => {
     try {
       await createChapterApi({
@@ -184,6 +234,16 @@ export const ChaptersManagementPage = ({
     }
   };
 
+  // Helper function, to delete
+  const isLessonPagesGenerated = (): boolean => {
+    return chapters.every(
+      chapter =>
+        chapter.pages.length > 1 &&
+        chapter.pages[1].type ===
+          PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON
+    )
+  }
+
   useEffect(() => {
     fetchChapters();
   }, [
@@ -221,7 +281,7 @@ export const ChaptersManagementPage = ({
                   >
                     Generate Chapters
                   </button>
-                ) : (
+                ) : !isLessonPagesGenerated() ? (
                   <button
                     type="button"
                     disabled={chapters.length === 0}
@@ -229,6 +289,15 @@ export const ChaptersManagementPage = ({
                     onClick={() => generateLessonPages()}
                   >
                     Generate Lesson Pages for All Chapters
+                  </button>
+                  ) : (
+                    <button
+                    type="button"
+                    disabled={chapters.length === 0}
+                    className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={() => generateExercisePages()}
+                  >
+                    Generate Exercise Pages for All Chapters
                   </button>
                 )}
                 <button

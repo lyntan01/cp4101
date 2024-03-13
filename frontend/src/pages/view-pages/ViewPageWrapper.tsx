@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Page, PageTypeEnum } from "../../types/models";
+import { Page, PageTypeEnum, User, UserRoleEnum } from "../../types/models";
 import { useToast } from "../../wrappers/ToastProvider";
 import {
   GenericButton,
@@ -14,42 +14,31 @@ import {
 } from "@heroicons/react/24/outline";
 import { getPageById } from "../../api/page";
 import { updateTextPage } from "../../api/textPage";
+import { updateExercisePage } from "../../api/exercisePage";
 import TraditionalTextPageContent from "./TraditionalTextPageContent";
 import { isJsonFormat, isMarkdownFormat } from "../../utils/checkFormat";
 import { convertMarkdownToLexicalJson } from "../../utils/convertMarkdownToLexicalJson";
+import ExercisePageContent from "./ExercisePageContent";
+import { useAuth } from "../../wrappers/AuthContext";
 
 const ViewPageWrapper: React.FC = () => {
   const { pageId } = useParams();
   const [page, setPage] = useState<Page>();
+
+  const { user } = useAuth<User>();
 
   const { displayToast, ToastType } = useToast();
   const navigate = useNavigate();
 
   const getPage = async () => {
     try {
-      let response = await getPageById(pageId ?? "");
+      const response = await getPageById(pageId ?? "");
+      const page = response.data;
 
       // Check if the page content is in Markdown, and convert to Lexical JSON if true
-      const page = response.data;
-      if (
-        page.type === PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON &&
-        !isJsonFormat(page.traditionalTextBasedLessonPage!.content) &&
-        isMarkdownFormat(page.traditionalTextBasedLessonPage!.content)
-      ) {
-        const lexicalJsonContent = await convertMarkdownToLexicalJson(
-          page.traditionalTextBasedLessonPage!.content
-        );
-        const updateTextPageResponse = await updateTextPage({
-          textPageId: page.traditionalTextBasedLessonPage!.id,
-          title: page.title,
-          content: lexicalJsonContent,
-        });
+      const updatedPage = await convertPageContentToLexicalJson(page);
 
-        // Retrieve the page again, text page content should be in Lexical JSON format
-        response = await getPageById(pageId ?? "");
-      }
-
-      setPage(response.data);
+      setPage(updatedPage);
     } catch (error) {
       displayToast(
         "Page could not be retrieved from the server.",
@@ -58,6 +47,48 @@ const ViewPageWrapper: React.FC = () => {
       console.log(error);
     }
   };
+
+  // Helper function to convert page content from Markdown to Lexical JSON
+  const convertPageContentToLexicalJson = async (page: Page): Promise<Page> => {
+    if (
+      page.type === PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON &&
+      !isJsonFormat(page.traditionalTextBasedLessonPage!.content) &&
+      isMarkdownFormat(page.traditionalTextBasedLessonPage!.content)
+    ) {
+      const lexicalJsonContent = await convertMarkdownToLexicalJson(
+        page.traditionalTextBasedLessonPage!.content
+      )
+      const updateTextPageResponse = await updateTextPage({
+        textPageId: page.traditionalTextBasedLessonPage!.id,
+        title: page.title,
+        content: lexicalJsonContent
+      })
+
+      // Retrieve the page again, text page content should be in Lexical JSON format
+      const response = await getPageById(pageId ?? '')
+      return response.data
+    } else if (
+      page.type === PageTypeEnum.EXERCISE &&
+      !isJsonFormat(page.exercisePage!.instructions)
+    ) {
+      const lexicalJsonContent = await convertMarkdownToLexicalJson(
+        page.exercisePage!.instructions
+      )
+      const updateExercisePageResponse = await updateExercisePage({
+        exercisePageId: page.exercisePage!.id,
+        title: page.title,
+        instructions: lexicalJsonContent,
+        sandboxId: page.exercisePage!.sandboxId,
+        correctAnswer: page.exercisePage!.correctAnswer
+      })
+
+      // Retrieve the page again, exercise page instructions should be in Lexical JSON format
+      const response = await getPageById(pageId ?? '')
+      return response.data
+    }
+
+    return page
+  }
 
   useEffect(() => {
     getPage();
@@ -129,7 +160,10 @@ const ViewPageWrapper: React.FC = () => {
                 }
               />
             ) : page.type === PageTypeEnum.EXERCISE ? (
-              <></>
+                <ExercisePageContent
+                  exercisePage={page.exercisePage!}
+                  role={user?.role ?? UserRoleEnum.STUDENT}
+                />
             ) : page.type === PageTypeEnum.EXPLORATION ? (
               <></>
             ) : (

@@ -7,6 +7,7 @@ import courseRouter from "./routers/CourseRouter";
 import chapterRouter from "./routers/ChapterRouter";
 import pageRouter from "./routers/PageRouter";
 import traditionalTextBasedLessonPageRouter from "./routers/TraditionalTextBasedLessonPageRouter";
+import exercisePageRouter from "./routers/ExercisePageRouter";
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use("/api/courses", courseRouter);
 app.use("/api/chapters", chapterRouter);
 app.use("/api/pages", pageRouter);
 app.use("/api/text-pages", traditionalTextBasedLessonPageRouter);
+app.use("/api/exercise-pages", exercisePageRouter);
 
 // Start the server
 const server = app.listen(port, () => {

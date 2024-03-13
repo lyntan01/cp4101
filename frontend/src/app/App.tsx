@@ -2,7 +2,8 @@ import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import {
   COURSES,
-  CREATE_PAGE,
+  CREATE_TEXT_PAGE,
+  CREATE_EXERCISE_PAGE,
   LOGIN,
   PAGES,
   SETTINGS,
@@ -20,9 +21,10 @@ import { SidebarLayout } from "../libs/layout/layout";
 import { NAV_SECTIONS } from "../libs/layout/navigationSections";
 import CourseWrapper from "../pages/course-management/CourseWrapper";
 import CourseDetails from "../pages/course-details/CourseDetails";
-import CreateTraditionalTextPage from "../pages/lesson-pages/CreateTraditionalTextPage";
-import EditTraditionalTextPage from "../pages/lesson-pages/EditTraditionalTextPage";
-import ViewPageWrapper from "../pages/lesson-pages/ViewPageWrapper";
+import CreateTraditionalTextPage from "../pages/create-pages/CreateTraditionalTextPage";
+import EditTraditionalTextPage from "../pages/view-pages/EditTraditionalTextPage";
+import ViewPageWrapper from "../pages/view-pages/ViewPageWrapper";
+import CreateExercisePage from "../pages/create-pages/CreateExercisePage";
 
 export default function App() {
   return (
@@ -52,8 +54,12 @@ export default function App() {
 
               <Route path={`${PAGES}/:pageId`} element={<ViewPageWrapper />} />
               <Route
-                path={`${CREATE_PAGE}/:chapterId`}
+                path={`${CREATE_TEXT_PAGE}/:chapterId`}
                 element={<CreateTraditionalTextPage />}
+              />
+              <Route
+                path={`${CREATE_EXERCISE_PAGE}/:chapterId`}
+                element={<CreateExercisePage />}
               />
               <Route
                 path={`${EDIT_PAGE}/:pageId`}
