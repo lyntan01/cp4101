@@ -1,5 +1,5 @@
-import { Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { Route, Routes } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import {
   COURSES,
   CREATE_TEXT_PAGE,
@@ -8,27 +8,27 @@ import {
   PAGES,
   SETTINGS,
   SIGN_UP,
-  EDIT_PAGE,
-} from "../libs/routes";
-import Login from "../pages/entry/Login";
-import SignUp from "../pages/entry/SignUp";
-import { AuthWrapper } from "../wrappers/AuthContext";
-import { EnforceLoginStatePageWrapper } from "../wrappers/EnforceLoginStateWrapper";
-import { ToastProvider } from "../wrappers/ToastProvider";
-import "./App.css";
-import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
-import { SidebarLayout } from "../libs/layout/layout";
-import { NAV_SECTIONS } from "../libs/layout/navigationSections";
-import CourseWrapper from "../pages/course-management/CourseWrapper";
-import CourseDetails from "../pages/course-details/CourseDetails";
-import CreateTraditionalTextPage from "../pages/create-pages/CreateTraditionalTextPage";
-import EditTraditionalTextPage from "../pages/view-pages/EditTraditionalTextPage";
-import ViewPageWrapper from "../pages/view-pages/ViewPageWrapper";
-import CreateExercisePage from "../pages/create-pages/CreateExercisePage";
+  EDIT_PAGE
+} from '../libs/routes'
+import Login from '../pages/entry/Login'
+import SignUp from '../pages/entry/SignUp'
+import { AuthWrapper } from '../wrappers/AuthContext'
+import { EnforceLoginStatePageWrapper } from '../wrappers/EnforceLoginStateWrapper'
+import { ToastProvider } from '../wrappers/ToastProvider'
+import './App.css'
+import 'react-toastify/dist/ReactToastify.css' // Import toastify CSS
+import { SidebarLayout } from '../libs/layout/layout'
+import { NAV_SECTIONS } from '../libs/layout/navigationSections'
+import CourseWrapper from '../pages/course-management/CourseWrapper'
+import CourseDetails from '../pages/course-details/CourseDetails'
+import CreateTraditionalTextPage from '../pages/create-pages/CreateTraditionalTextPage'
+import ViewPageWrapper from '../pages/view-pages/ViewPageWrapper'
+import CreateExercisePage from '../pages/create-pages/CreateExercisePage'
+import EditPageWrapper from '../pages/edit-pages/EditPageWrapper'
 
-export default function App() {
+export default function App () {
   return (
-    <div className="h-full">
+    <div className='h-full'>
       <AuthWrapper>
         <ToastProvider>
           <ToastContainer />
@@ -41,7 +41,7 @@ export default function App() {
               }
             >
               {/* Nest all routes that has a SecondaryLayout here */}
-              <Route path="/" element={<h1>Welcome!</h1>} />
+              <Route path='/' element={<h1>Welcome!</h1>} />
               <Route path={COURSES} element={<CourseWrapper />} />
               <Route
                 path={`${COURSES}/:courseId`}
@@ -63,7 +63,7 @@ export default function App() {
               />
               <Route
                 path={`${EDIT_PAGE}/:pageId`}
-                element={<EditTraditionalTextPage />}
+                element={<EditPageWrapper />}
               />
 
               <Route path={SETTINGS} element={<h1>Settings</h1>} />
@@ -74,5 +74,5 @@ export default function App() {
         </ToastProvider>
       </AuthWrapper>
     </div>
-  );
+  )
 }

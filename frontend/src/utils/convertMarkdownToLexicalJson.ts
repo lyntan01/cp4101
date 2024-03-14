@@ -1,6 +1,11 @@
 import { createHeadlessEditor } from "@lexical/headless";
 import { $convertFromMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import PlaygroundNodes from "../rich-text-editor/nodes/PlaygroundNodes";
+import { Page, PageTypeEnum } from '../types/models';
+import { getPageById } from '../api/page';
+import { updateTextPage } from '../api/textPage';
+import { updateExercisePage } from '../api/exercisePage';
+import { isJsonFormat, isMarkdownFormat } from './checkFormat';
 
 type LexicalNode = {
   type: string;
@@ -8,6 +13,48 @@ type LexicalNode = {
   text?: string;
   [key: string]: any;
 };
+
+// Helper function to convert page content from Markdown to Lexical JSON
+export const convertPageContentToLexicalJson = async (page: Page): Promise<Page> => {
+  if (
+    page.type === PageTypeEnum.TRADITIONAL_TEXT_BASED_LESSON &&
+    !isJsonFormat(page.traditionalTextBasedLessonPage!.content) &&
+    isMarkdownFormat(page.traditionalTextBasedLessonPage!.content)
+  ) {
+    const lexicalJsonContent = await convertMarkdownToLexicalJson(
+      page.traditionalTextBasedLessonPage!.content
+    )
+    const updateTextPageResponse = await updateTextPage({
+      textPageId: page.traditionalTextBasedLessonPage!.id,
+      title: page.title,
+      content: lexicalJsonContent
+    })
+
+    // Retrieve the page again, text page content should be in Lexical JSON format
+    const response = await getPageById(page.id ?? '')
+    return response.data
+  } else if (
+    page.type === PageTypeEnum.EXERCISE &&
+    !isJsonFormat(page.exercisePage!.instructions)
+  ) {
+    const lexicalJsonContent = await convertMarkdownToLexicalJson(
+      page.exercisePage!.instructions
+    )
+    const updateExercisePageResponse = await updateExercisePage({
+      exercisePageId: page.exercisePage!.id,
+      title: page.title,
+      instructions: lexicalJsonContent,
+      sandboxId: page.exercisePage!.sandboxId,
+      correctAnswer: page.exercisePage!.correctAnswer
+    })
+
+    // Retrieve the page again, exercise page instructions should be in Lexical JSON format
+    const response = await getPageById(page.id ?? '')
+    return response.data
+  }
+
+  return page
+}
 
 export async function convertMarkdownToLexicalJson(
   markdownString: string
