@@ -66,6 +66,7 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
               value={exercisePage.correctAnswer}
               language='javascript'
               readOnly={true}
+              className='h-96'
             />
           </AccordionBody>
         </Accordion>

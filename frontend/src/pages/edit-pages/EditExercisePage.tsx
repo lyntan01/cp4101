@@ -134,7 +134,7 @@ const EditExercisePage: React.FC<EditExercisePageProps> = ({
           </div>
         </div>
 
-        <div className='sm:col-span-4'>
+        <div className='sm:col-span-6'>
           <label
             htmlFor='correctAnswer'
             className='block text-sm font-medium leading-6 text-gray-900'
@@ -142,18 +142,18 @@ const EditExercisePage: React.FC<EditExercisePageProps> = ({
             Correct Answer
           </label>
           <div className='mt-2'>
-            {/* TODO: Replace with Monaco Editor */}
-            <textarea
-              id='correctAnswer'
-              name='correctAnswer'
+            {/* TODO: Add language selection */}
+            <MonacoEditor
               value={updateExercisePageData.correctAnswer}
-              onChange={e =>
+              language='javascript'
+              readOnly={false}
+              handleEditorChange={(value: string | undefined) =>
                 setUpdateExercisePageData({
                   ...updateExercisePageData,
-                  correctAnswer: e.target.value
+                  correctAnswer: value ?? ''
                 })
               }
-              className='block w-full h-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+              className='block w-full h-96 rounded-lg border-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             />
           </div>
         </div>

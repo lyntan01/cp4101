@@ -147,7 +147,7 @@ const CreateExercisePage: React.FC = () => {
           </div>
         </div>
 
-        <div className='sm:col-span-4'>
+        <div className='sm:col-span-6'>
           <label
             htmlFor='correctAnswer'
             className='block text-sm font-medium leading-6 text-gray-900'
@@ -155,19 +155,22 @@ const CreateExercisePage: React.FC = () => {
             Correct Answer
           </label>
           <div className='mt-2'>
-            {/* TODO: Replace with Monaco Editor */}
-            <textarea
-              id='correctAnswer'
-              name='correctAnswer'
-              placeholder={placeholderCorrectAnswerString}
-              value={exercisePageData.correctAnswer}
-              onChange={e =>
+            {/* TODO: Add language selection */}
+            <MonacoEditor
+              value={
+                exercisePageData.correctAnswer.length === 0
+                  ? placeholderCorrectAnswerString
+                  : exercisePageData.correctAnswer
+              }
+              language='javascript'
+              readOnly={false}
+              handleEditorChange={(value: string | undefined) =>
                 setExercisePageData({
                   ...exercisePageData,
-                  correctAnswer: e.target.value
+                  correctAnswer: value ?? ''
                 })
               }
-              className='block w-full h-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+              className='block w-full h-96 rounded-lg border-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             />
           </div>
         </div>
@@ -186,7 +189,7 @@ const CreateExercisePage: React.FC = () => {
 
 export default CreateExercisePage
 
-const placeholderCorrectAnswerString = `e.g. 
+const placeholderCorrectAnswerString = `// e.g. 
 // Clock.js 
 export default function Clock({ color, time }) {
   return (
