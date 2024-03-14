@@ -1,83 +1,70 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { getChapterById } from '../../api/chapter'
-import { LexEditor } from '../../rich-text-editor'
-import { Chapter } from '../../types/models'
-import { useToast } from '../../wrappers/ToastProvider'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { GenericButton } from '../../components/buttons'
+import { LexEditor } from '../../rich-text-editor'
+import { useToast } from '../../wrappers/ToastProvider'
+import { Page } from '../../types/models'
 import {
-  CreateExercisePageData,
-  createExercisePage
+  UpdateExercisePageData,
+  updateExercisePage
 } from '../../api/exercisePage'
 import { MonacoEditor } from '../../components/monaco-editor'
 
-const CreateExercisePage: React.FC = () => {
-  const { chapterId } = useParams()
-  const [chapter, setChapter] = useState<Chapter>()
-  const [exercisePageData, setExercisePageData] =
-    useState<CreateExercisePageData>({
-      title: '',
-      chapterId: chapterId ?? '',
-      instructions: '',
-      sandboxId: '',
-      correctAnswer: ''
+interface EditExercisePageProps {
+  page: Page
+}
+
+const EditExercisePage: React.FC<EditExercisePageProps> = ({
+  page
+}: EditExercisePageProps) => {
+  const [updateExercisePageData, setUpdateExercisePageData] =
+    useState<UpdateExercisePageData>({
+      exercisePageId: page.exercisePage!.id,
+      title: page.title,
+      instructions: page.exercisePage!.instructions,
+      sandboxId: page.exercisePage!.sandboxId,
+      correctAnswer: page.exercisePage!.correctAnswer
     })
 
   const { displayToast, ToastType } = useToast()
   const navigate = useNavigate()
 
-  const fetchChapter = async () => {
-    try {
-      const response = await getChapterById(chapterId ?? '')
-      setChapter(response.data)
-    } catch (error: any) {
-      if (error.response) {
-        displayToast(`${error.response.data.error}`, ToastType.ERROR)
-      } else {
-        displayToast(
-          'Chapter could not be fetched: Unknown error.',
-          ToastType.ERROR
-        )
-      }
-      console.log(error)
-    }
-  }
-
   const handleSubmit = async () => {
     try {
-      if (exercisePageData.title.trim().length === 0) {
+      if (updateExercisePageData.title.trim().length === 0) {
         displayToast('Page title cannot be empty!', ToastType.ERROR)
         return
       }
-      const newPageResponse = await createExercisePage(exercisePageData)
-      displayToast('Exercise page created successfully.', ToastType.INFO)
-      navigate(`/pages/${newPageResponse.data.pageId}`)
+
+      if (updateExercisePageData.correctAnswer.trim().length === 0) {
+        displayToast('Correct answer cannot be empty!', ToastType.ERROR)
+        return
+      }
+
+      const updatedPageResponse = await updateExercisePage(
+        updateExercisePageData
+      )
+      displayToast('Exercise page updated successfully.', ToastType.INFO)
+      navigate(`/pages/${updatedPageResponse.data.pageId}`)
     } catch (error: any) {
       if (error.response) {
         displayToast(`${error.response.data.error}`, ToastType.ERROR)
       } else {
         displayToast(
-          'Exercise page could not be created: Unknown error.',
+          'Exercise page could not be updated: Unknown error.',
           ToastType.ERROR
         )
       }
       console.log(error)
     }
   }
-
-  useEffect(() => {
-    fetchChapter()
-  })
 
   return (
     <div className='pb-12'>
       <h2 className='text-2xl font-bold tracking-wide text-gray-800'>
-        Create new exercise page
+        Edit page
       </h2>
-      <p className='mt-1 text-sm leading-6 font-light tracking-wide text-gray-600'>
-        in {chapter?.name}
-      </p>
-      <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6'>
+      <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
         <div className='sm:col-span-4'>
           <label
             htmlFor='title'
@@ -90,10 +77,10 @@ const CreateExercisePage: React.FC = () => {
               id='title'
               name='title'
               type='text'
-              value={exercisePageData.title}
+              value={updateExercisePageData.title}
               onChange={e =>
-                setExercisePageData({
-                  ...exercisePageData,
+                setUpdateExercisePageData({
+                  ...updateExercisePageData,
                   title: e.target.value
                 })
               }
@@ -101,27 +88,27 @@ const CreateExercisePage: React.FC = () => {
             />
           </div>
         </div>
-
         <div className='sm:col-span-6'>
           <label
-            htmlFor='instructions'
+            htmlFor='content'
             className='block text-sm font-medium leading-6 text-gray-900'
           >
-            Exercise Instructions
+            Content
           </label>
           <div className='mt-2'>
-            <LexEditor
-              onChange={value =>
-                setExercisePageData({
-                  ...exercisePageData,
-                  instructions: value
-                })
-              }
-              editorStateStr={exercisePageData.instructions}
-            />
+            {updateExercisePageData.instructions !== '' && (
+              <LexEditor
+                onChange={value =>
+                  setUpdateExercisePageData({
+                    ...updateExercisePageData,
+                    instructions: value
+                  })
+                }
+                editorStateStr={updateExercisePageData.instructions}
+              />
+            )}
           </div>
         </div>
-
         <div className='sm:col-span-4'>
           <label
             htmlFor='sandboxId'
@@ -135,10 +122,10 @@ const CreateExercisePage: React.FC = () => {
               name='sandboxId'
               type='text'
               placeholder='e.g. 5jgmjp'
-              value={exercisePageData.sandboxId}
+              value={updateExercisePageData.sandboxId}
               onChange={e =>
-                setExercisePageData({
-                  ...exercisePageData,
+                setUpdateExercisePageData({
+                  ...updateExercisePageData,
                   sandboxId: e.target.value
                 })
               }
@@ -159,11 +146,10 @@ const CreateExercisePage: React.FC = () => {
             <textarea
               id='correctAnswer'
               name='correctAnswer'
-              placeholder={placeholderCorrectAnswerString}
-              value={exercisePageData.correctAnswer}
+              value={updateExercisePageData.correctAnswer}
               onChange={e =>
-                setExercisePageData({
-                  ...exercisePageData,
+                setUpdateExercisePageData({
+                  ...updateExercisePageData,
                   correctAnswer: e.target.value
                 })
               }
@@ -175,7 +161,7 @@ const CreateExercisePage: React.FC = () => {
       <div className='px-4 py-8 rounded space-y-4 flex flex-col'>
         <GenericButton
           type='submit'
-          text='Create Page'
+          text='Edit Page'
           onClick={handleSubmit}
           className='self-center bg-sky-600 hover:bg-sky-700'
         />
@@ -184,14 +170,4 @@ const CreateExercisePage: React.FC = () => {
   )
 }
 
-export default CreateExercisePage
-
-const placeholderCorrectAnswerString = `e.g. 
-// Clock.js 
-export default function Clock({ color, time }) {
-  return (
-    <h1 style={{ color: color }}>
-      {time}
-    </h1>
-  );
-}`
+export default EditExercisePage
