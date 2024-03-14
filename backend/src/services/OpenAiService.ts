@@ -281,6 +281,44 @@ export class OpenAiService {
 
     return newExercisePage;
   }
+
+  public async getExerciseStudentAnswerFeedback({
+    exerciseInstructions,
+    correctAnswer,
+    studentAnswer
+  }: {
+    exerciseInstructions: string;
+    correctAnswer: string;
+    studentAnswer: string;
+    // include exercise files??
+  }): Promise<string> {
+    const completion = await this.openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful assistant.`
+        },
+        {
+          role: "user",
+          name: "Instructor",
+          content: `I am teaching an online course, with an exercise for students to practice applying what they have learnt.
+          The exercise instructions are: ${exerciseInstructions}.
+          The correct answer is: ${correctAnswer}.
+          The student's answer is: ${studentAnswer}.
+          Provide clear, useful feedback for the student.
+          You must NOT reveal the correct answer to the student. You MUST give concrete, clear, and actionable feedback.
+          If the student has already achieved the correct answer in essence, you can praise the student and tell them that they have done it correctly.`,
+        },
+      ],
+    });
+
+    console.log("completion", completion); // TO DELETE
+
+    const feedback = completion.choices[0].message.content;
+
+    return feedback;
+  }
 }
 
 // HELPER FUNCTIONS

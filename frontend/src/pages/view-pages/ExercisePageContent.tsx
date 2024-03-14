@@ -10,6 +10,10 @@ import { useState } from 'react'
 import { MonacoEditor } from '../../components/monaco-editor/MonacoEditor'
 import { GenericButton } from '../../components/buttons'
 import { useToast } from '../../wrappers/ToastProvider'
+import {
+  GetExerciseStudentAnswerFeedbackData,
+  getExerciseStudentAnswerFeedback
+} from '../../api/exercisePage'
 
 interface ExercisePageContentProps {
   exercisePage: ExercisePage
@@ -27,17 +31,21 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
 
   const { displayToast, ToastType } = useToast()
 
-  const handleSubmitAnswer = (answer: string) => {
-    // Call OpenAI service API to get feedback
+  const handleSubmitAnswer = async (answer: string) => {
     try {
       if (studentAnswer.trim().length === 0) {
         displayToast('Answer cannot be empty!', ToastType.ERROR)
         return
       }
 
-      setFeedback('Default feedback string, TO CHANGE')
-      // const feedbackResponse = await getFeedback(studentAnswer)
-      // setFeedback(feedbackResponse)
+      // Call OpenAI service API to get feedback
+      const feedbackData: GetExerciseStudentAnswerFeedbackData = {
+        exerciseInstructions: exercisePage.instructions,
+        correctAnswer: exercisePage.correctAnswer,
+        studentAnswer: answer
+      }
+      const response = await getExerciseStudentAnswerFeedback(feedbackData)
+      setFeedback(response.data)
       displayToast('Student answer submitted successfully.', ToastType.INFO)
     } catch (error: any) {
       if (error.response) {
@@ -106,7 +114,7 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
 
       {role === UserRoleEnum.STUDENT && (
         <Accordion
-          key={exercisePage.id}
+          key='studentAnswer'
           open={isSubmitAnswerShown}
           icon={
             <svg
