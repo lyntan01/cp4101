@@ -19,7 +19,7 @@ export class ExplorationPageService {
     const page = await this.pageDao.createPage({
       title: title,
       chapterId: chapterId,
-      type: PageType.EXERCISE
+      type: PageType.EXPLORATION
     })
 
     // Create the ExplorationPage instance linked to the Page

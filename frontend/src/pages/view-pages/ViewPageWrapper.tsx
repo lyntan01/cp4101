@@ -17,6 +17,7 @@ import TraditionalTextPageContent from './TraditionalTextPageContent'
 import { convertPageContentToLexicalJson } from '../../utils/convertMarkdownToLexicalJson'
 import ExercisePageContent from './ExercisePageContent'
 import { useAuth } from '../../wrappers/AuthContext'
+import ExplorationPageContent from './ExplorationPageContent'
 
 const ViewPageWrapper: React.FC = () => {
   const { pageId } = useParams()
@@ -120,7 +121,10 @@ const ViewPageWrapper: React.FC = () => {
                 role={user?.role ?? UserRoleEnum.STUDENT}
               />
             ) : page.type === PageTypeEnum.EXPLORATION ? (
-              <></>
+              <ExplorationPageContent
+                explorationPage={page.explorationPage!}
+                role={user?.role ?? UserRoleEnum.STUDENT}
+              />
             ) : (
               <span className='text-red-600'>Error: Page Not Found</span>
             )}

@@ -7,6 +7,7 @@ import { convertPageContentToLexicalJson } from '../../utils/convertMarkdownToLe
 import { useAuth } from '../../wrappers/AuthContext'
 import EditTraditionalTextPage from './EditTraditionalTextPage'
 import EditExercisePage from './EditExercisePage'
+import EditExplorationPage from './EditExplorationPage'
 
 const EditPageWrapper: React.FC = () => {
   const { pageId } = useParams()
@@ -52,7 +53,7 @@ const EditPageWrapper: React.FC = () => {
     } else if (page.type === 'EXERCISE') {
       return <EditExercisePage page={page} />
     } else if (page.type === 'EXPLORATION') {
-      // return <EditExplorationPage />;
+      return <EditExplorationPage page={page} />
     }
 
     return <></>
