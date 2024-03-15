@@ -308,7 +308,8 @@ export class OpenAiService {
           The student's answer is: ${studentAnswer}.
           Provide clear, useful feedback for the student.
           You must NOT reveal the correct answer to the student. You MUST give concrete, clear, and actionable feedback.
-          If the student has already achieved the correct answer in essence, you can praise the student and tell them that they have done it correctly.`,
+          If the student has already achieved the correct answer in essence, you can praise the student and tell them that they have done it correctly.
+          Use backticks for code or any text that should be in monospace`,
         },
       ],
     });

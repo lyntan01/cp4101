@@ -14,6 +14,7 @@ import {
   GetExerciseStudentAnswerFeedbackData,
   getExerciseStudentAnswerFeedback
 } from '../../api/exercisePage'
+import { convertMarkdownToLexicalJson } from '../../utils/convertMarkdownToLexicalJson'
 
 interface ExercisePageContentProps {
   exercisePage: ExercisePage
@@ -45,7 +46,8 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
         studentAnswer: answer
       }
       const response = await getExerciseStudentAnswerFeedback(feedbackData)
-      setFeedback(response.data)
+      const lexicalJson = await convertMarkdownToLexicalJson(response.data)
+      setFeedback(lexicalJson)
       displayToast('Student answer submitted successfully.', ToastType.INFO)
     } catch (error: any) {
       if (error.response) {
@@ -164,10 +166,10 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
                 className='my-4 bg-sky-500 hover:bg-sky-700'
               />
               {feedback.trim().length > 0 && (
-                <div className='overflow-hidden rounded-lg bg-gray-100 text-left text-wrap'>
+                <div className='overflow-hidden rounded-lg bg-gray-100 text-left text-wrap whitespace-pre-wrap'>
                   <div className='px-4 py-5 sm:p-6'>
                     <h2 className='font-bold mb-2'>Feedback:</h2>
-                    <p>{feedback}</p>
+                    <LexOutput editorStateStr={feedback} />
                   </div>
                 </div>
               )}
