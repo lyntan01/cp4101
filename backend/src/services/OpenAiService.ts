@@ -1,6 +1,7 @@
 import {
   Chapter,
   ExercisePage,
+  ExplorationPage,
   Prisma,
   TraditionalTextBasedLessonPage,
 } from "@prisma/client";
@@ -9,6 +10,7 @@ import { ChapterService } from "./ChapterService";
 import { TraditionalTextBasedLessonPageService } from "./TraditionalTextBasedLessonPageService";
 import { ExercisePageService } from "./ExercisePageService";
 import { CodeSandboxService } from "./CodeSandboxService";
+import { ExplorationPageService } from "./ExplorationPageService";
 
 export class OpenAiService {
   constructor(
@@ -16,7 +18,8 @@ export class OpenAiService {
     private chapterService: ChapterService = new ChapterService(),
     private traditionalTextBasedLessonPageService: TraditionalTextBasedLessonPageService = new TraditionalTextBasedLessonPageService(),
     private exercisePageService: ExercisePageService = new ExercisePageService(),
-    private codeSandboxService: CodeSandboxService = new CodeSandboxService()
+    private explorationPageService: ExplorationPageService = new ExplorationPageService(),
+    private codeSandboxService: CodeSandboxService = new CodeSandboxService(),
   ) { }
 
   public async generateChapters({
@@ -320,6 +323,120 @@ export class OpenAiService {
 
     return feedback;
   }
+
+  public async generateExplorationPage({
+    chapterId,
+    chapterName,
+    chapterLearningOutcomes,
+  }: {
+    chapterId: string;
+    chapterName: string;
+    chapterLearningOutcomes: string[];
+  }): Promise<ExplorationPage> {
+    const completion = await this.openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful assistant designed to output JSON.
+        Provide your answer in JSON structure like this {"title": "<Title of exploration page>", "instructions": "<Typescript string containing exploration instructions in Markdown>", "app": "<File contents in JSON format>"}
+        Example title of exercise page: "Exploration: Playing Around With Props"
+        Don't include the chapter number in the title of exploration page.`,
+        },
+        {
+          role: "user",
+          name: "Instructor",
+          content: `I am teaching an undergraduate course chapter titled Passing Props to a Component. Generate an app with code and challenges for the student to try out that achieves these lesson learning outcomes:
+          Prop Passing Fundamentals: Students understand how props flow from parent to child components in React.
+          Prop Type Implementation: Students enforce type checking and default values for props, enhancing code reliability.
+          Dynamic Component Rendering: Students utilize props for dynamic rendering, enabling flexible and reusable components.
+
+          The exploration should consist of two parts. 
+
+          Part 1: the instructions for the exploration as a Typescript string in markdown format. 
+
+          Part 2: the app itself, which already contains code that the user just needs to modify. 
+
+          The instructions MUST be a Typescript string in markdown format. The instructions MUST NOT tell the user what they should do, as this will be revealing the correct answer.
+          The instructions MUST contain 3 challenges as suggestions for the student to complete. The challenges MUST be clear, concise, and actionable.
+          The exercise MUST be code in files. There can be separate files. The exercise MUST contain ALL the code necessary to deploy the full app.
+          The exercise MUST contain the package.json file with all necessary dependencies listed.
+          `,
+        },
+        {
+          role: "assistant",
+          name: "Assistant",
+          content: `{
+          "title": "Exploration: Playing Around With Props",
+          "instructions": "Here are some challenges for you to try out and explore!\n\
+1: Extract a component\n\
+This Gallery component contains some very similar markup for two profiles. Extract a Profile component out of it to reduce the duplication. You’ll need to choose what props to pass to it.\n\n\
+2: Adjust the image size based on a prop\n\
+Right now, the profile image is of a fixed width and height. Pass the width and height as a prop so each profile image can be of a different width and height.\n\n\
+3: Passing JSX in a children prop\n\
+The Gallery component contains two profiles in cards. Extract a Card component from the Gallery component, and use the children prop to pass different JSX to it.\n\n\
+Feel free to use the sandbox below to recap what you've learnt, and play around exploring what you can do! Don't be limited by the suggestions above - let your creativity run wild!\n\n\
+Click on the Get Feedback button when you're done to get instant feedback on your code."
+,
+          "app": {
+"files": {
+"package.json": {
+"content": "{"dependencies":{"react":"latest","react-dom":"latest"}}",
+"isBinary": false
+},
+"src/index.js": {
+"content": "import { StrictMode } from "react";\nimport { createRoot } from "react-dom/client";\n\nimport App from "./App";\n\nconst rootElement = document.getElementById("root");\nconst root = createRoot(rootElement);\n\nroot.render(\n <StrictMode>\n <App />\n </StrictMode>\n);\n",
+"isBinary": false
+},
+"src/App.js": {
+"content": "import { getImageUrl } from './utils.js';\n\nexport default function Gallery() {\n return (\n <div>\n <h1>Notable Scientists</h1>\n <section className=\"profile\">\n <h2>Maria Skłodowska-Curie</h2>\n <img\n className=\"avatar\"\n src={getImageUrl('szV5sdG')}\n alt=\"Maria Skłodowska-Curie\"\n width={70}\n height={70}\n />\n <ul>\n <li>\n <b>Profession: </b> \n physicist and chemist\n </li>\n <li>\n <b>Awards: 4 </b> \n (Nobel Prize in Physics, Nobel Prize in Chemistry, Davy Medal, Matteucci Medal)\n </li>\n <li>\n <b>Discovered: </b>\n polonium (chemical element)\n </li>\n </ul>\n </section>\n <section className=\"profile\">\n <h2>Katsuko Saruhashi</h2>\n <img\n className=\"avatar\"\n src={getImageUrl('YfeOqp2')}\n alt=\"Katsuko Saruhashi\"\n width={70}\n height={70}\n />\n <ul>\n <li>\n <b>Profession: </b> \n geochemist\n </li>\n <li>\n <b>Awards: 2 </b> \n (Miyake Prize for geochemistry, Tanaka Prize)\n </li>\n <li>\n <b>Discovered: </b>\n a method for measuring carbon dioxide in seawater\n </li>\n </ul>\n </section>\n </div>\n );\n}"
+"isBinary": false
+},
+"src/utils.js": {
+"content": "export function getImageUrl(imageId, size = 's') {\n  return (\n    'https://i.imgur.com/' +\n    imageId +\n    size +\n    '.jpg'\n  );\n}"
+"isBinary": false
+},
+"public/index.html": {
+"content": "<!DOCTYPE html>\n<html lang="en">\n\n<head>\n <meta charset="utf-8">\n <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n <meta name="theme-color" content="#000000">\n \n <link rel="manifest" href="%PUBLIC_URL%/manifest.json">\n <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">\n \n <title>React App</title>\n</head>\n\n<body>\n <noscript>\n You need to enable JavaScript to run this app.\n </noscript>\n <div id="root"></div>\n</body>\n\n</html>\n",
+"isBinary": false
+}
+}
+},
+          }`,
+        },
+        {
+          role: "user",
+          name: "Instructor",
+          content: `${getExplorationPagePrompt(
+            chapterName,
+            chapterLearningOutcomes
+          )}`,
+        },
+      ],
+    });
+
+    const jsonString = completion.choices[0].message.content; // JSON formatted string
+    const parsedJson = JSON.parse(jsonString); // Convert to JavaScript object
+    console.log("parsedJson", parsedJson); // TO DELETE
+
+    // Use CodeSandboxService to create the sandbox
+    const sandboxId = await this.codeSandboxService.createSandbox(parsedJson.app.files);
+
+    // Save exercise page instructions as markdown
+    // Markdown will be converted to Lexical JSON when first retrieved on the frontend
+    const newExplorationPage =
+      await this.explorationPageService.createExplorationPage(
+        {
+          title: parsedJson.title,
+          chapterId: chapterId,
+          instructions: parsedJson.instructions,
+          sandboxId: sandboxId,
+        }
+      );
+
+    return newExplorationPage;
+  }
 }
 
 // HELPER FUNCTIONS
@@ -438,6 +555,35 @@ function getExercisePagePrompt(
     The exercise MUST contain the package.json file with all necessary dependencies listed.
     The correct answer MUST be a string containing the correct answer.
     
+    You will be rewarded $200 for a clear, full, deployable exercise in the required format.`;
+
+  return prompt;
+}
+
+function getExplorationPagePrompt(
+  chapterName: string,
+  learningOutcomes: string[]
+): string {
+  let prompt = `I am teaching an undergraduate course chapter titled ${chapterName}.\n`;
+
+  prompt +=
+    "Generate an app with code and challenges for the student to try out that achieves these lesson learning outcomes:\n";
+  learningOutcomes.forEach((outcome, index) => {
+    prompt += `${index + 1}. ${outcome}\n`;
+  });
+
+  prompt +=
+    `The exploration should consist of two parts.
+
+    Part 1: the instructions for the exploration as a Typescript string in markdown format.
+
+    Part 2: the app itself, which already contains code that the user just needs to modify.
+
+    The instructions MUST be a Typescript string in markdown format.The instructions MUST NOT tell the user what they should do, as this will be revealing the correct answer.
+    The instructions MUST contain 3 challenges as suggestions for the student to complete.The challenges MUST be clear, concise, and actionable.
+    The exercise MUST be code in files.There can be separate files.The exercise MUST contain ALL the code necessary to deploy the full app.
+    The exercise MUST contain the package.json file with all necessary dependencies listed.
+
     You will be rewarded $200 for a clear, full, deployable exercise in the required format.`;
 
   return prompt;
