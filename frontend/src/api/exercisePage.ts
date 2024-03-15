@@ -34,6 +34,12 @@ export interface GenerateExercisePageData {
   chapterLearningOutcomes: string[];
 }
 
+export interface GetExerciseStudentAnswerFeedbackData {
+  exerciseInstructions: string;
+  correctAnswer: string;
+  studentAnswer: string;
+}
+
 export async function createExercisePage(
   data: CreateExercisePageData
 ): Promise<AxiosResponse<CreateOrUpdateExercisePageResponse>> {
@@ -80,6 +86,26 @@ export async function generateExercisePage(
   try {
     const response: AxiosResponse<CreateOrUpdateExercisePageResponse> =
       await client.post(`${URL}/generate-exercise-page`, data);
+    return response;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      throw error.response.data.error;
+    } else {
+      throw error;
+    }
+  }
+}
+
+export async function getExerciseStudentAnswerFeedback(
+  data: GetExerciseStudentAnswerFeedbackData
+): Promise<AxiosResponse<string>> {
+  try {
+    const response: AxiosResponse<string> =
+      await client.post(`${URL}/get-student-answer-feedback`, data);
     return response;
   } catch (error) {
     if (

@@ -59,6 +59,29 @@ exercisePageRouter.post(
 );
 
 /**
+ * POST /exercise-pages/get-student-answer-feedback
+ * Retrieves generated feedback for student's answer for an exercise.
+ */
+exercisePageRouter.post(
+  "/get-student-answer-feedback",
+  async (req: Request, res: Response) => {
+    try {
+      const exerciseAnswerData: {
+        exerciseInstructions: string;
+        correctAnswer: string;
+        studentAnswer: string;
+      } = req.body;
+      const feedback = await openAiService.getExerciseStudentAnswerFeedback(exerciseAnswerData);
+      return res.status(201).json(feedback);
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+      });
+    }
+  }
+);
+
+/**
  * GET /exercise-pages/
  * Retrieves a list of all exercise pages.
  */

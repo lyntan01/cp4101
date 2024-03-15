@@ -5,12 +5,16 @@ export type MonacoEditorProps = {
   value: string
   language: string
   readOnly: boolean
+  handleEditorChange?: (value: string | undefined) => void
+  className?: string
 }
 
 export const MonacoEditor = ({
   value,
   language,
-  readOnly
+  readOnly,
+  handleEditorChange,
+  className
 }: MonacoEditorProps) => {
   const options: editor.IStandaloneEditorConstructionOptions = {
     acceptSuggestionOnCommitCharacter: true,
@@ -69,11 +73,13 @@ export const MonacoEditor = ({
 
   return (
     <Editor
-      height='90vh'
+      className={className}
+      // height='90vh'
       defaultLanguage='javascript'
       value={value}
       language={language}
       options={options}
+      onChange={handleEditorChange}
     />
   )
 }
