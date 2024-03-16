@@ -61,24 +61,25 @@ explorationPageRouter.post(
  * POST /exploration-pages/get-student-attempt-feedback
  * Retrieves generated feedback for student's attempt for an exploration prompt.
  */
-// explorationPageRouter.post(
-//   "/get-student-attempt-feedback",
-//   async (req: Request, res: Response) => {
-//     try {
-//       const explorationAnswerData: {
-//         explorationInstructions: string;
-//         // files: string; add files???
-//         studentAnswer: string;
-//       } = req.body;
-//       const feedback = await openAiService.getExplorationStudentAttemptFeedback(explorationAnswerData);
-//       return res.status(201).json(feedback);
-//     } catch (error) {
-//       return res.status(500).json({
-//         error: error.message,
-//       });
-//     }
-//   }
-// );
+explorationPageRouter.post(
+  "/get-student-attempt-feedback",
+  async (req: Request, res: Response) => {
+    try {
+      const explorationAnswerData: {
+        explorationInstructions: string;
+        studentDescription: string;
+        studentAnswer: string;
+        // Add files to the prompt?
+      } = req.body;
+      const feedback = await openAiService.getExplorationStudentAttemptFeedback(explorationAnswerData);
+      return res.status(201).json(feedback);
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+      });
+    }
+  }
+);
 
 /**
  * GET /exploration-pages/

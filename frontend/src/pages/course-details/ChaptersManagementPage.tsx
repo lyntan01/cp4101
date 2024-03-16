@@ -56,6 +56,8 @@ export const ChaptersManagementPage = ({
     courseLearningOutcomes: string
   ) => {
     try {
+      displayToast('Generating, hang on tight!', ToastType.INFO)
+
       const response = await generateChaptersApi({
         courseId: course.id,
         courseName: course.name,
@@ -81,6 +83,8 @@ export const ChaptersManagementPage = ({
 
   const generateLessonPages = async () => {
     try {
+      displayToast('Generating, hang on tight!', ToastType.INFO)
+
       // Map each chapter to a promise created by calling generateLessonPageApi
       const promises = chapters.map(chapter =>
         generateLessonPageApi({
@@ -130,6 +134,8 @@ export const ChaptersManagementPage = ({
 
   const generateExercisePages = async () => {
     try {
+      displayToast('Generating, hang on tight!', ToastType.INFO)
+
       // Map each chapter to a promise created by calling generateExercisePageApi
       const promises = chapters.map(chapter =>
         generateExercisePageApi({
@@ -179,6 +185,8 @@ export const ChaptersManagementPage = ({
 
   const generateExplorationPages = async () => {
     try {
+      displayToast('Generating, hang on tight!', ToastType.INFO)
+
       // Map each chapter to a promise created by calling generateExplorationPageApi
       const promises = chapters.map(chapter =>
         generateExplorationPageApi({

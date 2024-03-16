@@ -362,6 +362,7 @@ export class OpenAiService {
           The instructions MUST contain 3 challenges as suggestions for the student to complete. The challenges MUST be clear, concise, and actionable.
           The exercise MUST be code in files. There can be separate files. The exercise MUST contain ALL the code necessary to deploy the full app.
           The exercise MUST contain the package.json file with all necessary dependencies listed.
+          The code in the exercise MUST NOT have already completed the challenges. The student should be able to complete the challenges by modifying the code.
           `,
         },
         {
@@ -436,6 +437,46 @@ Click on the Get Feedback button when you're done to get instant feedback on you
       );
 
     return newExplorationPage;
+  }
+
+  public async getExplorationStudentAttemptFeedback({
+    explorationInstructions,
+    studentDescription,
+    studentAnswer
+  }: {
+    explorationInstructions: string;
+    studentDescription: string;
+    studentAnswer: string;
+    // include exercise files??
+  }): Promise<string> {
+    const completion = await this.openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [
+        {
+          role: "system",
+          content: `You are a helpful assistant.`
+        },
+        {
+          role: "user",
+          name: "Instructor",
+          content: `I am teaching an online course, with an exploration exercise for students to practice applying what they have learnt in a creative, free form way.
+          Students are given a skeleton app with code and suggestions on what they can try, and students can choose what they want to try and attempt to achieve it within the code sandbox. 
+          The exploration instructions are: ${explorationInstructions}.
+          What the student is trying to achieve is: ${studentDescription}.
+          The student's code for his/her attempt is: ${studentAnswer}.
+          Provide clear, useful feedback for the student.
+          You must NOT reveal the correct answer to the student. You MUST give concrete, clear, and actionable feedback.
+          If the student has already achieved the correct answer in essence, you can praise the student and tell them that they have done it correctly.
+          Use backticks for code or any text that should be in monospace`,
+        },
+      ],
+    });
+
+    console.log("completion", completion); // TO DELETE
+
+    const feedback = completion.choices[0].message.content;
+
+    return feedback;
   }
 }
 
@@ -583,6 +624,7 @@ function getExplorationPagePrompt(
     The instructions MUST contain 3 challenges as suggestions for the student to complete.The challenges MUST be clear, concise, and actionable.
     The exercise MUST be code in files.There can be separate files.The exercise MUST contain ALL the code necessary to deploy the full app.
     The exercise MUST contain the package.json file with all necessary dependencies listed.
+    The code in the exercise MUST NOT have already completed the challenges. The student should be able to complete the challenges by modifying the code.
 
     You will be rewarded $200 for a clear, full, deployable exercise in the required format.`;
 

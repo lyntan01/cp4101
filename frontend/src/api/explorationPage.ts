@@ -33,6 +33,7 @@ export interface GenerateExplorationPageData {
 
 export interface GetExplorationStudentAttemptFeedbackData {
   explorationInstructions: string;
+  studentDescription: string;
   studentAnswer: string;
 }
 
@@ -96,7 +97,7 @@ export async function generateExplorationPage(
   }
 }
 
-export async function getExplorationStudentAnswerFeedback(
+export async function getExplorationStudentAttemptFeedback(
   data: GetExplorationStudentAttemptFeedbackData
 ): Promise<AxiosResponse<string>> {
   try {

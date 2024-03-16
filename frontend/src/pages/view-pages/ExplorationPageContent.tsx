@@ -11,8 +11,8 @@ import { MonacoEditor } from '../../components/monaco-editor/MonacoEditor'
 import { GenericButton } from '../../components/buttons'
 import { useToast } from '../../wrappers/ToastProvider'
 import {
-  GetExplorationStudentAnswerFeedbackData,
-  getExplorationStudentAnswerFeedback
+  GetExplorationStudentAttemptFeedbackData,
+  getExplorationStudentAttemptFeedback
 } from '../../api/explorationPage'
 import { convertMarkdownToLexicalJson } from '../../utils/convertMarkdownToLexicalJson'
 
@@ -26,12 +26,12 @@ const ExplorationPageContent: React.FC<ExplorationPageContentProps> = ({
   role
 }: ExplorationPageContentProps) => {
   const [isSubmitAnswerShown, setIsSubmitAnswerShown] = useState(false)
+  const [studentDescription, setStudentDescription] = useState<string>('')
   const [studentAnswer, setStudentAnswer] = useState<string>('')
   const [feedback, setFeedback] = useState<string>('')
-
   const { displayToast, ToastType } = useToast()
 
-  const handleSubmitAnswer = async (answer: string) => {
+  const handleSubmitAnswer = async () => {
     try {
       if (studentAnswer.trim().length === 0) {
         displayToast('Answer cannot be empty!', ToastType.ERROR)
@@ -39,13 +39,14 @@ const ExplorationPageContent: React.FC<ExplorationPageContentProps> = ({
       }
 
       // Call OpenAI service API to get feedback
-      // const feedbackData: GetExplorationStudentAnswerFeedbackData = {
-      //   explorationInstructions: explorationPage.instructions,
-      //   studentAnswer: answer
-      // }
-      // const response = await getExplorationStudentAnswerFeedback(feedbackData)
-      // const lexicalJson = await convertMarkdownToLexicalJson(response.data)
-      // setFeedback(lexicalJson)
+      const feedbackData: GetExplorationStudentAttemptFeedbackData = {
+        explorationInstructions: explorationPage.instructions,
+        studentDescription: studentDescription,
+        studentAnswer: studentAnswer
+      }
+      const response = await getExplorationStudentAttemptFeedback(feedbackData)
+      const lexicalJson = await convertMarkdownToLexicalJson(response.data)
+      setFeedback(lexicalJson)
       displayToast('Student answer submitted successfully.', ToastType.INFO)
     } catch (error: any) {
       if (error.response) {
@@ -100,10 +101,21 @@ const ExplorationPageContent: React.FC<ExplorationPageContentProps> = ({
           >
             Submit Answer
           </AccordionHeader>
-          <AccordionBody className='p-6 text-base text-center border border-blue-gray-100 rounded-lg'>
+          <AccordionBody className='p-6 text-base border border-blue-gray-100 rounded-lg'>
             {/* TODO: Replace language with the language of the exploration */}
             <div>
-              Copy and paste your answer into the editor below:
+              Describe what you were trying to achieve:
+              <div className='my-4'>
+                <textarea
+                  id='description'
+                  name='description'
+                  rows={3}
+                  value={studentDescription}
+                  onChange={e => setStudentDescription(e.target.value)}
+                  className='block w-full px-2 rounded-md border-1 border-gray-300 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                />
+              </div>
+              Copy and paste your code into the editor below:
               <MonacoEditor
                 value={studentAnswer}
                 language='javascript'
@@ -113,12 +125,14 @@ const ExplorationPageContent: React.FC<ExplorationPageContentProps> = ({
                 }
                 className='block w-full h-96 my-4 rounded-md border-2 border-gray-300 shadow-sm'
               />
-              <GenericButton
-                text='Get Feedback'
-                type='button'
-                onClick={() => handleSubmitAnswer(studentAnswer)}
-                className='my-4 bg-sky-500 hover:bg-sky-700'
-              />
+              <div className='text-center'>
+                <GenericButton
+                  text='Get Feedback'
+                  type='button'
+                  onClick={() => handleSubmitAnswer()}
+                  className='my-4 bg-sky-500 hover:bg-sky-700'
+                />
+              </div>
               {feedback.trim().length > 0 && (
                 <div className='overflow-hidden rounded-lg bg-gray-100 text-left text-wrap whitespace-pre-wrap'>
                   <div className='px-4 py-5 sm:p-6'>
