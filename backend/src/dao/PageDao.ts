@@ -1,7 +1,7 @@
 import { Page, Prisma, PrismaClient } from "@prisma/client";
 
 export class PageDao {
-  constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
+  constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
   public async createPage(
     pageData: Prisma.PageUncheckedCreateInput
@@ -87,6 +87,28 @@ export class PageDao {
     // Then, update the Page using the ID
     return this.prismaClient.page.update({
       where: { id: exercisePage.pageId },
+      data: pageData,
+    });
+  }
+
+  public async updatePageByExplorationPageId(
+    pageId: string,
+    pageData: Prisma.PageUpdateInput
+  ): Promise<Page | null> {
+    // First, find the Page associated with the ExplorationPage
+    const explorationPage =
+      await this.prismaClient.explorationPage.findUnique({
+        where: { id: pageId },
+        include: { page: true },
+      });
+
+    if (!explorationPage) {
+      return null;
+    }
+
+    // Then, update the Page using the ID
+    return this.prismaClient.page.update({
+      where: { id: explorationPage.pageId },
       data: pageData,
     });
   }

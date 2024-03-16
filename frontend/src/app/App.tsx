@@ -8,7 +8,8 @@ import {
   PAGES,
   SETTINGS,
   SIGN_UP,
-  EDIT_PAGE
+  EDIT_PAGE,
+  CREATE_EXPLORATION_PAGE
 } from '../libs/routes'
 import Login from '../pages/entry/Login'
 import SignUp from '../pages/entry/SignUp'
@@ -25,6 +26,7 @@ import CreateTraditionalTextPage from '../pages/create-pages/CreateTraditionalTe
 import ViewPageWrapper from '../pages/view-pages/ViewPageWrapper'
 import CreateExercisePage from '../pages/create-pages/CreateExercisePage'
 import EditPageWrapper from '../pages/edit-pages/EditPageWrapper'
+import CreateExplorationPage from '../pages/create-pages/CreateExplorationPage'
 
 export default function App () {
   return (
@@ -51,7 +53,6 @@ export default function App () {
                 path={`${COURSES}/:courseId/:tabIndex`}
                 element={<CourseDetails />}
               />
-
               <Route path={`${PAGES}/:pageId`} element={<ViewPageWrapper />} />
               <Route
                 path={`${CREATE_TEXT_PAGE}/:chapterId`}
@@ -62,10 +63,13 @@ export default function App () {
                 element={<CreateExercisePage />}
               />
               <Route
+                path={`${CREATE_EXPLORATION_PAGE}/:chapterId`}
+                element={<CreateExplorationPage />}
+              />
+              <Route
                 path={`${EDIT_PAGE}/:pageId`}
                 element={<EditPageWrapper />}
               />
-
               <Route path={SETTINGS} element={<h1>Settings</h1>} />
             </Route>
             <Route path={LOGIN} element={<Login />} />

@@ -5,6 +5,7 @@ import { Page, PageTypeEnum } from '../types/models';
 import { getPageById } from '../api/page';
 import { updateTextPage } from '../api/textPage';
 import { updateExercisePage } from '../api/exercisePage';
+import { updateExplorationPage } from '../api/explorationPage';
 import { isJsonFormat, isMarkdownFormat } from './checkFormat';
 
 type LexicalNode = {
@@ -49,6 +50,23 @@ export const convertPageContentToLexicalJson = async (page: Page): Promise<Page>
     })
 
     // Retrieve the page again, exercise page instructions should be in Lexical JSON format
+    const response = await getPageById(page.id ?? '')
+    return response.data
+  } else if (
+    page.type === PageTypeEnum.EXPLORATION &&
+    !isJsonFormat(page.explorationPage!.instructions)
+  ) {
+    const lexicalJsonContent = await convertMarkdownToLexicalJson(
+      page.explorationPage!.instructions
+    )
+    const updateExplorationPageResponse = await updateExplorationPage({
+      explorationPageId: page.explorationPage!.id,
+      title: page.title,
+      instructions: lexicalJsonContent,
+      sandboxId: page.explorationPage!.sandboxId,
+    })
+
+    // Retrieve the page again, exploration page instructions should be in Lexical JSON format
     const response = await getPageById(page.id ?? '')
     return response.data
   }

@@ -26,3 +26,17 @@ export interface UpdateExercisePageData {
   correctAnswer: string;
 }
 
+export interface CreateExplorationPageData {
+  title: string;
+  chapterId: string;
+  instructions: string;
+  sandboxId: string;
+}
+
+export interface UpdateExplorationPageData {
+  pageId: string;
+  title: string;
+  instructions: string;
+  sandboxId: string;
+}
+
