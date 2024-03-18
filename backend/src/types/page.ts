@@ -10,12 +10,18 @@ export interface UpdateTraditionalTextBasedLessonPageData {
   content: string;
 }
 
+export interface SandboxFile {
+  content: string
+  isBinary: boolean
+}
+
 export interface CreateExercisePageData {
   title: string;
   chapterId: string;
   instructions: string;
   sandboxId: string;
   correctAnswer: string;
+  filesContent: Record<string, SandboxFile>;
 }
 
 export interface UpdateExercisePageData {
@@ -39,4 +45,3 @@ export interface UpdateExplorationPageData {
   instructions: string;
   sandboxId: string;
 }
-

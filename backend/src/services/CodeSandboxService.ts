@@ -1,7 +1,4 @@
-export interface SandboxFile {
-    content: string
-    isBinary: boolean
-}
+import { SandboxFile } from "../types/page"
 
 export class CodeSandboxService {
     async createSandbox(

@@ -2,11 +2,13 @@ import { PageDao } from '../dao/PageDao'
 import { ExercisePageDao } from '../dao/ExercisePageDao'
 import { ExercisePage, Prisma, PageType } from '@prisma/client'
 import { CreateExercisePageData, UpdateExercisePageData } from '../types/page'
+import { FileDao } from '../dao/FileDao'
 
 export class ExercisePageService {
   constructor(
     private exercisePageDao: ExercisePageDao = new ExercisePageDao(),
-    private pageDao: PageDao = new PageDao()
+    private pageDao: PageDao = new PageDao(),
+    private fileDao: FileDao = new FileDao()
   ) { }
 
   public async createExercisePage({
@@ -14,7 +16,8 @@ export class ExercisePageService {
     chapterId,
     instructions,
     sandboxId,
-    correctAnswer
+    correctAnswer,
+    filesContent
   }: CreateExercisePageData): Promise<ExercisePage | null> {
     // Create the Page instance
     const page = await this.pageDao.createPage({
@@ -24,12 +27,26 @@ export class ExercisePageService {
     })
 
     // Create the ExercisePage instance linked to the Page
-    const exercisePage = this.exercisePageDao.createExercisePage({
+    const exercisePage = await this.exercisePageDao.createExercisePage({
       pageId: page.id,
       instructions: instructions,
       sandboxId: sandboxId,
       correctAnswer: correctAnswer
     })
+
+    // Create the File instances linked to the ExercisePage
+    const fileData: Prisma.FileUncheckedCreateInput[] = Object.entries(
+      filesContent
+    ).map(([fileName, fileContent]) => {
+      return {
+        name: fileName,
+        code: fileContent.content,
+        exercisePageId: exercisePage.id,
+      };
+    });
+    for (let i = 0; i < fileData.length; i++) {
+      await this.fileDao.createFile(fileData[i]);
+    }
 
     return exercisePage
   }

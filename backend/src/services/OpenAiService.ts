@@ -11,6 +11,7 @@ import { TraditionalTextBasedLessonPageService } from "./TraditionalTextBasedLes
 import { ExercisePageService } from "./ExercisePageService";
 import { CodeSandboxService } from "./CodeSandboxService";
 import { ExplorationPageService } from "./ExplorationPageService";
+import { FileService } from "./FileService";
 
 export class OpenAiService {
   constructor(
@@ -20,6 +21,7 @@ export class OpenAiService {
     private exercisePageService: ExercisePageService = new ExercisePageService(),
     private explorationPageService: ExplorationPageService = new ExplorationPageService(),
     private codeSandboxService: CodeSandboxService = new CodeSandboxService(),
+    private fileService: FileService = new FileService(),
   ) { }
 
   public async generateChapters({
@@ -279,6 +281,7 @@ export class OpenAiService {
           instructions: parsedJson.instructions,
           sandboxId: sandboxId,
           correctAnswer: parsedJson.correctAnswer,
+          filesContent: parsedJson.exercise.files,
         }
       );
 

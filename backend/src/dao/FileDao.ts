@@ -3,7 +3,7 @@ import { Prisma, PrismaClient, File } from "@prisma/client";
 export class FileDao {
     constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
-    public async createFile(fileData: Prisma.FileCreateInput): Promise<File> {
+    public async createFile(fileData: Prisma.FileUncheckedCreateInput): Promise<File> {
         return this.prismaClient.file.create({
             data: fileData,
         });

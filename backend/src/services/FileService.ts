@@ -5,27 +5,27 @@ export class FileService {
   constructor(private fileDao: FileDao = new FileDao()) { }
 
   public async createFile(
-    FileData: Prisma.FileCreateInput
+    fileData: Prisma.FileUncheckedCreateInput
   ): Promise<File | null> {
-    return this.fileDao.createFile(FileData);
+    return this.fileDao.createFile(fileData);
   }
 
   public async getAllFiles(): Promise<File[]> {
     return this.fileDao.getAllFiles();
   }
 
-  public async getFileById(FileId: string): Promise<File | null> {
-    return this.fileDao.getFileById(FileId);
+  public async getFileById(fileId: string): Promise<File | null> {
+    return this.fileDao.getFileById(fileId);
   }
 
   public async updateFile(
-    FileId: string,
-    FileData: Prisma.FileUpdateInput
+    fileId: string,
+    fileData: Prisma.FileUpdateInput
   ): Promise<File | null> {
-    return this.fileDao.updateFile(FileId, FileData);
+    return this.fileDao.updateFile(fileId, fileData);
   }
 
-  public async deleteFile(FileId: string): Promise<File | null> {
-    return this.fileDao.deleteFile(FileId);
+  public async deleteFile(fileId: string): Promise<File | null> {
+    return this.fileDao.deleteFile(fileId);
   }
 }

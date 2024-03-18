@@ -2,7 +2,6 @@ import { Request, Response, Router } from "express";
 import { FileService } from "../services/FileService";
 import { Prisma } from "@prisma/client";
 import { restrictBodyId } from "../middleware/validationMiddleware";
-import { OpenAiService } from "../services/OpenAiService";
 
 const fileRouter = Router();
 const fileService = new FileService();
@@ -13,7 +12,7 @@ const fileService = new FileService();
  */
 fileRouter.post("/", async (req: Request, res: Response) => {
   try {
-    const fileData: Prisma.FileCreateInput = req.body;
+    const fileData: Prisma.FileUncheckedCreateInput = req.body;
     const newFile = await fileService.createFile(fileData);
     return res.status(201).json(newFile);
   } catch (error) {
