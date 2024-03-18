@@ -76,6 +76,8 @@ model ExercisePage {
   instructions  String
   sandboxId     String
   correctAnswer String
+
+  files File[]
 }
 
 model ExplorationPage {
@@ -86,6 +88,20 @@ model ExplorationPage {
   // Additional fields specific to ExplorationPage - exploration instructions, code sandbox info, feedback?
   instructions String
   sandboxId    String
+
+  files File[]
+}
+
+model File {
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+  code String
+
+  exercisePage   ExercisePage @relation(fields: [exercisePageId], references: [id])
+  exercisePageId String       @db.Uuid
+
+  explorationPage   ExplorationPage @relation(fields: [explorationPageId], references: [id])
+  explorationPageId String          @db.Uuid
 }
 
 model Analytics {

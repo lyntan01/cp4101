@@ -36,6 +36,7 @@ export class ExplorationPageDao {
             },
           },
         },
+        files: true,
       },
     });
   }
@@ -55,6 +56,7 @@ export class ExplorationPageDao {
             },
           },
         },
+        files: true,
       },
     });
   }
@@ -72,8 +74,18 @@ export class ExplorationPageDao {
   public async deleteExplorationPage(
     pageId: string
   ): Promise<ExplorationPage | null> {
-    return this.prismaClient.explorationPage.delete({
-      where: { id: pageId },
+    const response = await this.prismaClient.$transaction(async (prisma) => {
+      // Delete files if they exist
+      await prisma.file.deleteMany({
+        where: { explorationPageId: pageId },
+      });
+
+      // Finally, delete the ExplorationPage
+      return this.prismaClient.explorationPage.delete({
+        where: { id: pageId },
+      });
     });
+
+    return response;
   }
 }

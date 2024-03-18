@@ -5,7 +5,7 @@ import {
 } from "@prisma/client";
 
 export class ExercisePageDao {
-  constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
+  constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
   public async createExercisePage(
     pageData: Prisma.ExercisePageUncheckedCreateInput
@@ -36,6 +36,7 @@ export class ExercisePageDao {
             },
           },
         },
+        files: true,
       },
     });
   }
@@ -55,6 +56,7 @@ export class ExercisePageDao {
             },
           },
         },
+        files: true,
       },
     });
   }
@@ -72,8 +74,18 @@ export class ExercisePageDao {
   public async deleteExercisePage(
     pageId: string
   ): Promise<ExercisePage | null> {
-    return this.prismaClient.exercisePage.delete({
-      where: { id: pageId },
+    const response = await this.prismaClient.$transaction(async (prisma) => {
+      // Delete files if they exist
+      await prisma.file.deleteMany({
+        where: { exercisePageId: pageId },
+      });
+
+      // Finally, delete the ExercisePage
+      return this.prismaClient.exercisePage.delete({
+        where: { id: pageId },
+      });
     });
+
+    return response;
   }
 }

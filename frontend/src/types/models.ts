@@ -60,6 +60,7 @@ export type ExercisePage = {
   instructions: string;
   sandboxId: string;
   correctAnswer: string;
+  files: File[];
 };
 
 export type ExplorationPage = {
@@ -67,6 +68,15 @@ export type ExplorationPage = {
   page: Page;
   instructions: string;
   sandboxId: string;
+  files: File[];
+};
+
+export type File = {
+  id: string;
+  name: string;
+  code: string;
+  exercisePage?: ExercisePage;
+  explorationPage?: ExplorationPage;
 };
 
 export type Analytics = {
