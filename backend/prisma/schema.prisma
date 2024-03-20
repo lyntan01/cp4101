@@ -77,7 +77,7 @@ model ExercisePage {
   sandboxId     String
   correctAnswer String
 
-  files File[]
+  // files File[]
 }
 
 model ExplorationPage {
@@ -89,20 +89,20 @@ model ExplorationPage {
   instructions String
   sandboxId    String
 
-  files File[]
+  // files File[]
 }
 
-model File {
-  id   String @id @default(uuid()) @db.Uuid
-  name String
-  code String
+// model File {
+//   id   String @id @default(uuid()) @db.Uuid
+//   name String
+//   code String
 
-  exercisePage   ExercisePage? @relation(fields: [exercisePageId], references: [id])
-  exercisePageId String?       @db.Uuid
+//   exercisePage   ExercisePage? @relation(fields: [exercisePageId], references: [id])
+//   exercisePageId String?       @db.Uuid
 
-  explorationPage   ExplorationPage? @relation(fields: [explorationPageId], references: [id])
-  explorationPageId String?          @db.Uuid
-}
+//   explorationPage   ExplorationPage? @relation(fields: [explorationPageId], references: [id])
+//   explorationPageId String?          @db.Uuid
+// }
 
 model Analytics {
   id                             String @id @default(uuid()) @db.Uuid
