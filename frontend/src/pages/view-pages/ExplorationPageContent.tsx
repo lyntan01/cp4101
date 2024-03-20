@@ -67,7 +67,7 @@ const ExplorationPageContent: React.FC<ExplorationPageContentProps> = ({
         key={explorationPage.id}
         editorStateStr={explorationPage.instructions}
       />
-      <CodeSandbox sandboxId={explorationPage.sandboxId} />
+      <CodeSandbox sandboxId={explorationPage.sandboxId} view='split' />
 
       {role === UserRoleEnum.STUDENT && (
         <Accordion

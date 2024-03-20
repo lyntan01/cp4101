@@ -6,7 +6,7 @@ import {
   AccordionHeader,
   AccordionBody
 } from '@material-tailwind/react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MonacoEditor } from '../../components/monaco-editor/MonacoEditor'
 import { GenericButton } from '../../components/buttons'
 import { useToast } from '../../wrappers/ToastProvider'
@@ -15,6 +15,7 @@ import {
   getExerciseStudentAnswerFeedback
 } from '../../api/exercisePage'
 import { convertMarkdownToLexicalJson } from '../../utils/convertMarkdownToLexicalJson'
+import Editor from '@monaco-editor/react'
 
 interface ExercisePageContentProps {
   exercisePage: ExercisePage
@@ -62,13 +63,40 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
     }
   }
 
+  const editorRef = useRef<any>(null)
+  const [fileName, setFileName] = useState(exercisePage.files[0].name)
+  const file = exercisePage.files.find(file => file.name === fileName)
+
+  useEffect(() => {
+    editorRef.current?.focus()
+  }, [file?.name])
+
   return (
     <div>
       <LexOutput
         key={exercisePage.id}
         editorStateStr={exercisePage.instructions}
       />
-      <CodeSandbox sandboxId={exercisePage.sandboxId} />
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='my-10'>
+          {exercisePage.files.map(file => (
+            <GenericButton
+              disabled={fileName === file.name}
+              onClick={() => setFileName(file.name)}
+              text={file.name}
+            />
+          ))}
+          <Editor
+            height='90%'
+            theme='vs-dark'
+            path={file!.name}
+            defaultLanguage='javascript' // FIX LATER
+            defaultValue={file!.code}
+            onMount={editor => (editorRef.current = editor)}
+          />
+        </div>
+        <CodeSandbox sandboxId={exercisePage.sandboxId} view='preview' />
+      </div>
 
       {role === UserRoleEnum.TEACHER && (
         <Accordion
