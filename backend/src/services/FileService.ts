@@ -28,4 +28,17 @@ export class FileService {
   public async deleteFile(fileId: string): Promise<File | null> {
     return this.fileDao.deleteFile(fileId);
   }
+
+  public async deleteAllFiles(): Promise<string | null> {
+    const files = await this.fileDao.getAllFiles();
+    if (files.length === 0) {
+      return null;
+    }
+
+    for (const file of files) {
+      await this.fileDao.deleteFile(file.id);
+    }
+
+    return 'all files deleted';
+  }
 }

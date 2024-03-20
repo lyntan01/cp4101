@@ -103,4 +103,23 @@ fileRouter.delete("/:fileId", async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * DELETE /files/{
+ * Deletes all files.
+ */
+fileRouter.delete("/", async (req: Request, res: Response) => {
+  try {
+    const deletedFiles = await fileService.deleteAllFiles();
+
+    if (!deletedFiles) {
+      return res.status(404).json({ error: "Files not found" });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 export default fileRouter;
