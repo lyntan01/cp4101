@@ -168,7 +168,11 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
               {feedback.trim().length > 0 && (
                 <div className='overflow-hidden rounded-lg bg-gray-100 text-left text-wrap whitespace-pre-wrap'>
                   <div className='px-4 py-5 sm:p-6'>
-                    <h2 className='font-bold mb-2'>Feedback:</h2>
+                    <h1 className='font-bold underline'>Feedback</h1>
+                    <h4 className='italic mb-4'>
+                      Note: AI-generated feedback may not be 100% accurate.
+                      Please ignore irrelevant feedback.
+                    </h4>
                     <LexOutput editorStateStr={feedback} />
                   </div>
                 </div>

@@ -83,13 +83,15 @@ const ViewPageWrapper: React.FC = () => {
             onClick={navToChaptersPage}
             className='bg-white text-zinc-500 shadow-white -mt-4 border-0'
           />
-          <GenericButton
-            text='Edit Page'
-            type='button'
-            icon={<PencilSquareIcon className='h-4 w-4' />}
-            onClick={navToEditPage}
-            className='-mt-4 border-0'
-          />
+          {user?.role === UserRoleEnum.TEACHER && (
+            <GenericButton
+              text='Edit Page'
+              type='button'
+              icon={<PencilSquareIcon className='h-4 w-4' />}
+              onClick={navToEditPage}
+              className='-mt-4 border-0'
+            />
+          )}
         </div>
 
         <div className='divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-lg border border-gray-200'>
