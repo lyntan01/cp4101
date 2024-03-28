@@ -81,6 +81,20 @@ export const ChaptersManagementPage = ({
     }
   }
 
+  const generateAllPages = async () => {
+    try {
+      await generateLessonPages()
+      await generateExercisePages()
+      await generateExplorationPages()
+    } catch (error) {
+      console.log(error)
+      displayToast(
+        'An unexpected error occurred during pages generation.',
+        ToastType.ERROR
+      )
+    }
+  }
+
   const generateLessonPages = async () => {
     try {
       displayToast('Generating, hang on tight!', ToastType.INFO)
@@ -311,6 +325,14 @@ export const ChaptersManagementPage = ({
     )
   }
 
+  const isExplorationPagesGenerated = (): boolean => {
+    return chapters.every(
+      chapter =>
+        chapter.pages.length > 2 &&
+        chapter.pages.some(page => page.type === PageTypeEnum.EXPLORATION)
+    )
+  }
+
   useEffect(() => {
     fetchChapters()
   }, [
@@ -349,13 +371,14 @@ export const ChaptersManagementPage = ({
                     Generate Chapters
                   </button>
                 ) : !isLessonPagesGenerated() ? (
+                  // Note: If all 3 page types have not been generated, the button will generate all 3 types (lesson, exercise, exploration)
                   <button
                     type='button'
                     disabled={chapters.length === 0}
                     className='block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                    onClick={() => generateLessonPages()}
+                    onClick={() => generateAllPages()}
                   >
-                    Generate Lesson Pages for All Chapters
+                    Generate Pages for All Chapters
                   </button>
                 ) : !isExercisePagesGenerated() ? (
                   <button
@@ -366,7 +389,7 @@ export const ChaptersManagementPage = ({
                   >
                     Generate Exercise Pages for All Chapters
                   </button>
-                ) : (
+                ) : !isExplorationPagesGenerated() ? (
                   <button
                     type='button'
                     disabled={chapters.length === 0}
@@ -375,6 +398,8 @@ export const ChaptersManagementPage = ({
                   >
                     Generate Exploration Pages for All Chapters
                   </button>
+                ) : (
+                  <></>
                 )}
                 <button
                   type='button'
