@@ -1,12 +1,14 @@
 import { PageDao } from '../dao/PageDao'
 import { ExercisePageDao } from '../dao/ExercisePageDao'
-import { ExercisePage, Prisma, PageType } from '@prisma/client'
+import { ExercisePage, PageType } from '@prisma/client'
 import { CreateExercisePageData, UpdateExercisePageData } from '../types/page'
+import { ExerciseDao } from '../dao/ExerciseDao';
 
 export class ExercisePageService {
   constructor(
     private exercisePageDao: ExercisePageDao = new ExercisePageDao(),
-    private pageDao: PageDao = new PageDao()
+    private pageDao: PageDao = new PageDao(),
+    private exerciseDao: ExerciseDao = new ExerciseDao()
   ) { }
 
   public async createExercisePage({
@@ -16,20 +18,25 @@ export class ExercisePageService {
     sandboxId,
     correctAnswer
   }: CreateExercisePageData): Promise<ExercisePage | null> {
-    // Create the Page instance
+    // Step 1: Create the Page instance
     const page = await this.pageDao.createPage({
       title: title,
       chapterId: chapterId,
       type: PageType.EXERCISE
-    })
+    });
 
-    // Create the ExercisePage instance linked to the Page
-    const exercisePage = this.exercisePageDao.createExercisePage({
-      pageId: page.id,
+    // Step 2: Create the Exercise instance
+    const exercise = await this.exerciseDao.createExercise({
       instructions: instructions,
       sandboxId: sandboxId,
       correctAnswer: correctAnswer
-    })
+    });
+
+    // Step 3: Create the ExercisePage instance linked to the Page and Exercise
+    const exercisePage = await this.exercisePageDao.createExercisePage({
+      pageId: page.id,
+      exerciseId: exercise.id
+    });
 
     return exercisePage
   }
@@ -57,17 +64,27 @@ export class ExercisePageService {
     sandboxId,
     correctAnswer
   }: UpdateExercisePageData): Promise<ExercisePage | null> {
-    // Update the Page instance
+    // Step 1: Update the Page instance
     await this.pageDao.updatePageByExercisePageId(pageId, {
       title: title
-    })
+    });
 
-    return this.exercisePageDao.updateExercisePage(pageId, {
+    // Step 2: Retrieve the ExercisePage to get the associated Exercise ID
+    const exercisePage = await this.exercisePageDao.getExercisePageByPageId(pageId);
+    if (!exercisePage) {
+      throw new Error("ExercisePage not found");
+    }
+
+    // Step 3: Update the Exercise instance
+    await this.exerciseDao.updateExercise(exercisePage.exerciseId, {
       instructions: instructions,
       sandboxId: sandboxId,
       correctAnswer: correctAnswer
-    })
+    });
+
+    return this.exercisePageDao.getExercisePageByPageId(pageId);
   }
+
 
   public async deleteExercisePage(
     pageId: string

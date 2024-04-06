@@ -67,6 +67,8 @@ exercisePageRouter.post(
   async (req: Request, res: Response) => {
     try {
       const exerciseAnswerData: {
+        studentId: string;
+        exerciseId: string;
         exerciseInstructions: string;
         correctAnswer: string;
         studentAnswer: string;

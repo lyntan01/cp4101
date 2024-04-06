@@ -31,7 +31,11 @@ export class PageDao {
           },
         },
         traditionalTextBasedLessonPage: true,
-        exercisePage: true,
+        exercisePage: {
+          include: {
+            exercise: true,
+          },
+        },
         explorationPage: true,
       },
     });

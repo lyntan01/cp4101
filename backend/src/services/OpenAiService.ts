@@ -11,6 +11,7 @@ import { TraditionalTextBasedLessonPageService } from "./TraditionalTextBasedLes
 import { ExercisePageService } from "./ExercisePageService";
 import { CodeSandboxService } from "./CodeSandboxService";
 import { ExplorationPageService } from "./ExplorationPageService";
+import { SubmissionService } from "./SubmissionService";
 
 export class OpenAiService {
   constructor(
@@ -20,6 +21,7 @@ export class OpenAiService {
     private exercisePageService: ExercisePageService = new ExercisePageService(),
     private explorationPageService: ExplorationPageService = new ExplorationPageService(),
     private codeSandboxService: CodeSandboxService = new CodeSandboxService(),
+    private submissionService: SubmissionService = new SubmissionService()
   ) { }
 
   public async generateChapters({
@@ -286,10 +288,14 @@ export class OpenAiService {
   }
 
   public async getExerciseStudentAnswerFeedback({
+    studentId,
+    exerciseId,
     exerciseInstructions,
     correctAnswer,
     studentAnswer
   }: {
+    studentId: string;
+    exerciseId: string;
     exerciseInstructions: string;
     correctAnswer: string;
     studentAnswer: string;
@@ -320,6 +326,14 @@ export class OpenAiService {
     console.log("completion", completion); // TO DELETE
 
     const feedback = completion.choices[0].message.content;
+
+    await this.submissionService.createSubmission({
+      studentAnswer: studentAnswer,
+      submittedAt: new Date(),
+      generatedFeedback: feedback,
+      studentId: studentId,
+      exerciseId: exerciseId,
+    });
 
     return feedback;
   }
