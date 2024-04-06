@@ -36,6 +36,7 @@ export class ExercisePageDao {
             },
           },
         },
+        exercise: true,
       },
     });
   }
