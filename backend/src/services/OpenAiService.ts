@@ -621,7 +621,7 @@ function getExplorationPagePrompt(
     Part 2: the app itself, which already contains code that the user just needs to modify.
 
     The instructions MUST be a Typescript string in markdown format.The instructions MUST NOT tell the user what they should do, as this will be revealing the correct answer.
-    The instructions MUST contain 3 challenges as suggestions for the student to complete.The challenges MUST be clear, concise, and actionable.
+    The instructions MUST contain 3 challenges as suggestions for the student to complete. The challenges MUST be clear, concise, and actionable.
     The exercise MUST be code in files.There can be separate files.The exercise MUST contain ALL the code necessary to deploy the full app.
     The exercise MUST contain the package.json file with all necessary dependencies listed.
     The code in the exercise MUST NOT have already completed the challenges. The student should be able to complete the challenges by modifying the code.
