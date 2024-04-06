@@ -14,6 +14,7 @@ import { CodeSandboxService } from './CodeSandboxService'
 import { ExplorationPageService } from './ExplorationPageService'
 import { SubmissionService } from './SubmissionService'
 import { GeneratedExerciseService } from './GeneratedExerciseService'
+import { GeneratedExerciseWithExercise } from '../types/generatedExercise'
 
 export class OpenAiService {
   constructor(
@@ -354,7 +355,7 @@ export class OpenAiService {
     studentPreviousExerciseInstructions: string
     studentPreviousExerciseAttempt?: string
     studentPreviousExerciseFeedback?: string
-  }): Promise<GeneratedExercise> {
+  }): Promise<GeneratedExerciseWithExercise> {
     const completion = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo-0125',
       response_format: { type: 'json_object' },

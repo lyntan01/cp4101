@@ -1,11 +1,15 @@
 import { Prisma, PrismaClient, GeneratedExercise } from "@prisma/client";
+import { GeneratedExerciseWithExercise } from "../types/generatedExercise";
 
 export class GeneratedExerciseDao {
   constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
-  public async createGeneratedExercise(generatedExerciseData: Prisma.GeneratedExerciseUncheckedCreateInput): Promise<GeneratedExercise> {
+  public async createGeneratedExercise(generatedExerciseData: Prisma.GeneratedExerciseUncheckedCreateInput): Promise<GeneratedExerciseWithExercise> {
     return this.prismaClient.generatedExercise.create({
       data: generatedExerciseData,
+      include: {
+        exercise: true,
+      }
     });
   }
 

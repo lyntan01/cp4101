@@ -19,7 +19,7 @@ export interface CreateExercisePageData {
 }
 
 export interface UpdateExercisePageData {
-  pageId: string;
+  exercisePageId: string;
   title: string;
   instructions: string;
   sandboxId: string;

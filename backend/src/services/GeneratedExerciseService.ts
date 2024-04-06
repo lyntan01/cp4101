@@ -1,6 +1,7 @@
 import { GeneratedExerciseDao } from '../dao/GeneratedExerciseDao'
 import { GeneratedExercise, Prisma } from '@prisma/client'
 import { ExerciseDao } from '../dao/ExerciseDao'
+import { GeneratedExerciseWithExercise } from '../types/generatedExercise'
 
 export class GeneratedExerciseService {
     constructor(
@@ -18,7 +19,7 @@ export class GeneratedExerciseService {
         instructions: string
         sandboxId: string
         correctAnswer: string
-    }): Promise<GeneratedExercise | null> {
+    }): Promise<GeneratedExerciseWithExercise | null> {
         // Step 1: Create the Exercise instance
         const exercise = await this.exerciseDao.createExercise({
             instructions: instructions,

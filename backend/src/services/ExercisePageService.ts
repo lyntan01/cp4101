@@ -58,19 +58,19 @@ export class ExercisePageService {
   }
 
   public async updateExercisePage({
-    pageId,
+    exercisePageId,
     title,
     instructions,
     sandboxId,
     correctAnswer
   }: UpdateExercisePageData): Promise<ExercisePage | null> {
     // Step 1: Update the Page instance
-    await this.pageDao.updatePageByExercisePageId(pageId, {
+    await this.pageDao.updatePageByExercisePageId(exercisePageId, {
       title: title
     });
 
     // Step 2: Retrieve the ExercisePage to get the associated Exercise ID
-    const exercisePage = await this.exercisePageDao.getExercisePageByPageId(pageId);
+    const exercisePage = await this.exercisePageDao.getExercisePageById(exercisePageId);
     if (!exercisePage) {
       throw new Error("ExercisePage not found");
     }
@@ -82,7 +82,7 @@ export class ExercisePageService {
       correctAnswer: correctAnswer
     });
 
-    return this.exercisePageDao.getExercisePageByPageId(pageId);
+    return this.exercisePageDao.getExercisePageById(exercisePageId);
   }
 
 

@@ -6,6 +6,7 @@ export type User = {
   role: UserRoleEnum;
   createdCourses: Course[];
   enrolledCourses: Course[];
+  submissions: Submission[];
 };
 
 export enum UserRoleEnum {
@@ -30,6 +31,7 @@ export type Chapter = {
   course: Course;
   courseId?: string;
   pages: Page[];
+  generatedExercises: GeneratedExercise[];
 };
 
 export type Page = {
@@ -57,10 +59,34 @@ export type TraditionalTextBasedLessonPage = {
 export type ExercisePage = {
   id: string;
   page: Page;
+  exercise: Exercise;
+};
+
+export type Exercise = {
+  id: string;
   instructions: string;
   sandboxId: string;
   correctAnswer: string;
-};
+  exercisePage?: ExercisePage;
+  generatedExercise?: GeneratedExercise;
+  submissions: Submission[];
+}
+
+export type GeneratedExercise = {
+  id: string;
+  chapter: Chapter;
+  exercise: Exercise;
+}
+
+export type Submission = {
+  id: string;
+  studentAnswer: string;
+  generatedFeedback: string;
+  teacherfeedback: string;
+  submittedAt: Date;
+  student: User;
+  exercise: Exercise;
+}
 
 export type ExplorationPage = {
   id: string;

@@ -41,8 +41,8 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
 
       // Call OpenAI service API to get feedback
       const feedbackData: GetExerciseStudentAnswerFeedbackData = {
-        exerciseInstructions: exercisePage.instructions,
-        correctAnswer: exercisePage.correctAnswer,
+        exerciseInstructions: exercisePage.exercise.instructions,
+        correctAnswer: exercisePage.exercise.correctAnswer,
         studentAnswer: answer
       }
       const response = await getExerciseStudentAnswerFeedback(feedbackData)
@@ -66,9 +66,9 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
     <div>
       <LexOutput
         key={exercisePage.id}
-        editorStateStr={exercisePage.instructions}
+        editorStateStr={exercisePage.exercise.instructions}
       />
-      <CodeSandbox sandboxId={exercisePage.sandboxId} />
+      <CodeSandbox sandboxId={exercisePage.exercise.sandboxId} />
 
       {role === UserRoleEnum.TEACHER && (
         <Accordion
@@ -105,7 +105,7 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
           <AccordionBody className='p-4 text-base'>
             {/* TODO: Replace language with the language of the exercise */}
             <MonacoEditor
-              value={exercisePage.correctAnswer}
+              value={exercisePage.exercise.correctAnswer}
               language='javascript'
               readOnly={true}
               className='h-96'

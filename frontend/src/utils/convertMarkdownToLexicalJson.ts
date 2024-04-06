@@ -36,17 +36,17 @@ export const convertPageContentToLexicalJson = async (page: Page): Promise<Page>
     return response.data
   } else if (
     page.type === PageTypeEnum.EXERCISE &&
-    !isJsonFormat(page.exercisePage!.instructions)
+    !isJsonFormat(page.exercisePage!.exercise.instructions)
   ) {
     const lexicalJsonContent = await convertMarkdownToLexicalJson(
-      page.exercisePage!.instructions
+      page.exercisePage!.exercise.instructions
     )
     const updateExercisePageResponse = await updateExercisePage({
       exercisePageId: page.exercisePage!.id,
       title: page.title,
       instructions: lexicalJsonContent,
-      sandboxId: page.exercisePage!.sandboxId,
-      correctAnswer: page.exercisePage!.correctAnswer
+      sandboxId: page.exercisePage!.exercise.sandboxId,
+      correctAnswer: page.exercisePage!.exercise.correctAnswer
     })
 
     // Retrieve the page again, exercise page instructions should be in Lexical JSON format

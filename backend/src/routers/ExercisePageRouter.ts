@@ -161,7 +161,7 @@ exercisePageRouter.put(
     try {
       const { pageId } = req.params;
       const pageData: UpdateExercisePageData = req.body;
-      pageData.pageId = pageId;
+      pageData.exercisePageId = pageId;
 
       const updatedPage =
         await exercisePageService.updateExercisePage(
