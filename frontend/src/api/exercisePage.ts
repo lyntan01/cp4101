@@ -35,6 +35,8 @@ export interface GenerateExercisePageData {
 }
 
 export interface GetExerciseStudentAnswerFeedbackData {
+  studentId: string;
+  exerciseId: string;
   exerciseInstructions: string;
   correctAnswer: string;
   studentAnswer: string;

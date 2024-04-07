@@ -120,6 +120,8 @@ const ViewPageWrapper: React.FC = () => {
             ) : page.type === PageTypeEnum.EXERCISE ? (
               <ExercisePageContent
                 exercisePage={page.exercisePage!}
+                chapter={page.chapter}
+                userId={user?.id ?? ''}
                 role={user?.role ?? UserRoleEnum.STUDENT}
               />
             ) : page.type === PageTypeEnum.EXPLORATION ? (

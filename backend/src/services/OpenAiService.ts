@@ -797,7 +797,8 @@ function getGenerateNewExercisePrompt(
     Previous exercise instructions: ${studentPreviousExerciseInstructions}
     
     You MUST generate an exercise that is different from the previous exercise.
-    The exercise MUST NOT be the same as the previous exercise.
+    The exercise MUST NOT be the same as the previous exercise, both in essence and in details.
+    The exercise MUST NOT be the same task or type of task as the previous exercise.s
     
     You will be rewarded $200 for a clear, full, deployable exercise in the required format.`
 
