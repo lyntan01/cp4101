@@ -19,6 +19,10 @@ export class SubmissionService {
         return this.submissionDao.getSubmissionById(submissionId);
     }
 
+    public async getLatestSubmissionByChapterIdAndStudentId(chapterId: string, studentId: string): Promise<Submission | null> {
+        return this.submissionDao.getLatestSubmissionByChapterIdAndStudentId(chapterId, studentId);
+    }
+
     public async updateSubmission(
         submissionId: string,
         submissionData: Prisma.SubmissionUpdateInput

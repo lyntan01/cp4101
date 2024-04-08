@@ -82,7 +82,7 @@ export type Submission = {
   id: string;
   studentAnswer: string;
   generatedFeedback: string;
-  teacherfeedback: string;
+  teacherFeedback: string;
   submittedAt: Date;
   student: User;
   exercise: Exercise;

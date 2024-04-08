@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Chapter, Exercise, PageTypeEnum } from '../../types/models'
+import { Chapter, Exercise, PageTypeEnum, Submission } from '../../types/models'
 import { useToast } from '../../wrappers/ToastProvider'
 import { getChapterById } from '../../api/chapter'
 import { LexEditor, LexOutput } from '../../rich-text-editor'
@@ -11,6 +11,11 @@ import {
 } from '@material-tailwind/react'
 import CodeSandbox from '../view-pages/components/CodeSandbox'
 import { MonacoEditor } from '../../components/monaco-editor'
+import {
+  editTeacherFeedback,
+  getLatestSubmissionByChapterIdAndStudentId
+} from '../../api/submission'
+import { convertMarkdownToLexicalJson } from '../../utils/convertMarkdownToLexicalJson'
 
 const CreateTeacherFeedback: React.FC = () => {
   const { chapterId } = useParams()
@@ -18,11 +23,12 @@ const CreateTeacherFeedback: React.FC = () => {
   const [exercise, setExercise] = useState<Exercise>()
   const [isExerciseShown, setIsExerciseShown] = useState(false)
 
+  const [selectedStudentId, setSelectedStudentId] = useState('')
   const [submissionData, setSubmissionData] = useState<{
     id: string
     studentAnswer: string
     generatedFeedback: string
-    teacherfeedback: string
+    teacherFeedback: string
     submittedAt: Date
     studentId: string
     exerciseId: string
@@ -30,12 +36,13 @@ const CreateTeacherFeedback: React.FC = () => {
     id: '',
     studentAnswer: '',
     generatedFeedback: '',
-    teacherfeedback: '',
+    teacherFeedback: '',
     submittedAt: new Date(),
     studentId: '',
     exerciseId: ''
   })
-  const [selectedStudentId, setSelectedStudentId] = useState('')
+  const [generatedFeedbackLexicalJson, setGeneratedFeedbackLexicalJson] =
+    useState<string>('')
 
   const { displayToast, ToastType } = useToast()
   const navigate = useNavigate()
@@ -43,7 +50,7 @@ const CreateTeacherFeedback: React.FC = () => {
   const fetchChapter = async () => {
     try {
       const response = await getChapterById(chapterId ?? '')
-      console.log(response.data)
+      // console.log(response.data)
 
       const chapter = response.data
       const page = chapter.pages.find(
@@ -66,10 +73,8 @@ const CreateTeacherFeedback: React.FC = () => {
         })
       }
 
-      // Set the first student as selected by default, assuming there are students
-      if (chapter.course.students.length > 0) {
-        setSelectedStudentId(chapter.course.students[0].id)
-      } else {
+      // Handle the case where there are no students
+      if (chapter.course.students.length === 0) {
         // Optionally handle the case where there are no students
         throw new Error('No students found in the course.')
       }
@@ -90,11 +95,14 @@ const CreateTeacherFeedback: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      if (submissionData.teacherfeedback.trim().length === 0) {
+      if (submissionData.teacherFeedback.trim().length === 0) {
         displayToast('Feedback cannot be empty!', ToastType.ERROR)
         return
       }
-      //   const response = await createSubmission(submissionData) // create or edit?
+      const response = await editTeacherFeedback(
+        submissionData.id,
+        submissionData.teacherFeedback
+      )
       displayToast('Feedback edited successfully.', ToastType.INFO)
       navigate(`/courses/${chapter?.course.id}/3`)
     } catch (error: any) {
@@ -112,26 +120,32 @@ const CreateTeacherFeedback: React.FC = () => {
 
   const fetchSubmission = async () => {
     try {
-      //   const response = await getLatestSubmissionByChapterIdAndStudentId(
-      //     chapterId ?? '',
-      //     selectedStudentId
-      //   )
-      //   //   console.log(response.data)
-      //   const submission: Submission = response.data
-      //   if (!submission) {
-      //     throw new Error(
-      //       'Student has not submitted any attempts for this exercise.'
-      //     )
-      //   }
-      //   setSubmissionData({
-      //     ...submissionData,
-      //     id: submission.id,
-      //     studentAnswer: submission.studentAnswer,
-      //     generatedFeedback: submission.generatedFeedback,
-      //     teacherfeedback: submission.teacherfeedback,
-      //     submittedAt: submission.submittedAt,
-      //     studentId: selectedStudentId
-      //   })
+      if (selectedStudentId.length > 0) {
+        const response = await getLatestSubmissionByChapterIdAndStudentId(
+          chapterId ?? '',
+          selectedStudentId
+        )
+        console.log(response)
+        if (!response || !response.data) {
+          throw new Error(
+            'Student has not submitted any attempts for this exercise.'
+          )
+        }
+
+        const submission: Submission = response.data
+        setSubmissionData({
+          ...submissionData,
+          id: submission.id,
+          studentAnswer: submission.studentAnswer,
+          generatedFeedback: submission.generatedFeedback,
+          teacherFeedback: submission.teacherFeedback,
+          submittedAt: submission.submittedAt,
+          studentId: selectedStudentId
+        })
+        setGeneratedFeedbackLexicalJson(
+          await convertMarkdownToLexicalJson(submission.generatedFeedback)
+        )
+      }
     } catch (error: any) {
       if (error.response) {
         displayToast(`${error.response.data.error}`, ToastType.ERROR)
@@ -200,10 +214,10 @@ const CreateTeacherFeedback: React.FC = () => {
                 onChange={value =>
                   setSubmissionData({
                     ...submissionData,
-                    teacherfeedback: value
+                    teacherFeedback: value
                   })
                 }
-                editorStateStr={submissionData.teacherfeedback}
+                editorStateStr={submissionData.teacherFeedback}
               />
             </div>
           </div>
@@ -257,7 +271,7 @@ const CreateTeacherFeedback: React.FC = () => {
                 />
                 <CodeSandbox sandboxId={exercise.sandboxId} />
 
-                <h3>Correct Answer:</h3>
+                <h3 className='underline mb-2'>Correct Answer:</h3>
                 {/* TODO: Replace language with the language of the exercise */}
                 <MonacoEditor
                   value={exercise.correctAnswer}
@@ -266,17 +280,21 @@ const CreateTeacherFeedback: React.FC = () => {
                   className='h-96 my-4'
                 />
 
-                <h3>Student Answer:</h3>
-                {/* TODO: Replace language with the language of the exercise */}
-                <MonacoEditor
-                  value={submissionData.studentAnswer}
-                  language='javascript'
-                  readOnly={true}
-                  className='h-96 my-4'
-                />
+                {selectedStudentId && (
+                  <>
+                    <h3 className='underline mb-2'>Student Answer:</h3>
+                    {/* TODO: Replace language with the language of the exercise */}
+                    <MonacoEditor
+                      value={submissionData.studentAnswer}
+                      language='javascript'
+                      readOnly={true}
+                      className='h-96 my-4'
+                    />
 
-                <h3>AI-Generated Feedback:</h3>
-                <LexOutput editorStateStr={submissionData.generatedFeedback} />
+                    <h3 className='underline mb-2'>AI-Generated Feedback:</h3>
+                    <LexOutput editorStateStr={generatedFeedbackLexicalJson} />
+                  </>
+                )}
               </AccordionBody>
             </Accordion>
           )}

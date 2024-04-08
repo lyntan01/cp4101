@@ -53,6 +53,25 @@ submissionRouter.get("/:submissionId", async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /submissions/latest/{chapterId}/{studentId}
+ * Retrieves a submission by its unique ID.
+ */
+submissionRouter.get("/latest/:chapterId/:studentId", async (req: Request, res: Response) => {
+    try {
+        const { chapterId, studentId } = req.params;
+        const submission = await submissionService.getLatestSubmissionByChapterIdAndStudentId(chapterId, studentId);
+
+        if (!submission) {
+            return res.status(404).json({ error: "Submission not found" });
+        }
+
+        return res.status(200).json(submission);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+/**
  * PUT /submissions/{submissionId}
  * Updates a submission's information by its unique ID.
  */
