@@ -1,7 +1,7 @@
 import { Chapter, Prisma, PrismaClient } from "@prisma/client";
 
 export class ChapterDao {
-  constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
+  constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
   public async createChapter(
     chapterData: Prisma.ChapterCreateInput
@@ -30,6 +30,7 @@ export class ChapterDao {
       where: { courseId },
       include: {
         pages: true,
+        generatedExercises: true,
       },
     });
   }
@@ -44,7 +45,7 @@ export class ChapterDao {
     });
   }
 
-  public async deleteChapter(chapterId: string): Promise<Chapter | null> {    
+  public async deleteChapter(chapterId: string): Promise<Chapter | null> {
     return this.prismaClient.chapter.delete({
       where: { id: chapterId },
     });

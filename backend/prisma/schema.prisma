@@ -25,14 +25,13 @@ model User {
 }
 
 model Course {
-  id          String     @id @default(uuid()) @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
   name        String
   description String
-  teacher     User       @relation("CreatedCourses", fields: [teacherId], references: [id])
-  teacherId   String     @db.Uuid
-  students    User[]     @relation("EnrolledCourses")
+  teacher     User      @relation("CreatedCourses", fields: [teacherId], references: [id])
+  teacherId   String    @db.Uuid
+  students    User[]    @relation("EnrolledCourses")
   chapters    Chapter[]
-  analytics   Analytics?
 }
 
 model Chapter {
@@ -121,14 +120,6 @@ model ExplorationPage {
   // Additional fields specific to ExplorationPage - exploration instructions, code sandbox info, feedback?
   instructions String
   sandboxId    String
-}
-
-model Analytics {
-  id                             String @id @default(uuid()) @db.Uuid
-  percentStudentsUsedCodeSandbox Float
-  codeFeedbackOverview           String
-  course                         Course @relation(fields: [courseId], references: [id])
-  courseId                       String @unique @db.Uuid
 }
 
 // Enums

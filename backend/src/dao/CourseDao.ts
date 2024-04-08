@@ -1,7 +1,7 @@
 import { Course, Prisma, PrismaClient } from "@prisma/client";
 
 export class CourseDao {
-  constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
+  constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
   public async createCourse(
     courseData: Prisma.CourseCreateInput
@@ -22,7 +22,6 @@ export class CourseDao {
         teacher: true,
         students: true,
         chapters: true,
-        analytics: true,
       },
     });
   }
@@ -36,7 +35,6 @@ export class CourseDao {
         teacher: true,
         students: true,
         chapters: true,
-        analytics: true,
       },
     });
   }

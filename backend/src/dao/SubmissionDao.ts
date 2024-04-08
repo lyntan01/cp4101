@@ -10,7 +10,12 @@ export class SubmissionDao {
   }
 
   public async getAllSubmissions(): Promise<Submission[]> {
-    return this.prismaClient.submission.findMany();
+    return this.prismaClient.submission.findMany({
+      include: {
+        exercise: true,
+        student: true,
+      },
+    });
   }
 
   public async getSubmissionById(submissionId: string): Promise<Submission | null> {
