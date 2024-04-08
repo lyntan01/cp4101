@@ -14,3 +14,6 @@ export const CREATE_TEXT_PAGE = `${PAGES}/create/text`;
 export const CREATE_EXERCISE_PAGE = `${PAGES}/create/exercise`;
 export const CREATE_EXPLORATION_PAGE = `${PAGES}/create/exploration`;
 export const EDIT_PAGE = `${PAGES}/edit`;
+
+// Feedback routes
+export const CREATE_TEACHER_FEEDBACK = "/feedback";

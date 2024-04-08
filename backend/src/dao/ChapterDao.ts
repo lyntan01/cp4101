@@ -19,8 +19,20 @@ export class ChapterDao {
     return this.prismaClient.chapter.findUnique({
       where: { id: chapterId },
       include: {
-        course: true,
-        pages: true,
+        course: {
+          include: {
+            students: true
+          }
+        },
+        pages: {
+          include: {
+            exercisePage: {
+              include: {
+                exercise: true
+              }
+            }
+          }
+        },
       },
     });
   }

@@ -9,7 +9,8 @@ import {
   SETTINGS,
   SIGN_UP,
   EDIT_PAGE,
-  CREATE_EXPLORATION_PAGE
+  CREATE_EXPLORATION_PAGE,
+  CREATE_TEACHER_FEEDBACK
 } from '../libs/routes'
 import Login from '../pages/entry/Login'
 import SignUp from '../pages/entry/SignUp'
@@ -27,6 +28,7 @@ import ViewPageWrapper from '../pages/view-pages/ViewPageWrapper'
 import CreateExercisePage from '../pages/create-pages/CreateExercisePage'
 import EditPageWrapper from '../pages/edit-pages/EditPageWrapper'
 import CreateExplorationPage from '../pages/create-pages/CreateExplorationPage'
+import CreateTeacherFeedback from '../pages/course-details/CreateTeacherFeedback'
 
 export default function App () {
   return (
@@ -69,6 +71,10 @@ export default function App () {
               <Route
                 path={`${EDIT_PAGE}/:pageId`}
                 element={<EditPageWrapper />}
+              />
+              <Route
+                path={`${CREATE_TEACHER_FEEDBACK}/:chapterId`}
+                element={<CreateTeacherFeedback />}
               />
               <Route path={SETTINGS} element={<h1>Settings</h1>} />
             </Route>

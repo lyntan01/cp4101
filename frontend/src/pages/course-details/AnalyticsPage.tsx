@@ -4,6 +4,7 @@ import { Course } from '../../types/models'
 import { ChapterAnalytics, getChapterAnalytics } from '../../api/course'
 import { useEffect, useState } from 'react'
 import { useToast } from '../../wrappers/ToastProvider'
+import { useNavigate } from 'react-router-dom'
 
 interface AnalyticsPageProps {
   key: number
@@ -15,6 +16,7 @@ export const AnalyticsPage = ({ key, course }: AnalyticsPageProps) => {
     []
   )
   const { displayToast, ToastType } = useToast()
+  const navigate = useNavigate()
 
   const fetchChapterAnalytics = async () => {
     try {
@@ -22,7 +24,6 @@ export const AnalyticsPage = ({ key, course }: AnalyticsPageProps) => {
         course.id,
         course.students.length
       )
-      console.log(response.data)
       setChapterAnalytics(response.data)
     } catch (error: any) {
       if (error.response) {
@@ -49,9 +50,24 @@ export const AnalyticsPage = ({ key, course }: AnalyticsPageProps) => {
         'ring-white/60 ring-offset-2 ring-offset-blue-400'
       )}
     >
-      <h1 className='text-xl font-semibold leading-6 text-gray-900'>
-        Analytics
-      </h1>
+      <div className='sm:flex sm:items-center'>
+        <div className='sm:flex-auto'>
+          <h1 className='text-xl font-semibold leading-6 text-gray-900'>
+            Analytics
+          </h1>
+        </div>
+
+        {/* <div className='mt-4 sm:ml-16 sm:mt-0 sm:flex-none'>
+          <button
+            type='button'
+            className='block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+            // onClick={() => navigate()}
+          >
+            Give Feedback
+          </button>
+        </div> */}
+      </div>
+
       <div className='mt-8 flow-root'>
         <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
           <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -133,7 +149,7 @@ export const AnalyticsPage = ({ key, course }: AnalyticsPageProps) => {
                             type='button'
                             className='text-indigo-600 hover:text-indigo-900'
                             onClick={() => {
-                              // navigate
+                              navigate(`/feedback/${item.chapterId}`)
                             }}
                           >
                             View More
