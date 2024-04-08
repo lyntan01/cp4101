@@ -50,6 +50,26 @@ export class SubmissionDao {
     });
   }
 
+  public async getLatestSubmissionByExercisePageIdAndStudentId(exercisePageId: string, studentId: string): Promise<Submission | null> {
+    return this.prismaClient.submission.findFirst({
+      where: {
+        studentId: studentId,
+        exercise: {
+          exercisePage: {
+            id: exercisePageId,
+          },
+        },
+      },
+      orderBy: {
+        submittedAt: 'desc',
+      },
+      include: {
+        exercise: true,
+        student: true,
+      },
+    });
+  }
+
   public async updateSubmission(
     submissionId: string,
     submissionData: Prisma.SubmissionUpdateInput
