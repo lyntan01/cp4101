@@ -21,9 +21,9 @@ const EditExercisePage: React.FC<EditExercisePageProps> = ({
     useState<UpdateExercisePageData>({
       exercisePageId: page.exercisePage!.id,
       title: page.title,
-      instructions: page.exercisePage!.instructions,
-      sandboxId: page.exercisePage!.sandboxId,
-      correctAnswer: page.exercisePage!.correctAnswer
+      instructions: page.exercisePage!.exercise.instructions,
+      sandboxId: page.exercisePage!.exercise.sandboxId,
+      correctAnswer: page.exercisePage!.exercise.correctAnswer
     })
 
   const { displayToast, ToastType } = useToast()

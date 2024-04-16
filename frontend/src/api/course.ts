@@ -20,6 +20,15 @@ export interface RemoveStudentData {
   courseId: string;
 }
 
+export interface ChapterAnalytics {
+  chapterId: string,
+  chapterName: string,
+  studentsWithExercisePageSubmissions: number,
+  percentStudentsWithExercisePageSubmissions: number,
+  studentsWithGeneratedExerciseSubmissions: number,
+  avgSubmissionsPerStudent: number
+}
+
 export async function createCourse(
   data: CreateCourseData
 ): Promise<AxiosResponse<Course>> {
@@ -87,6 +96,13 @@ export async function getCreatedCoursesByTeacherId(
   teacherId: string
 ): Promise<AxiosResponse<Course[]>> {
   return client.get(`${URL}/teacher/${teacherId}`);
+}
+
+export async function getChapterAnalytics(
+  courseId: string,
+  totalStudentsInCourse: number
+): Promise<AxiosResponse<ChapterAnalytics[]>> {
+  return client.get(`${URL}/analytics/${courseId}/${totalStudentsInCourse}`);
 }
 
 export async function deleteCourse(id: string): Promise<AxiosResponse<any>> {

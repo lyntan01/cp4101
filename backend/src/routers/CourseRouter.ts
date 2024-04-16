@@ -2,9 +2,11 @@ import { Request, Response, Router } from "express";
 import { CourseService } from "../services/CourseService";
 import { Prisma } from "@prisma/client";
 import { restrictBodyId } from "../middleware/validationMiddleware";
+import { AnalyticsService } from "../services/AnalyticsService";
 
 const courseRouter = Router();
 const courseService = new CourseService();
+const analyticsService = new AnalyticsService();
 
 /**
  * POST /courses/
@@ -126,6 +128,25 @@ courseRouter.get("/teacher/:teacherId", async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(courses);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /courses/analytics/{courseId}/{totalStudentsInCourse}
+ * Retrieves a course's chapter analytics by its unique ID.
+ */
+courseRouter.get("/analytics/:courseId/:totalStudentsInCourse", async (req: Request, res: Response) => {
+  try {
+    const { courseId, totalStudentsInCourse } = req.params;
+    const course = await analyticsService.computeChapterAnalytics(courseId, totalStudentsInCourse);
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    return res.status(200).json(course);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

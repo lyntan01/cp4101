@@ -14,33 +14,34 @@ datasource db {
 // Models
 
 model User {
-  id              String   @id @default(uuid()) @db.Uuid
+  id              String       @id @default(uuid()) @db.Uuid
   name            String
-  email           String   @unique
+  email           String       @unique
   password        String
   role            UserRole
-  createdCourses  Course[] @relation("CreatedCourses")
-  enrolledCourses Course[] @relation("EnrolledCourses")
+  createdCourses  Course[]     @relation("CreatedCourses")
+  enrolledCourses Course[]     @relation("EnrolledCourses")
+  submissions     Submission[]
 }
 
 model Course {
-  id          String     @id @default(uuid()) @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
   name        String
   description String
-  teacher     User       @relation("CreatedCourses", fields: [teacherId], references: [id])
-  teacherId   String     @db.Uuid
-  students    User[]     @relation("EnrolledCourses")
+  teacher     User      @relation("CreatedCourses", fields: [teacherId], references: [id])
+  teacherId   String    @db.Uuid
+  students    User[]    @relation("EnrolledCourses")
   chapters    Chapter[]
-  analytics   Analytics?
 }
 
 model Chapter {
-  id               String   @id @default(uuid()) @db.Uuid
-  name             String
-  learningOutcomes String[]
-  course           Course   @relation(fields: [courseId], references: [id])
-  courseId         String   @db.Uuid
-  pages            Page[]
+  id                 String              @id @default(uuid()) @db.Uuid
+  name               String
+  learningOutcomes   String[]
+  course             Course              @relation(fields: [courseId], references: [id])
+  courseId           String              @db.Uuid
+  pages              Page[]
+  generatedExercises GeneratedExercise[]
 }
 
 // Abstract class
@@ -73,9 +74,42 @@ model ExercisePage {
   pageId String @unique @db.Uuid
 
   // Additional fields specific to ExercisePage - exercise instructions, code sandbox info, correct answer
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId String   @unique @db.Uuid
+}
+
+model Exercise {
+  id            String @id @default(uuid()) @db.Uuid
   instructions  String
   sandboxId     String
   correctAnswer String
+
+  exercisePage      ExercisePage?
+  generatedExercise GeneratedExercise?
+
+  submissions Submission[]
+}
+
+model GeneratedExercise {
+  id        String  @id @default(uuid()) @db.Uuid
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String  @db.Uuid
+
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId String   @unique @db.Uuid
+}
+
+model Submission {
+  id                String   @id @default(uuid()) @db.Uuid
+  studentAnswer     String
+  generatedFeedback String?
+  teacherFeedback   String?
+  submittedAt       DateTime @default(now())
+
+  student    User     @relation(fields: [studentId], references: [id])
+  studentId  String   @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId String   @db.Uuid
 }
 
 model ExplorationPage {
@@ -86,14 +120,6 @@ model ExplorationPage {
   // Additional fields specific to ExplorationPage - exploration instructions, code sandbox info, feedback?
   instructions String
   sandboxId    String
-}
-
-model Analytics {
-  id                             String @id @default(uuid()) @db.Uuid
-  percentStudentsUsedCodeSandbox Float
-  codeFeedbackOverview           String
-  course                         Course @relation(fields: [courseId], references: [id])
-  courseId                       String @unique @db.Uuid
 }
 
 // Enums

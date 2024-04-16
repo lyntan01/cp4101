@@ -5,7 +5,7 @@ import {
 } from "@prisma/client";
 
 export class ExercisePageDao {
-  constructor(private prismaClient: PrismaClient = new PrismaClient()) {}
+  constructor(private prismaClient: PrismaClient = new PrismaClient()) { }
 
   public async createExercisePage(
     pageData: Prisma.ExercisePageUncheckedCreateInput
@@ -36,6 +36,7 @@ export class ExercisePageDao {
             },
           },
         },
+        exercise: true,
       },
     });
   }
@@ -55,6 +56,7 @@ export class ExercisePageDao {
             },
           },
         },
+        exercise: true,
       },
     });
   }

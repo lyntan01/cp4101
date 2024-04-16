@@ -67,6 +67,8 @@ exercisePageRouter.post(
   async (req: Request, res: Response) => {
     try {
       const exerciseAnswerData: {
+        studentId: string;
+        exerciseId: string;
         exerciseInstructions: string;
         correctAnswer: string;
         studentAnswer: string;
@@ -159,7 +161,7 @@ exercisePageRouter.put(
     try {
       const { pageId } = req.params;
       const pageData: UpdateExercisePageData = req.body;
-      pageData.pageId = pageId;
+      pageData.exercisePageId = pageId;
 
       const updatedPage =
         await exercisePageService.updateExercisePage(
