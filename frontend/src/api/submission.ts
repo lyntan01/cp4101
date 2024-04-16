@@ -30,7 +30,7 @@ export async function editTeacherFeedback(
 export async function getLatestSubmissionByChapterIdAndStudentId(
     chapterId: string,
     studentId: string
-): Promise<AxiosResponse<Submission>> {
+): Promise<AxiosResponse<Submission[]>> {
     return client.get(`${URL}/latest/${chapterId}/${studentId}`);
 }
 

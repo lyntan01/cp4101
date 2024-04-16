@@ -19,8 +19,9 @@ export class SubmissionService {
         return this.submissionDao.getSubmissionById(submissionId);
     }
 
-    public async getLatestSubmissionByChapterIdAndStudentId(chapterId: string, studentId: string): Promise<Submission | null> {
-        return this.submissionDao.getLatestSubmissionByChapterIdAndStudentId(chapterId, studentId);
+    public async getLatestSubmissionByChapterIdAndStudentId(chapterId: string, studentId: string): Promise<Submission[]> {
+        const latestSubmission = await this.submissionDao.getLatestSubmissionByChapterIdAndStudentId(chapterId, studentId);
+        return [latestSubmission];
     }
 
     public async updateSubmission(
