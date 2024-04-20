@@ -12,6 +12,7 @@ export interface GenerateChaptersData {
 }
 export interface CreateChapterData {
   name: string;
+  learningOutcomes: string[];
   courseId: string;
 }
 

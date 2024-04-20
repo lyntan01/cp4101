@@ -248,10 +248,14 @@ export const ChaptersManagementPage = ({
     }
   }
 
-  const createChapter = async (chapterName: string) => {
+  const createChapter = async (
+    chapterName: string,
+    chapterLearningOutcomes: string
+  ) => {
     try {
       await createChapterApi({
         name: chapterName.trim(),
+        learningOutcomes: [chapterLearningOutcomes.trim()],
         courseId: course.id
       })
       displayToast('Chapter created successfully.', ToastType.INFO)
