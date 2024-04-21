@@ -35,6 +35,7 @@ export const ChaptersManagementPage = ({
   const [isGenerateChaptersModalOpen, setIsGenerateChaptersModalOpen] =
     useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
   const [chapters, setChapters] = useState<Chapter[]>([])
   const { displayToast, ToastType } = useToast()
 

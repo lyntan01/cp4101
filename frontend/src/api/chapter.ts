@@ -16,6 +16,11 @@ export interface CreateChapterData {
   courseId: string;
 }
 
+export interface EditChapterData {
+  name?: string;
+  learningOutcomes?: string[];
+}
+
 export async function generateChapters(
   data: GenerateChaptersData
 ): Promise<AxiosResponse<Chapter[]>> {
@@ -43,6 +48,26 @@ export async function createChapter(
 ): Promise<AxiosResponse<Chapter>> {
   try {
     const response: AxiosResponse<Chapter> = await client.post(`${URL}/`, data);
+    return response;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      throw error.response.data.error;
+    } else {
+      throw error;
+    }
+  }
+}
+
+export async function editChapter(
+  chapterId: string,
+  data: EditChapterData
+): Promise<AxiosResponse<Chapter>> {
+  try {
+    const response: AxiosResponse<Chapter> = await client.put(`${URL}/${chapterId}`, data);
     return response;
   } catch (error) {
     if (
