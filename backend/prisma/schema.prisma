@@ -51,6 +51,7 @@ model Page {
   chapter   Chapter  @relation(fields: [chapterId], references: [id])
   chapterId String   @db.Uuid
   type      PageType
+  createdAt DateTime @default(now())
 
   traditionalTextBasedLessonPage TraditionalTextBasedLessonPage?
   exercisePage                   ExercisePage?

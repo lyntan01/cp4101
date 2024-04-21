@@ -42,6 +42,8 @@ export function ChapterAccordion ({
 
   const { displayToast, ToastType } = useToast()
 
+  console.log('chapters', chapters)
+
   const handleOpen = (id: string) => {
     if (open.includes(id)) {
       setOpen(open.filter((item: string) => item !== id)) // Remove id from open array
@@ -132,45 +134,52 @@ export function ChapterAccordion ({
                 )
               ) : (
                 <ul className='divide-y divide-gray-200'>
-                  {chapter.pages.map(page => (
-                    <li
-                      key={page.id}
-                      className='relative flex justify-between gap-x-6 py-4 px-4 hover:bg-sky-50'
-                    >
-                      <div className='flex min-w-0 gap-x-4'>
-                        <DocumentTextIcon
-                          className='h-5 w-5 flex-none text-gray-600 hover:text-gray-900'
-                          aria-hidden='true'
-                        />
-                        <div className='min-w-0 flex-auto'>
-                          <button
-                            className='text-sm font-normal leading-6 text-gray-900 hover:underline'
-                            onClick={() => navigate(`/pages/${page.id}`)}
-                          >
-                            {page.title}
-                          </button>
+                  {chapter.pages
+                    .sort(function (p1, p2) {
+                      return (
+                        new Date(p1.createdAt).getTime() -
+                        new Date(p2.createdAt).getTime()
+                      )
+                    })
+                    .map(page => (
+                      <li
+                        key={page.id}
+                        className='relative flex justify-between gap-x-6 py-4 px-4 hover:bg-sky-50'
+                      >
+                        <div className='flex min-w-0 gap-x-4'>
+                          <DocumentTextIcon
+                            className='h-5 w-5 flex-none text-gray-600 hover:text-gray-900'
+                            aria-hidden='true'
+                          />
+                          <div className='min-w-0 flex-auto'>
+                            <button
+                              className='text-sm font-normal leading-6 text-gray-900 hover:underline'
+                              onClick={() => navigate(`/pages/${page.id}`)}
+                            >
+                              {page.title}
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      <div className='flex shrink-0 items-center gap-x-2'>
-                        {role === UserRoleEnum.TEACHER && (
-                          <PencilSquareIcon
-                            className='h-5 w-5 flex-none text-gray-400'
-                            onClick={() => {
-                              navigate(`/pages/edit/${page.id}`)
-                            }}
-                          />
-                        )}
-                        {role === UserRoleEnum.TEACHER && (
-                          <TrashIcon
-                            className='h-5 w-5 flex-none text-red-400'
-                            onClick={() => {
-                              deletePage(page.id)
-                            }}
-                          />
-                        )}
-                      </div>
-                    </li>
-                  ))}
+                        <div className='flex shrink-0 items-center gap-x-2'>
+                          {role === UserRoleEnum.TEACHER && (
+                            <PencilSquareIcon
+                              className='h-5 w-5 flex-none text-gray-400'
+                              onClick={() => {
+                                navigate(`/pages/edit/${page.id}`)
+                              }}
+                            />
+                          )}
+                          {role === UserRoleEnum.TEACHER && (
+                            <TrashIcon
+                              className='h-5 w-5 flex-none text-red-400'
+                              onClick={() => {
+                                deletePage(page.id)
+                              }}
+                            />
+                          )}
+                        </div>
+                      </li>
+                    ))}
                   {role === UserRoleEnum.TEACHER ? (
                     <AddNewPageListItem chapterId={chapter.id} />
                   ) : (
