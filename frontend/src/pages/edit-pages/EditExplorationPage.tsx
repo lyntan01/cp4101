@@ -115,7 +115,7 @@ const EditExplorationPage: React.FC<EditExplorationPageProps> = ({
               id='sandboxId'
               name='sandboxId'
               type='text'
-              placeholder='e.g. 5jgmjp'
+              placeholder='e.g. 57l2zr'
               value={updateExplorationPageData.sandboxId}
               onChange={e =>
                 setUpdateExplorationPageData({

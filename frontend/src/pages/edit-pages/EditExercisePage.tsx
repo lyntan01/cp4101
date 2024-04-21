@@ -121,7 +121,7 @@ const EditExercisePage: React.FC<EditExercisePageProps> = ({
               id='sandboxId'
               name='sandboxId'
               type='text'
-              placeholder='e.g. 5jgmjp'
+              placeholder='e.g. 57l2zr'
               value={updateExercisePageData.sandboxId}
               onChange={e =>
                 setUpdateExercisePageData({
