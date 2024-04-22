@@ -24,7 +24,10 @@ import {
   CreateGeneratedExerciseData,
   generateNewExercise
 } from '../../api/generatedExercise'
-import { convertMarkdownToLexicalJson } from '../../utils/convertMarkdownToLexicalJson'
+import {
+  convertMarkdownToLexicalJson,
+  emptyLexicalJson
+} from '../../utils/convertMarkdownToLexicalJson'
 import { getLatestSubmissionByChapterIdAndStudentId } from '../../api/submission'
 import { DocumentTextIcon } from '@heroicons/react/24/outline'
 import { TeacherFeedbackModal } from './components/TeacherFeedbackModal'
@@ -178,7 +181,8 @@ const ExercisePageContent: React.FC<ExercisePageContentProps> = ({
     <div>
       {role === UserRoleEnum.STUDENT &&
         latestSubmission &&
-        latestSubmission.teacherFeedback && (
+        latestSubmission.teacherFeedback &&
+        latestSubmission.teacherFeedback !== emptyLexicalJson && (
           <div className='w-full items-center text-center'>
             <GenericButton
               text='View Teacher Feedback for Latest Submission'

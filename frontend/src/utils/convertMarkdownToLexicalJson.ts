@@ -225,6 +225,8 @@ export function generateLearningOutcomesLexicalJSON(
   return JSON.stringify(jsonOutput, null, 2)
 }
 
+export const emptyLexicalJson: string = `{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}`
+
 // TO DELETE FROM HERE ON
 export async function testConvertMarkdownToLexicalJson() {
   const lexicalJson = await convertMarkdownToLexicalJson(markdownBashString);
