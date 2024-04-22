@@ -39,6 +39,7 @@ export type Page = {
   title: string;
   chapter: Chapter;
   type: PageTypeEnum;
+  createdAt: Date;
   traditionalTextBasedLessonPage?: TraditionalTextBasedLessonPage;
   exercisePage?: ExercisePage;
   explorationPage?: ExplorationPage;

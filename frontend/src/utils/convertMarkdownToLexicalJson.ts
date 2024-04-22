@@ -156,6 +156,77 @@ function transformLexicalEditorState(editorStateJson: string): string {
   return JSON.stringify(editorState);
 }
 
+export function generateLearningOutcomesLexicalJSON(
+  learningOutcomes: string[]
+): string {
+  const outcomeItems = learningOutcomes.map((outcome, index) => ({
+    children: [
+      {
+        children: [
+          {
+            detail: 0,
+            format: 0,
+            mode: 'normal',
+            style: '',
+            text: outcome,
+            type: 'text',
+            version: 1
+          }
+        ],
+        direction: 'ltr',
+        format: '',
+        indent: 0,
+        type: 'listitem',
+        version: 1,
+        value: index + 1
+      }
+    ],
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    type: 'list',
+    version: 1,
+    listType: 'bullet',
+    start: 1,
+    tag: 'ul'
+  }))
+
+  const jsonOutput = {
+    root: {
+      children: [
+        {
+          children: [
+            {
+              detail: 0,
+              format: 0,
+              mode: 'normal',
+              style: '',
+              text: 'In this chapter, you will learn how to:',
+              type: 'text',
+              version: 1
+            }
+          ],
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          type: 'paragraph',
+          version: 1
+        },
+        ...outcomeItems
+      ],
+      direction: 'ltr',
+      format: '',
+      indent: 0,
+      type: 'root',
+      version: 1
+    }
+  }
+
+  return JSON.stringify(jsonOutput, null, 2)
+}
+
+export const emptyLexicalJson: string = `{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}`
+
 // TO DELETE FROM HERE ON
 export async function testConvertMarkdownToLexicalJson() {
   const lexicalJson = await convertMarkdownToLexicalJson(markdownBashString);

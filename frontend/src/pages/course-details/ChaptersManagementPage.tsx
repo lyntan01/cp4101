@@ -7,7 +7,10 @@ import {
   getAllChaptersByCourseId
 } from '../../api/chapter'
 import { deletePage as deletePageApi } from '../../api/page'
-import { generateLessonPage as generateLessonPageApi } from '../../api/textPage'
+import {
+  createTextPage,
+  generateLessonPage as generateLessonPageApi
+} from '../../api/textPage'
 import { generateExercisePage as generateExercisePageApi } from '../../api/exercisePage'
 import { generateExplorationPage as generateExplorationPageApi } from '../../api/explorationPage'
 import { Chapter, Course, PageTypeEnum, UserRoleEnum } from '../../types/models'
@@ -16,6 +19,7 @@ import { useToast } from '../../wrappers/ToastProvider'
 import { ChapterAccordion } from './components/ChapterAccordion'
 import { CreateChapterModal } from './components/CreateChapterModal'
 import { GenerateChaptersModal } from './components/GenerateChaptersModal'
+import { generateLearningOutcomesLexicalJSON } from '../../utils/convertMarkdownToLexicalJson'
 
 interface ChaptersManagementPageProps {
   key: number
@@ -31,6 +35,7 @@ export const ChaptersManagementPage = ({
   const [isGenerateChaptersModalOpen, setIsGenerateChaptersModalOpen] =
     useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
   const [chapters, setChapters] = useState<Chapter[]>([])
   const { displayToast, ToastType } = useToast()
 
@@ -248,12 +253,26 @@ export const ChaptersManagementPage = ({
     }
   }
 
-  const createChapter = async (chapterName: string) => {
+  const createChapter = async (
+    chapterName: string,
+    chapterLearningOutcomes: string
+  ) => {
     try {
-      await createChapterApi({
+      const response = await createChapterApi({
         name: chapterName.trim(),
+        learningOutcomes: [chapterLearningOutcomes.trim()],
         courseId: course.id
       })
+
+      // Create learning outcomes page
+      await createTextPage({
+        title: 'Learning Outcomes',
+        chapterId: response.data.id,
+        content: generateLearningOutcomesLexicalJSON([
+          chapterLearningOutcomes.trim()
+        ])
+      })
+
       displayToast('Chapter created successfully.', ToastType.INFO)
     } catch (error: any) {
       if (error.response) {

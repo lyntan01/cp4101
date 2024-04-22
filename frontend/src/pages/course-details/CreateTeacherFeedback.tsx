@@ -132,7 +132,7 @@ const CreateTeacherFeedback: React.FC = () => {
           )
         }
 
-        const submission: Submission = response.data
+        const submission: Submission = response.data[0]
         setSubmissionData({
           ...submissionData,
           id: submission.id,

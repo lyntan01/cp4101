@@ -116,7 +116,8 @@ export class OpenAiService {
           content: `You are a helpful assistant designed to output JSON.
         Provide your answer in JSON structure like this {"title": "Lesson: <Title of lesson page>", "content": "<Typescript string containing content of lesson page in Markdown>"}
         Example title of lesson page: "Lesson: Introduction to Flutter"
-        Don't include the chapter number in the title of lesson page.`
+        Don't include the chapter number in the title of lesson page.
+        The lesson page should also include reasoning and mechanisms, on top of how to apply the code.`
         },
         {
           role: 'user',

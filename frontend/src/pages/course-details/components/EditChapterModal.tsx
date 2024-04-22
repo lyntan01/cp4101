@@ -1,16 +1,22 @@
 import { useState } from 'react'
+import { EditChapterData } from '../../../api/chapter'
+import { Chapter } from '../../../types/models'
 
-interface CreateChapterModalProps {
+interface EditChapterModalProps {
+  chapter: Chapter
   setIsModalOpen: (isModalOpen: boolean) => void
-  createChapter: (chapterName: string, chapterLearningOutcomes: string) => void
+  editChapter: (data: EditChapterData) => void
 }
 
-export const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
+export const EditChapterModal: React.FC<EditChapterModalProps> = ({
+  chapter,
   setIsModalOpen,
-  createChapter
+  editChapter
 }) => {
-  const [chapterName, setChapterName] = useState('')
-  const [chapterLearningOutcomes, setChapterLearningOutcomes] = useState('')
+  const [chapterName, setChapterName] = useState(chapter.name)
+  const [chapterLearningOutcomes, setChapterLearningOutcomes] = useState(
+    chapter.learningOutcomes.join('\n')
+  )
 
   return (
     <div className='fixed inset-0 z-10 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none'>
@@ -19,7 +25,7 @@ export const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
         <div className='relative bg-white p-5 rounded-lg shadow-md h-42 w-1/2'>
           <div className='flex flex-col items-start justify-between gap-3'>
             <h3 className='text-lg font-semibold leading-6 text-gray-900'>
-              Create Chapter
+              Edit Chapter
             </h3>
 
             <div className='w-full mt-3 mb-3'>
@@ -97,10 +103,13 @@ export const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
                     : 'bg-green-600 hover:bg-green-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500'
                 }`}
               onClick={() =>
-                createChapter(chapterName, chapterLearningOutcomes)
+                editChapter({
+                  name: chapterName,
+                  learningOutcomes: chapterLearningOutcomes.split('\n')
+                })
               }
             >
-              Create
+              Edit
             </button>
           </div>
         </div>

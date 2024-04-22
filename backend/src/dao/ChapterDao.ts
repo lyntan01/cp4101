@@ -54,7 +54,15 @@ export class ChapterDao {
     return this.prismaClient.chapter.update({
       where: { id: chapterId },
       data: chapterData,
-    });
+      include: {
+        pages: {
+          include: {
+            traditionalTextBasedLessonPage: true
+          }
+        },
+      }
+    }
+    );
   }
 
   public async deleteChapter(chapterId: string): Promise<Chapter | null> {
